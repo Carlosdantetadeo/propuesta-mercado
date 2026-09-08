@@ -1,0 +1,162 @@
+---
+import '../styles/global.css';
+interface Props {
+  title?: string;
+  description?: string;
+}
+const {
+  title = 'Operación Comercial · Propuesta de colocación de puestos',
+  description = 'Propuesta de operación comercial para la colocación de puestos del mercado.',
+} = Astro.props;
+---
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,1,600&display=swap" rel="stylesheet" />
+</head>
+<body class="bg-slate-950 text-slate-100">
+
+  <!-- Progress bar -->
+  <div id="progress" class="fixed top-0 left-0 h-0.5 bg-amber-400 z-50 w-0 transition-[width] duration-200 ease-out"></div>
+
+  <!-- Top bar -->
+  <header class="fixed top-0 left-0 right-0 z-40 h-14 flex items-center justify-between px-5 md:px-8 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/60">
+    <span class="text-[10px] font-semibold tracking-[0.2em] uppercase text-slate-500 select-none">Operación&nbsp;Comercial</span>
+    <div class="flex items-center gap-2">
+      <span id="counter" class="text-xs text-slate-500 tabular-nums w-12 text-right">1 / 25</span>
+      <button id="nav-prev" aria-label="Sección anterior"
+        class="w-7 h-7 rounded-full bg-slate-800 border border-slate-700 inline-flex items-center justify-center text-slate-400 hover:bg-slate-700 hover:text-white transition-colors disabled:opacity-25 disabled:cursor-not-allowed text-xs">
+        ←
+      </button>
+      <button id="nav-next" aria-label="Sección siguiente"
+        class="w-7 h-7 rounded-full bg-slate-800 border border-slate-700 inline-flex items-center justify-center text-slate-400 hover:bg-slate-700 hover:text-white transition-colors disabled:opacity-25 disabled:cursor-not-allowed text-xs">
+        →
+      </button>
+    </div>
+  </header>
+
+  <!-- Dots nav (desktop only) -->
+  <nav id="dots" aria-label="Ir a sección"
+    class="fixed right-4 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col gap-2">
+  </nav>
+
+  <!-- Scroller -->
+  <div id="scroller" class="h-full overflow-y-scroll scrollbar-hide">
+    <slot />
+    <footer class="py-6 text-center border-t border-slate-800">
+      <p class="text-xs text-slate-600">Propuesta de operación comercial · Colocación de puestos del mercado</p>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      const scroller  = document.getElementById('scroller')!;
+      const slides    = Array.from(document.querySelectorAll<HTMLElement>('.slide'));
+      const total     = slides.length;
+      const dotsNav   = document.getElementById('dots')!;
+      const counter   = document.getElementById('counter')!;
+      const btnPrev   = document.getElementById('nav-prev') as HTMLButtonElement;
+      const btnNext   = document.getElementById('nav-next') as HTMLButtonElement;
+      const bar       = document.getElementById('progress')!;
+
+      // Build dots
+      slides.forEach((s, i) => {
+        const a = document.createElement('a');
+        a.href = '#' + s.id;
+        a.dataset.idx = String(i);
+        a.setAttribute('aria-label', s.dataset.title ?? `Sección ${i + 1}`);
+        a.className = 'dot w-1.5 h-1.5 rounded-full bg-slate-700 transition-all duration-200 hover:bg-slate-400 relative group block';
+        const tip = document.createElement('span');
+        tip.textContent = `${i + 1}. ${s.dataset.title ?? ''}`;
+        tip.className = 'absolute right-5 top-1/2 -translate-y-1/2 bg-slate-800 border border-slate-700 text-slate-300 text-xs px-2.5 py-1 rounded-lg whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity';
+        a.appendChild(tip);
+        dotsNav.appendChild(a);
+      });
+      const dots = Array.from(dotsNav.querySelectorAll<HTMLElement>('.dot'));
+
+      let activeIdx = 0;
+
+      function updateUI(idx: number) {
+        activeIdx = Math.max(0, Math.min(total - 1, idx));
+        counter.textContent = `${activeIdx + 1} / ${total}`;
+        btnPrev.disabled = activeIdx === 0;
+        btnNext.disabled = activeIdx === total - 1;
+        dots.forEach((d, i) => {
+          d.className = i === activeIdx
+            ? 'dot w-1.5 h-5 rounded-full bg-amber-400 transition-all duration-300 relative group block'
+            : 'dot w-1.5 h-1.5 rounded-full bg-slate-700 transition-all duration-300 hover:bg-slate-400 relative group block';
+        });
+      }
+
+      function updateProgress() {
+        const max = scroller.scrollHeight - scroller.clientHeight;
+        bar.style.width = max > 0 ? `${Math.min((scroller.scrollTop / max) * 100, 100)}%` : '0%';
+      }
+
+      scroller.addEventListener('scroll', updateProgress, { passive: true });
+      updateProgress();
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            const idx = slides.indexOf(e.target as HTMLElement);
+            if (idx !== -1) updateUI(idx);
+          }
+        });
+      }, { root: scroller, rootMargin: '-40% 0px -40% 0px', threshold: 0 });
+      slides.forEach((s) => observer.observe(s));
+
+      function goTo(idx: number) {
+        idx = Math.max(0, Math.min(total - 1, idx));
+        slides[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      btnPrev.addEventListener('click', () => goTo(activeIdx - 1));
+      btnNext.addEventListener('click', () => goTo(activeIdx + 1));
+      updateUI(0);
+
+      dots.forEach((d) => {
+        d.addEventListener('click', (e) => {
+          e.preventDefault();
+          goTo(parseInt(d.dataset.idx ?? '0'));
+        });
+      });
+
+      window.addEventListener('keydown', (e) => {
+        const tag = (document.activeElement as HTMLElement)?.tagName;
+        if (['INPUT', 'TEXTAREA', 'SELECT'].includes(tag)) return;
+        const fwd = ['ArrowDown', 'ArrowRight', 'PageDown'].includes(e.key);
+        const bwd = ['ArrowUp', 'ArrowLeft', 'PageUp'].includes(e.key);
+        if (!fwd && !bwd) return;
+        e.preventDefault();
+        goTo(activeIdx + (fwd ? 1 : -1));
+      });
+
+      let touchY = 0, touchT = 0;
+      scroller.addEventListener('touchstart', (e) => { touchY = e.touches[0].clientY; touchT = Date.now(); }, { passive: true });
+      scroller.addEventListener('touchend', (e) => {
+        const dy = touchY - e.changedTouches[0].clientY;
+        if (Math.abs(dy) > 48 && Date.now() - touchT < 400) goTo(activeIdx + (dy > 0 ? 1 : -1));
+      }, { passive: true });
+
+      // Reveal animations
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const items = Array.from(document.querySelectorAll('.card, .step, .tl, .level, .fn-bar, .check-item, .term, .agreement'));
+        items.forEach((el) => el.classList.add('anim'));
+        const revObs = new IntersectionObserver((entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) { e.target.classList.add('in'); revObs.unobserve(e.target); }
+          });
+        }, { root: scroller, rootMargin: '0px 0px -20px 0px', threshold: 0 });
+        items.forEach((el) => revObs.observe(el));
+      }
+    })();
+  </script>
+</body>
+</html>
