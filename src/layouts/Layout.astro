@@ -26,9 +26,19 @@ const {
   <div id="progress" class="fixed top-0 left-0 h-0.5 bg-amber-400 z-50 w-0 transition-[width] duration-200 ease-out"></div>
 
   <!-- Top bar -->
-  <header class="fixed top-0 left-0 right-0 z-40 h-14 flex items-center justify-between px-5 md:px-8 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/60">
-    <span class="text-[10px] font-semibold tracking-[0.2em] uppercase text-slate-500 select-none">Operación&nbsp;Comercial</span>
+  <header class="fixed top-0 left-0 right-0 z-40 h-14 flex items-center justify-between px-5 md:px-8 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/60 print:hidden">
+    <div class="flex items-center gap-3">
+      <a href="/" aria-label="Volver al inicio"
+        class="w-7 h-7 rounded-full bg-slate-800 border border-slate-700 inline-flex items-center justify-center text-slate-400 hover:bg-slate-700 hover:text-white transition-colors text-sm">
+        &#8962;
+      </a>
+      <span class="text-[10px] font-semibold tracking-[0.2em] uppercase text-slate-500 select-none hidden sm:inline">Operación&nbsp;Comercial</span>
+    </div>
     <div class="flex items-center gap-2">
+      <button onclick="window.print()" aria-label="Imprimir / Guardar como PDF"
+        class="h-7 px-3 rounded-full bg-slate-800 border border-slate-700 inline-flex items-center justify-center text-slate-400 hover:bg-amber-400 hover:text-slate-950 hover:border-amber-400 transition-colors text-[10px] font-semibold uppercase tracking-wider">
+        PDF
+      </button>
       <span id="counter" class="text-xs text-slate-500 tabular-nums w-12 text-right">1 / 25</span>
       <button id="nav-prev" aria-label="Sección anterior"
         class="w-7 h-7 rounded-full bg-slate-800 border border-slate-700 inline-flex items-center justify-center text-slate-400 hover:bg-slate-700 hover:text-white transition-colors disabled:opacity-25 disabled:cursor-not-allowed text-xs">
@@ -43,7 +53,7 @@ const {
 
   <!-- Dots nav (desktop only) -->
   <nav id="dots" aria-label="Ir a sección"
-    class="fixed right-4 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col gap-2">
+    class="fixed right-4 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col gap-2 print:hidden">
   </nav>
 
   <!-- Scroller -->

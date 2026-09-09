@@ -46,6 +46,32 @@
   }
 }
 
+/* Print / PDF */
+@media print {
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  #progress { display: none !important; }
+  #scroller {
+    height: auto !important;
+    overflow: visible !important;
+  }
+  footer { display: none !important; }
+  .slide {
+    page-break-after: always;
+    break-after: page;
+    min-height: 100vh;
+    padding-top: 3rem !important;
+  }
+  .anim {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 /* Reveal animations */
 .anim {
   opacity: 0;
