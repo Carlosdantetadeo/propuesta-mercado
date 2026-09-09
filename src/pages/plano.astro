@@ -1,0 +1,434 @@
+---
+// Herramienta de disponibilidad virtual de puestos — demo
+---
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plano de Disponibilidad · Mercado</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: 'Inter', sans-serif; background: #020617; color: #e2e8f0; -webkit-font-smoothing: antialiased; }
+
+    /* ── HEADER ── */
+    .hdr {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      height: 52px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1.25rem; background: rgba(2,6,23,0.9); backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .hdr-left { display: flex; align-items: center; gap: 0.75rem; }
+    .btn-home {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: #1e293b; border: 1px solid #334155;
+      display: inline-flex; align-items: center; justify-content: center;
+      color: #94a3b8; text-decoration: none; font-size: 0.75rem;
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn-home:hover { background: #334155; color: #f1f5f9; }
+    .hdr-title { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: #64748b; }
+    .hdr-demo { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; background: rgba(251,191,36,0.1); color: #fbbf24; border: 1px solid rgba(251,191,36,0.2); padding: 0.2rem 0.6rem; border-radius: 999px; }
+    .legend { display: flex; align-items: center; gap: 1rem; }
+    .legend-item { display: flex; align-items: center; gap: 0.375rem; font-size: 0.6rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #94a3b8; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+    .dot-d { background: #10b981; }
+    .dot-s { background: #f59e0b; }
+    .dot-v { background: #475569; }
+
+    /* ── LAYOUT ── */
+    .layout { display: flex; height: 100%; padding-top: 52px; }
+    .main { flex: 1; overflow-y: auto; padding: 1.25rem 1.5rem 2rem; }
+    .panel {
+      width: 300px; flex-shrink: 0; overflow-y: auto;
+      border-left: 1px solid rgba(255,255,255,0.06); background: #0b1120;
+    }
+
+    /* ── STATS ── */
+    .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 0.625rem; margin-bottom: 1.25rem; }
+    .sc {
+      background: #0f172a; border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px; padding: 0.75rem 1rem;
+    }
+    .sc-label { font-size: 0.575rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #475569; margin-bottom: 0.2rem; }
+    .sc-value { font-size: 1.375rem; font-weight: 800; line-height: 1; }
+    .sc-sub { font-size: 0.6rem; color: #475569; margin-top: 0.125rem; }
+
+    /* ── FILTERS ── */
+    .filters { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; flex-wrap: wrap; align-items: center; }
+    .filter-btn {
+      height: 26px; padding: 0 0.75rem; border-radius: 999px;
+      background: #1e293b; border: 1px solid #334155;
+      color: #94a3b8; font-size: 0.65rem; font-weight: 600;
+      cursor: pointer; transition: all 0.15s; white-space: nowrap;
+      font-family: 'Inter', sans-serif; letter-spacing: 0.04em;
+    }
+    .filter-btn:hover { background: #334155; color: #f1f5f9; }
+    .filter-btn.active { background: #fbbf24; border-color: #fbbf24; color: #0f172a; }
+    .filter-sep { width: 1px; height: 16px; background: #1e293b; margin: 0 0.25rem; }
+
+    /* ── ZONES ── */
+    .zone { margin-bottom: 1.75rem; }
+    .zone-hdr { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+    .zone-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+    .zone-name { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #94a3b8; }
+    .zone-disp { font-size: 0.6rem; color: #10b981; font-weight: 600; margin-left: auto; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(62px,1fr)); gap: 0.4rem; }
+
+    /* ── STALL ── */
+    .stall {
+      aspect-ratio: 1; border-radius: 8px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 0.15rem;
+      cursor: pointer; border: 1.5px solid transparent;
+      transition: transform 0.12s, box-shadow 0.12s, background 0.12s;
+      user-select: none; position: relative;
+    }
+    .stall:hover { transform: translateY(-2px); }
+    .stall.active { border-color: #fbbf24; box-shadow: 0 0 0 2px rgba(251,191,36,0.25); }
+    .stall.hidden { display: none; }
+
+    .sd { background: rgba(16,185,129,0.1); }
+    .sd:hover { background: rgba(16,185,129,0.18); }
+    .ss { background: rgba(245,158,11,0.1); }
+    .ss:hover { background: rgba(245,158,11,0.18); }
+    .sv { background: rgba(71,85,105,0.2); cursor: default; opacity: 0.7; }
+    .sv:hover { transform: none; }
+
+    .s-id { font-size: 0.57rem; font-weight: 700; letter-spacing: 0.02em; }
+    .sd .s-id { color: #34d399; }
+    .ss .s-id { color: #fbbf24; }
+    .sv .s-id { color: #64748b; }
+
+    .s-m2 { font-size: 0.48rem; }
+    .sd .s-m2 { color: rgba(52,211,153,0.55); }
+    .ss .s-m2 { color: rgba(251,191,36,0.55); }
+    .sv .s-m2 { color: #475569; }
+
+    .s-dot { width: 4px; height: 4px; border-radius: 50%; }
+    .sd .s-dot { background: #10b981; }
+    .ss .s-dot { background: #f59e0b; }
+    .sv .s-dot { background: #475569; }
+
+    /* ── DETAIL PANEL ── */
+    .p-empty {
+      height: 100%; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 0.5rem; padding: 2rem; text-align: center;
+    }
+    .p-empty-icon { font-size: 1.75rem; color: #1e293b; margin-bottom: 0.25rem; }
+    .p-empty-text { font-size: 0.7rem; color: #334155; line-height: 1.6; }
+
+    .p-body { padding: 1.25rem; }
+    .p-badge {
+      display: inline-flex; align-items: center;
+      padding: 0.2rem 0.65rem; border-radius: 999px;
+      font-size: 0.575rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .pb-d { background: rgba(16,185,129,0.1); color: #10b981; border: 1px solid rgba(16,185,129,0.2); }
+    .pb-s { background: rgba(245,158,11,0.1); color: #f59e0b; border: 1px solid rgba(245,158,11,0.2); }
+    .pb-v { background: rgba(71,85,105,0.18); color: #64748b; border: 1px solid rgba(71,85,105,0.25); }
+
+    .p-id { font-size: 1.875rem; font-weight: 800; color: #f1f5f9; line-height: 1; margin-bottom: 0.2rem; }
+    .p-rubro { font-size: 0.75rem; color: #94a3b8; font-weight: 500; margin-bottom: 1.25rem; line-height: 1.4; }
+
+    .p-divider { height: 1px; background: rgba(255,255,255,0.05); margin: 0.875rem 0; }
+    .p-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem; }
+    .p-lbl { font-size: 0.6rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #475569; }
+    .p-val { font-size: 0.75rem; font-weight: 600; color: #e2e8f0; text-align: right; }
+    .p-val.hi { color: #fbbf24; font-size: 0.9rem; font-weight: 800; }
+    .p-val.green { color: #10b981; }
+
+    .p-box {
+      background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 8px; padding: 0.75rem; margin-top: 0.875rem;
+    }
+    .p-box-lbl { font-size: 0.575rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #475569; margin-bottom: 0.3rem; }
+    .p-box-text { font-size: 0.7rem; color: #94a3b8; line-height: 1.55; }
+
+    .p-cta {
+      display: block; width: 100%; padding: 0.7rem; border-radius: 8px;
+      background: #fbbf24; color: #0f172a; font-size: 0.75rem; font-weight: 700;
+      text-align: center; border: none; cursor: pointer; margin-top: 1rem;
+      font-family: 'Inter', sans-serif; transition: background 0.15s;
+    }
+    .p-cta:hover { background: #fcd34d; }
+    .p-cta-dis {
+      display: block; width: 100%; padding: 0.65rem; border-radius: 8px;
+      background: transparent; color: #475569; font-size: 0.7rem; font-weight: 600;
+      text-align: center; border: 1px solid #1e293b; margin-top: 0.5rem;
+      font-family: 'Inter', sans-serif; cursor: default;
+    }
+
+    @media (max-width: 860px) {
+      .panel { display: none; }
+      .stats { grid-template-columns: repeat(2,1fr); }
+      .legend { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-left">
+    <a href="/" class="btn-home" aria-label="Inicio">&#8962;</a>
+    <span class="hdr-title">Plano de Disponibilidad</span>
+    <span class="hdr-demo">Demo</span>
+  </div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot dot-d"></div>Disponible</div>
+    <div class="legend-item"><div class="legend-dot dot-s"></div>Separado</div>
+    <div class="legend-item"><div class="legend-dot dot-v"></div>Vendido</div>
+  </div>
+</header>
+
+<div class="layout">
+  <div class="main">
+    <div class="stats" id="stats"></div>
+    <div class="filters" id="filters"></div>
+    <div id="zones"></div>
+  </div>
+  <aside class="panel" id="panel">
+    <div class="p-empty">
+      <div class="p-empty-icon">&#9633;</div>
+      <div class="p-empty-text">Seleccioná un puesto<br/>para ver su información.</div>
+    </div>
+  </aside>
+</div>
+
+<script>
+  const ZONAS = {
+    A: { nombre: 'Abarrotes y Productos Secos',   color: '#3b82f6' },
+    B: { nombre: 'Carnes, Aves y Embutidos',       color: '#ef4444' },
+    C: { nombre: 'Frutas, Verduras y Tubérculos',  color: '#22c55e' },
+    D: { nombre: 'Ropa, Calzado y Accesorios',     color: '#a855f7' },
+    E: { nombre: 'Plásticos, Bazar y Ferretería',  color: '#f97316' },
+  };
+
+  const P = [
+    // ── ZONA A ──
+    { id:'A-01', z:'A', m:6,  p:84000,  s:'vendido',    r:'Abarrotes' },
+    { id:'A-02', z:'A', m:6,  p:84000,  s:'vendido',    r:'Abarrotes' },
+    { id:'A-03', z:'A', m:8,  p:112000, s:'disponible', r:'Abarrotes / Bebidas' },
+    { id:'A-04', z:'A', m:6,  p:84000,  s:'separado',   r:'Abarrotes', f:'15 ago 2026' },
+    { id:'A-05', z:'A', m:6,  p:84000,  s:'disponible', r:'Abarrotes' },
+    { id:'A-06', z:'A', m:4,  p:56000,  s:'vendido',    r:'Golosinas y Snacks' },
+    { id:'A-07', z:'A', m:6,  p:84000,  s:'disponible', r:'Abarrotes' },
+    { id:'A-08', z:'A', m:6,  p:84000,  s:'disponible', r:'Abarrotes' },
+    { id:'A-09', z:'A', m:8,  p:112000, s:'separado',   r:'Abarrotes / Lácteos', f:'22 ago 2026' },
+    { id:'A-10', z:'A', m:4,  p:56000,  s:'vendido',    r:'Abarrotes' },
+    { id:'A-11', z:'A', m:6,  p:84000,  s:'disponible', r:'Abarrotes' },
+    { id:'A-12', z:'A', m:6,  p:84000,  s:'vendido',    r:'Abarrotes' },
+    { id:'A-13', z:'A', m:12, p:168000, s:'disponible', r:'Abarrotes (esquina · alta visibilidad)' },
+    { id:'A-14', z:'A', m:6,  p:84000,  s:'vendido',    r:'Abarrotes' },
+    { id:'A-15', z:'A', m:6,  p:84000,  s:'disponible', r:'Abarrotes' },
+    // ── ZONA B ──
+    { id:'B-01', z:'B', m:8,  p:112000, s:'vendido',    r:'Carnes y Aves' },
+    { id:'B-02', z:'B', m:8,  p:112000, s:'vendido',    r:'Carnes y Aves' },
+    { id:'B-03', z:'B', m:8,  p:112000, s:'disponible', r:'Carnes y Aves' },
+    { id:'B-04', z:'B', m:6,  p:84000,  s:'separado',   r:'Embutidos y Derivados', f:'1 sep 2026' },
+    { id:'B-05', z:'B', m:8,  p:112000, s:'vendido',    r:'Carnes y Aves' },
+    { id:'B-06', z:'B', m:6,  p:84000,  s:'disponible', r:'Embutidos' },
+    { id:'B-07', z:'B', m:8,  p:112000, s:'disponible', r:'Carnes y Aves' },
+    { id:'B-08', z:'B', m:8,  p:112000, s:'vendido',    r:'Carnes y Aves' },
+    { id:'B-09', z:'B', m:6,  p:84000,  s:'disponible', r:'Pescado y Mariscos' },
+    { id:'B-10', z:'B', m:6,  p:84000,  s:'separado',   r:'Pescado', f:'5 sep 2026' },
+    { id:'B-11', z:'B', m:8,  p:112000, s:'vendido',    r:'Carnes y Aves' },
+    { id:'B-12', z:'B', m:8,  p:112000, s:'disponible', r:'Carnes y Aves' },
+    // ── ZONA C ──
+    { id:'C-01', z:'C', m:8,  p:96000,  s:'vendido',    r:'Frutas' },
+    { id:'C-02', z:'C', m:8,  p:96000,  s:'disponible', r:'Frutas' },
+    { id:'C-03', z:'C', m:6,  p:72000,  s:'disponible', r:'Verduras y Tubérculos' },
+    { id:'C-04', z:'C', m:8,  p:96000,  s:'vendido',    r:'Frutas y Verduras' },
+    { id:'C-05', z:'C', m:6,  p:72000,  s:'separado',   r:'Verduras', f:'28 ago 2026' },
+    { id:'C-06', z:'C', m:8,  p:96000,  s:'disponible', r:'Frutas' },
+    { id:'C-07', z:'C', m:6,  p:72000,  s:'vendido',    r:'Verduras y Tubérculos' },
+    { id:'C-08', z:'C', m:8,  p:96000,  s:'disponible', r:'Frutas' },
+    { id:'C-09', z:'C', m:6,  p:72000,  s:'disponible', r:'Verduras' },
+    { id:'C-10', z:'C', m:8,  p:96000,  s:'vendido',    r:'Frutas' },
+    { id:'C-11', z:'C', m:12, p:144000, s:'disponible', r:'Frutas y Verduras (esquina)' },
+    { id:'C-12', z:'C', m:6,  p:72000,  s:'separado',   r:'Verduras', f:'3 sep 2026' },
+    // ── ZONA D ──
+    { id:'D-01', z:'D', m:6,  p:90000,  s:'vendido',    r:'Ropa de Dama' },
+    { id:'D-02', z:'D', m:6,  p:90000,  s:'disponible', r:'Ropa de Dama / Caballero' },
+    { id:'D-03', z:'D', m:8,  p:120000, s:'disponible', r:'Ropa en General' },
+    { id:'D-04', z:'D', m:6,  p:90000,  s:'vendido',    r:'Calzado' },
+    { id:'D-05', z:'D', m:6,  p:90000,  s:'separado',   r:'Calzado', f:'30 ago 2026' },
+    { id:'D-06', z:'D', m:8,  p:120000, s:'disponible', r:'Ropa de Niños' },
+    { id:'D-07', z:'D', m:6,  p:90000,  s:'vendido',    r:'Ropa de Dama' },
+    { id:'D-08', z:'D', m:4,  p:60000,  s:'disponible', r:'Accesorios y Bisutería' },
+    { id:'D-09', z:'D', m:6,  p:90000,  s:'disponible', r:'Ropa de Caballero' },
+    { id:'D-10', z:'D', m:6,  p:90000,  s:'vendido',    r:'Calzado' },
+    { id:'D-11', z:'D', m:4,  p:60000,  s:'disponible', r:'Accesorios' },
+    { id:'D-12', z:'D', m:6,  p:90000,  s:'separado',   r:'Ropa de Dama', f:'7 sep 2026' },
+    { id:'D-13', z:'D', m:8,  p:120000, s:'vendido',    r:'Ropa en General' },
+    { id:'D-14', z:'D', m:12, p:180000, s:'disponible', r:'Ropa (esquina · alta visibilidad)' },
+    // ── ZONA E ──
+    { id:'E-01', z:'E', m:6,  p:78000,  s:'vendido',    r:'Plásticos del Hogar' },
+    { id:'E-02', z:'E', m:6,  p:78000,  s:'disponible', r:'Bazar y Artículos del Hogar' },
+    { id:'E-03', z:'E', m:8,  p:104000, s:'disponible', r:'Plásticos y Bazar' },
+    { id:'E-04', z:'E', m:6,  p:78000,  s:'vendido',    r:'Ferretería Básica' },
+    { id:'E-05', z:'E', m:6,  p:78000,  s:'separado',   r:'Plásticos', f:'2 sep 2026' },
+    { id:'E-06', z:'E', m:4,  p:52000,  s:'disponible', r:'Bazar' },
+    { id:'E-07', z:'E', m:8,  p:104000, s:'disponible', r:'Plásticos y Ferretería' },
+    { id:'E-08', z:'E', m:6,  p:78000,  s:'vendido',    r:'Plásticos' },
+    { id:'E-09', z:'E', m:6,  p:78000,  s:'disponible', r:'Bazar y Artículos' },
+    { id:'E-10', z:'E', m:8,  p:104000, s:'vendido',    r:'Ferretería' },
+    { id:'E-11', z:'E', m:6,  p:78000,  s:'disponible', r:'Plásticos' },
+    { id:'E-12', z:'E', m:12, p:156000, s:'disponible', r:'Plásticos y Bazar (esquina)' },
+  ];
+
+  const fmt  = n => 'S/ ' + n.toLocaleString('es-PE');
+  const cuot = p => fmt(Math.round(p / 96)) + ' /mes';
+
+  let activeFilter = 'todos';
+  let selectedId   = null;
+
+  // ── STATS ─────────────────────────────────────────────────────────
+  function renderStats() {
+    const total = P.length;
+    const disp  = P.filter(x => x.s === 'disponible').length;
+    const sep   = P.filter(x => x.s === 'separado').length;
+    const vend  = P.filter(x => x.s === 'vendido').length;
+    document.getElementById('stats').innerHTML = `
+      <div class="sc">
+        <div class="sc-label">Total</div>
+        <div class="sc-value" style="color:#e2e8f0">${total}</div>
+        <div class="sc-sub">puestos</div>
+      </div>
+      <div class="sc">
+        <div class="sc-label">Disponibles</div>
+        <div class="sc-value" style="color:#10b981">${disp}</div>
+        <div class="sc-sub">para comprar</div>
+      </div>
+      <div class="sc">
+        <div class="sc-label">Separados</div>
+        <div class="sc-value" style="color:#f59e0b">${sep}</div>
+        <div class="sc-sub">en proceso</div>
+      </div>
+      <div class="sc">
+        <div class="sc-label">Vendidos</div>
+        <div class="sc-value" style="color:#64748b">${vend} <span style="font-size:.75rem;font-weight:500">${Math.round(vend/total*100)}%</span></div>
+        <div class="sc-sub">colocados</div>
+      </div>
+    `;
+  }
+
+  // ── FILTERS ───────────────────────────────────────────────────────
+  function renderFilters() {
+    const counts = {
+      todos:      P.length,
+      disponible: P.filter(x => x.s === 'disponible').length,
+      separado:   P.filter(x => x.s === 'separado').length,
+      vendido:    P.filter(x => x.s === 'vendido').length,
+    };
+    const labels = { todos:'Todos', disponible:'Disponibles', separado:'Separados', vendido:'Vendidos' };
+    document.getElementById('filters').innerHTML =
+      Object.entries(counts).map(([k,v]) =>
+        `<button class="filter-btn${activeFilter===k?' active':''}" data-f="${k}">${labels[k]} (${v})</button>`
+      ).join('<div class="filter-sep"></div>');
+    document.querySelectorAll('.filter-btn').forEach(b =>
+      b.addEventListener('click', () => { activeFilter = b.dataset.f; renderFilters(); renderZones(); })
+    );
+  }
+
+  // ── ZONES ─────────────────────────────────────────────────────────
+  function renderZones() {
+    const container = document.getElementById('zones');
+    container.innerHTML = '';
+    for (const [key, zona] of Object.entries(ZONAS)) {
+      const puestos = P.filter(x => x.z === key);
+      const visible = puestos.filter(x => activeFilter === 'todos' || x.s === activeFilter);
+      if (visible.length === 0) continue;
+      const dispCount = puestos.filter(x => x.s === 'disponible').length;
+
+      const zEl = document.createElement('div');
+      zEl.className = 'zone';
+      zEl.innerHTML = `
+        <div class="zone-hdr">
+          <div class="zone-dot" style="background:${zona.color}"></div>
+          <span class="zone-name">Zona ${key} · ${zona.nombre}</span>
+          <span class="zone-disp">${dispCount} disponible${dispCount!==1?'s':''}</span>
+        </div>
+        <div class="grid" id="g-${key}"></div>
+      `;
+      container.appendChild(zEl);
+
+      const grid = document.getElementById(`g-${key}`);
+      puestos.forEach(x => {
+        const hidden = activeFilter !== 'todos' && x.s !== activeFilter;
+        const cls = { disponible:'sd', separado:'ss', vendido:'sv' }[x.s];
+        const el = document.createElement('div');
+        el.className = `stall ${cls}${hidden?' hidden':''}${selectedId===x.id?' active':''}`;
+        el.dataset.id = x.id;
+        el.innerHTML = `<span class="s-id">${x.id}</span><span class="s-m2">${x.m} m²</span><div class="s-dot"></div>`;
+        if (x.s !== 'vendido') el.addEventListener('click', () => select(x.id));
+        grid.appendChild(el);
+      });
+    }
+  }
+
+  // ── SELECT ────────────────────────────────────────────────────────
+  function select(id) {
+    selectedId = id;
+    document.querySelectorAll('.stall').forEach(el => el.classList.remove('active'));
+    document.querySelector(`.stall[data-id="${id}"]`)?.classList.add('active');
+
+    const x = P.find(p => p.id === id);
+    if (!x) return;
+    const zona = ZONAS[x.z];
+
+    const label = { disponible:'Disponible', separado:'Separado', vendido:'Vendido' };
+    const badgeCls = { disponible:'pb-d', separado:'pb-s', vendido:'pb-v' };
+
+    let extra = '';
+    if (x.s === 'disponible') {
+      extra = `
+        <div class="p-box">
+          <div class="p-box-lbl">Financiamiento referencial</div>
+          <div class="p-box-text">Desde <strong style="color:#e2e8f0">${cuot(x.p)}</strong> en 96 cuotas. Condiciones exactas en contrato.</div>
+        </div>
+        <button class="p-cta" onclick="alert('Demo: aquí se abriría el canal de contacto o WhatsApp del proyecto.')">Solicitar información</button>
+      `;
+    } else if (x.s === 'separado') {
+      extra = `
+        <div class="p-box">
+          <div class="p-box-lbl">Fecha de separación</div>
+          <div class="p-box-text">${x.f ?? '—'} · En proceso de firma. No disponible para nuevas reservas.</div>
+        </div>
+        <div class="p-cta-dis">En proceso de contrato</div>
+      `;
+    } else {
+      extra = `
+        <div class="p-box">
+          <div class="p-box-lbl">Estado</div>
+          <div class="p-box-text">Este puesto fue vendido y asignado. No disponible.</div>
+        </div>
+      `;
+    }
+
+    document.getElementById('panel').innerHTML = `
+      <div class="p-body">
+        <div class="p-badge ${badgeCls[x.s]}">${label[x.s]}</div>
+        <div class="p-id">${x.id}</div>
+        <div class="p-rubro">${x.r}</div>
+        <div class="p-row"><span class="p-lbl">Zona</span><span class="p-val">${zona.nombre}</span></div>
+        <div class="p-divider"></div>
+        <div class="p-row"><span class="p-lbl">Metraje</span><span class="p-val">${x.m} m²</span></div>
+        <div class="p-row"><span class="p-lbl">Nivel</span><span class="p-val">1° piso</span></div>
+        <div class="p-row"><span class="p-lbl">Precio de lista</span><span class="p-val hi">${fmt(x.p)}</span></div>
+        ${x.s === 'disponible' ? `<div class="p-row"><span class="p-lbl">Cuota ref.</span><span class="p-val green">${cuot(x.p)}</span></div>` : ''}
+        ${extra}
+      </div>
+    `;
+  }
+
+  renderStats();
+  renderFilters();
+  renderZones();
+</script>
+</body>
+</html>
