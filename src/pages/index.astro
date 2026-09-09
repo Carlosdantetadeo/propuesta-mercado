@@ -3,6 +3,36 @@ import Layout from '../layouts/Layout.astro';
 ---
 <Layout>
 
+<!-- ── S0 SELECTOR ── -->
+<section class="slide min-h-screen flex flex-col items-center justify-center px-5 sm:px-10 lg:px-16 py-20 bg-slate-950 relative overflow-hidden" id="s0" data-title="Inicio">
+  <div class="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_50%,rgba(251,191,36,0.05),transparent)] pointer-events-none"></div>
+  <div class="slide-wrap flex flex-col items-center text-center">
+    <span class="kicker text-amber-400">Operación Comercial · Mercado</span>
+    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-100 leading-tight mb-4">¿Cómo querés<br />ver la propuesta?</h1>
+    <p class="text-sm text-slate-500 mb-12 max-w-md">Seleccioná la versión según el contexto. El contenido es el mismo modelo; cambia el nivel de detalle.</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl">
+      <a href="/directorio" class="group card border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10 hover:border-amber-400/50 transition-all duration-200 flex flex-col gap-3 text-left">
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] font-semibold uppercase tracking-widest text-amber-400">Para el Directorio</span>
+          <span class="text-amber-400 group-hover:translate-x-1 transition-transform">→</span>
+        </div>
+        <h2 class="text-lg font-bold text-slate-100">Plan Ejecutivo</h2>
+        <p class="text-sm text-slate-400 leading-relaxed">6 slides. Modelo económico, proyección de retorno y tres puntos para decidir hoy.</p>
+        <span class="text-xs text-slate-600 mt-1">S/ 15,000 implementación · 5% comisión</span>
+      </a>
+      <a href="#s1" class="group card hover:bg-slate-800/80 hover:border-slate-600/50 transition-all duration-200 flex flex-col gap-3 text-left">
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] font-semibold uppercase tracking-widest text-blue-400">Versión completa</span>
+          <span class="text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
+        </div>
+        <h2 class="text-lg font-bold text-slate-100">Plan de Operaciones</h2>
+        <p class="text-sm text-slate-400 leading-relaxed">25 slides. Proceso comercial, guiones, estructura del equipo y tecnología en detalle.</p>
+        <span class="text-xs text-slate-600 mt-1">Para el equipo comercial y de gestión</span>
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- ── S1 PORTADA ── -->
 <section class="slide min-h-screen flex flex-col justify-center px-5 sm:px-10 lg:px-16 py-20 bg-slate-950 relative overflow-hidden" id="s1" data-title="Portada">
   <div class="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_0%_40%,rgba(251,191,36,0.07),transparent)] pointer-events-none"></div>
