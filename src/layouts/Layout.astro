@@ -19,8 +19,9 @@ const {
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,1,600&display=swap" rel="stylesheet" />
+  <style>html,body{height:100%;overflow:hidden;}</style>
 </head>
-<body class="bg-white text-slate-900 h-full overflow-hidden">
+<body class="bg-white text-slate-900" style="height:100%;overflow:hidden;">
 
   <!-- Progress bar -->
   <div id="progress" class="fixed top-0 left-0 h-0.5 bg-amber-400 z-50 w-0 transition-[width] duration-200 ease-out"></div>
@@ -57,7 +58,7 @@ const {
   </nav>
 
   <!-- Scroller -->
-  <div id="scroller" class="h-full overflow-y-scroll scrollbar-hide">
+  <div id="scroller" class="overflow-y-scroll scrollbar-hide" style="height:100vh;">
     <slot />
     <footer class="py-6 text-center border-t border-slate-200">
       <p class="text-xs text-slate-400">Propuesta de operación comercial · Colocación de puestos del mercado</p>
