@@ -20,32 +20,32 @@ const {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,1,600&display=swap" rel="stylesheet" />
 </head>
-<body class="bg-slate-950 text-slate-100">
+<body class="bg-white text-slate-900">
 
   <!-- Progress bar -->
   <div id="progress" class="fixed top-0 left-0 h-0.5 bg-amber-400 z-50 w-0 transition-[width] duration-200 ease-out"></div>
 
   <!-- Top bar -->
-  <header class="fixed top-0 left-0 right-0 z-40 h-14 flex items-center justify-between px-5 md:px-8 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/60 print:hidden">
+  <header class="fixed top-0 left-0 right-0 z-40 h-14 flex items-center justify-between px-5 md:px-8 bg-white/95 backdrop-blur-md border-b border-slate-200 print:hidden">
     <div class="flex items-center gap-3">
       <a href="/" aria-label="Volver al inicio"
-        class="h-7 px-3 rounded-full bg-slate-800 border border-slate-700 inline-flex items-center gap-1.5 text-slate-400 hover:bg-slate-700 hover:text-white transition-colors text-[10px] font-semibold uppercase tracking-wider">
+        class="h-7 px-3 rounded-full bg-slate-100 border border-slate-200 inline-flex items-center gap-1.5 text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition-colors text-[10px] font-semibold uppercase tracking-wider">
         ← <span>Inicio</span>
       </a>
-      <span class="text-[10px] font-semibold tracking-[0.2em] uppercase text-slate-500 select-none hidden sm:inline">Operación&nbsp;Comercial</span>
+      <span class="text-[10px] font-semibold tracking-[0.2em] uppercase text-slate-400 select-none hidden sm:inline">Operación&nbsp;Comercial</span>
     </div>
     <div class="flex items-center gap-2">
       <button onclick="window.print()" aria-label="Imprimir / Guardar como PDF"
-        class="h-7 px-3 rounded-full bg-slate-800 border border-slate-700 inline-flex items-center justify-center text-slate-400 hover:bg-amber-400 hover:text-slate-950 hover:border-amber-400 transition-colors text-[10px] font-semibold uppercase tracking-wider">
+        class="h-7 px-3 rounded-full bg-slate-100 border border-slate-200 inline-flex items-center justify-center text-slate-600 hover:bg-amber-400 hover:text-slate-950 hover:border-amber-400 transition-colors text-[10px] font-semibold uppercase tracking-wider">
         PDF
       </button>
-      <span id="counter" class="text-xs text-slate-500 tabular-nums w-12 text-right">1 / 25</span>
+      <span id="counter" class="text-xs text-slate-400 tabular-nums w-12 text-right">1 / 25</span>
       <button id="nav-prev" aria-label="Sección anterior"
-        class="w-7 h-7 rounded-full bg-slate-800 border border-slate-700 inline-flex items-center justify-center text-slate-400 hover:bg-slate-700 hover:text-white transition-colors disabled:opacity-25 disabled:cursor-not-allowed text-xs">
+        class="w-7 h-7 rounded-full bg-slate-100 border border-slate-200 inline-flex items-center justify-center text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition-colors disabled:opacity-25 disabled:cursor-not-allowed text-xs">
         ←
       </button>
       <button id="nav-next" aria-label="Sección siguiente"
-        class="w-7 h-7 rounded-full bg-slate-800 border border-slate-700 inline-flex items-center justify-center text-slate-400 hover:bg-slate-700 hover:text-white transition-colors disabled:opacity-25 disabled:cursor-not-allowed text-xs">
+        class="w-7 h-7 rounded-full bg-slate-100 border border-slate-200 inline-flex items-center justify-center text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition-colors disabled:opacity-25 disabled:cursor-not-allowed text-xs">
         →
       </button>
     </div>
@@ -59,8 +59,8 @@ const {
   <!-- Scroller -->
   <div id="scroller" class="h-full overflow-y-scroll scrollbar-hide">
     <slot />
-    <footer class="py-6 text-center border-t border-slate-800">
-      <p class="text-xs text-slate-600">Propuesta de operación comercial · Colocación de puestos del mercado</p>
+    <footer class="py-6 text-center border-t border-slate-200">
+      <p class="text-xs text-slate-400">Propuesta de operación comercial · Colocación de puestos del mercado</p>
     </footer>
   </div>
 
@@ -81,10 +81,10 @@ const {
         a.href = '#' + s.id;
         a.dataset.idx = String(i);
         a.setAttribute('aria-label', s.dataset.title ?? `Sección ${i + 1}`);
-        a.className = 'dot w-1.5 h-1.5 rounded-full bg-slate-700 transition-all duration-200 hover:bg-slate-400 relative group block';
+        a.className = 'dot w-1.5 h-1.5 rounded-full bg-slate-300 transition-all duration-200 hover:bg-slate-400 relative group block';
         const tip = document.createElement('span');
         tip.textContent = `${i + 1}. ${s.dataset.title ?? ''}`;
-        tip.className = 'absolute right-5 top-1/2 -translate-y-1/2 bg-slate-800 border border-slate-700 text-slate-300 text-xs px-2.5 py-1 rounded-lg whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity';
+        tip.className = 'absolute right-5 top-1/2 -translate-y-1/2 bg-white border border-slate-200 text-slate-700 shadow-sm text-xs px-2.5 py-1 rounded-lg whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity';
         a.appendChild(tip);
         dotsNav.appendChild(a);
       });
@@ -100,7 +100,7 @@ const {
         dots.forEach((d, i) => {
           d.className = i === activeIdx
             ? 'dot w-1.5 h-5 rounded-full bg-amber-400 transition-all duration-300 relative group block'
-            : 'dot w-1.5 h-1.5 rounded-full bg-slate-700 transition-all duration-300 hover:bg-slate-400 relative group block';
+            : 'dot w-1.5 h-1.5 rounded-full bg-slate-300 transition-all duration-300 hover:bg-slate-400 relative group block';
         });
       }
 
