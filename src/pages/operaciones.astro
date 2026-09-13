@@ -587,7 +587,7 @@ import Layout from '../layouts/Layout.astro';
         <ul class="text-sm text-slate-600 leading-relaxed space-y-2 list-disc list-inside">
           <li>Comerciales de contacto y de piso.</li>
           <li>Plataforma comercial, licencias y configuración.</li>
-          <li>WhatsApp API y telefonía propia con grabación.</li>
+          <li>Telefonía propia con grabación y configuración del WhatsApp API.</li>
           <li>Guiones, capacitación y supervisión.</li>
           <li>Información del embudo disponible para consulta.</li>
         </ul>
@@ -597,27 +597,12 @@ import Layout from '../layouts/Layout.astro';
         <ul class="text-sm text-slate-600 leading-relaxed space-y-2 list-disc list-inside">
           <li>Espacio para el call dentro del proyecto.</li>
           <li>Leads de campaña y presupuesto de pauta.</li>
+          <li>Número de WhatsApp habilitado para API, a nombre del proyecto (nosotros lo solicitamos, ustedes lo proporcionan).</li>
           <li>Activos digitales y comunicación del proyecto.</li>
           <li>Precio, financiamiento y margen de descuento.</li>
           <li>Bloque de puestos para vender, ampliable según resultados.</li>
         </ul>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── S21 VISIBILIDAD ── -->
-<section class="slide min-h-screen flex flex-col justify-center px-5 sm:px-10 lg:px-16 py-20 bg-white" id="s21" data-title="Visibilidad">
-  <div class="slide-wrap">
-    <span class="kicker text-blue-400">Visibilidad</span>
-    <h2 class="heading">La información que la plataforma genera</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-      <div class="card space-y-1"><h3 class="font-semibold text-slate-900 text-sm">Leads recibidos</h3><p class="text-xs text-slate-600 leading-relaxed">Volumen entregado y frescura de cada lote.</p></div>
-      <div class="card space-y-1"><h3 class="font-semibold text-slate-900 text-sm">Tiempo de primera respuesta</h3><p class="text-xs text-slate-600 leading-relaxed">Minutos entre el ingreso del lead y el primer intento.</p></div>
-      <div class="card space-y-1"><h3 class="font-semibold text-slate-900 text-sm">Resultado de cada intento</h3><p class="text-xs text-slate-600 leading-relaxed">En qué nivel del embudo quedó cada llamada.</p></div>
-      <div class="card space-y-1"><h3 class="font-semibold text-slate-900 text-sm">Leads calificados</h3><p class="text-xs text-slate-600 leading-relaxed">Contactos con los cuatro datos completos.</p></div>
-      <div class="card space-y-1"><h3 class="font-semibold text-slate-900 text-sm">Visitas concretadas</h3><p class="text-xs text-slate-600 leading-relaxed">El mejor predictor de las ventas del mes siguiente.</p></div>
-      <div class="card space-y-1"><h3 class="font-semibold text-slate-900 text-sm">Motivo de pérdida</h3><p class="text-xs text-slate-600 leading-relaxed">Precio, ubicación del puesto, rubro o financiamiento.</p></div>
     </div>
   </div>
 </section>
@@ -660,6 +645,7 @@ import Layout from '../layouts/Layout.astro';
   <div class="slide-wrap">
     <span class="kicker text-blue-400">Implementación</span>
     <h2 class="heading">Solo pedimos tiempo para montar la operación</h2>
+    <p class="rule-text">Arrancamos con una posición de contacto (máximo dos), no con un equipo completo: todavía no hay data de conversión ni de volumen real de leads. Primero medimos con datos reales y después escalamos por resultado.</p>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
       <div class="step card flex flex-col gap-2">
         <span class="text-2xl font-bold text-slate-200">1</span>
@@ -677,7 +663,7 @@ import Layout from '../layouts/Layout.astro';
         <span class="text-2xl font-bold text-slate-200">3</span>
         <span class="text-[10px] font-semibold text-blue-400 uppercase tracking-wider">Semana 2</span>
         <h3 class="font-semibold text-slate-900 text-sm">Equipo</h3>
-        <p class="text-xs text-slate-600 leading-relaxed">Selección de comerciales, guiones por perfil de comprador y capacitación sobre el proyecto.</p>
+        <p class="text-xs text-slate-600 leading-relaxed">Una posición de contacto (máx. dos), que también cubre piso al inicio. Guiones por perfil y capacitación sobre el proyecto.</p>
       </div>
       <div class="step card flex flex-col gap-2">
         <span class="text-2xl font-bold text-slate-200">4</span>
@@ -688,8 +674,8 @@ import Layout from '../layouts/Layout.astro';
       <div class="step card border-emerald-500/30 bg-emerald-500/5 flex flex-col gap-2">
         <span class="text-2xl font-bold text-emerald-400/40">5</span>
         <span class="text-[10px] font-semibold text-emerald-400 uppercase tracking-wider">Semana 5</span>
-        <h3 class="font-semibold text-emerald-300 text-sm">Operación plena</h3>
-        <p class="text-xs text-slate-600 leading-relaxed">Equipo completo trabajando, embudo midiendo y primeras visitas agendadas.</p>
+        <h3 class="font-semibold text-emerald-300 text-sm">Arranque medido</h3>
+        <p class="text-xs text-slate-600 leading-relaxed">La célula inicial opera, el embudo empieza a medir y llegan las primeras visitas. Con esa data se dimensiona el equipo.</p>
       </div>
     </div>
   </div>
@@ -700,12 +686,12 @@ import Layout from '../layouts/Layout.astro';
   <div class="slide-wrap">
     <span class="kicker text-emerald-400">Escalamiento</span>
     <h2 class="heading">La operación crece con el ritmo de colocación</h2>
-    <p class="rule-text">Arrancamos con una célula comercial completa y la ampliamos conforme se cumplen las metas. No se dimensiona el equipo por expectativa, se dimensiona por resultado medido.</p>
+    <p class="rule-text">Arrancamos con una posición (máximo dos) y la ampliamos conforme se cumplen las metas. No se dimensiona el equipo por expectativa, se dimensiona por resultado medido.</p>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div class="card relative space-y-2">
         <span class="absolute top-4 right-4 w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold inline-flex items-center justify-center">1</span>
         <h3 class="font-semibold text-slate-900 pr-8">Célula inicial</h3>
-        <p class="text-sm text-slate-600 leading-relaxed">Comerciales de contacto, uno de piso y la plataforma completa operando. Se valida el proceso y se calibra el guion con datos reales.</p>
+        <p class="text-sm text-slate-600 leading-relaxed">Una posición de contacto (máx. dos) y la plataforma completa operando. Se valida el proceso y se calibra el guion con datos reales.</p>
       </div>
       <div class="card relative space-y-2">
         <span class="absolute top-4 right-4 w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold inline-flex items-center justify-center">2</span>
