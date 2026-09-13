@@ -419,64 +419,44 @@ import Layout from '../layouts/Layout.astro';
   <div class="slide-wrap">
     <span class="kicker text-blue-400">La tecnología</span>
     <h2 class="heading">El sistema que opera detrás de cada venta</h2>
-    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-3">
-      <div class="card space-y-1.5">
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 auto-rows-fr mb-3">
+      <div class="card flex flex-col gap-1.5">
         <h3 class="font-semibold text-slate-900 text-sm">Servidores propios</h3>
         <p class="text-xs text-slate-600 leading-relaxed">Infraestructura dedicada exclusivamente al proyecto. Sin SaaS compartido: velocidad, privacidad de datos y disponibilidad garantizadas desde el primer día.</p>
-        <span class="text-[10px] text-blue-400/70 font-semibold uppercase tracking-wider">Infraestructura exclusiva</span>
+        <span class="text-[10px] text-blue-400/70 font-semibold uppercase tracking-wider mt-auto">Infraestructura exclusiva</span>
       </div>
-      <div class="card space-y-1.5">
+      <div class="card flex flex-col gap-1.5">
         <h3 class="font-semibold text-slate-900 text-sm">WhatsApp Business API</h3>
         <p class="text-xs text-slate-600 leading-relaxed">Número oficial del proyecto. Inbox compartida para todo el equipo, asignación por comercial, trazabilidad completa y automatizaciones activas las 24 horas.</p>
-        <span class="text-[10px] text-blue-400/70 font-semibold uppercase tracking-wider">Canal oficial · No replicable</span>
+        <span class="text-[10px] text-blue-400/70 font-semibold uppercase tracking-wider mt-auto">Canal oficial · No replicable</span>
       </div>
-      <div class="card space-y-1.5">
+      <div class="card flex flex-col gap-1.5">
         <h3 class="font-semibold text-slate-900 text-sm">Telefonía con grabación</h3>
         <p class="text-xs text-slate-600 leading-relaxed">Marcación integrada desde el CRM. Grabación automática por llamada, registro del resultado de cada intento y auditoría completa del trabajo del equipo comercial.</p>
-        <span class="text-[10px] text-blue-400/70 font-semibold uppercase tracking-wider">Control total · Auditoría</span>
+        <span class="text-[10px] text-blue-400/70 font-semibold uppercase tracking-wider mt-auto">Control total · Auditoría</span>
       </div>
-      <div class="card space-y-1.5">
+      <div class="card flex flex-col gap-1.5">
         <h3 class="font-semibold text-slate-900 text-sm">CRM comercial propio</h3>
         <p class="text-xs text-slate-600 leading-relaxed">Pipeline diseñado específicamente para la venta de puestos de mercado. Calificación, historial por contacto, seguimiento por etapa y embudo visible para el proyecto.</p>
-        <span class="text-[10px] text-blue-400/70 font-semibold uppercase tracking-wider">Diseñado para este proceso</span>
+        <span class="text-[10px] text-blue-400/70 font-semibold uppercase tracking-wider mt-auto">Diseñado para este proceso</span>
       </div>
-      <div class="card space-y-1.5">
+      <div class="card flex flex-col gap-1.5">
         <h3 class="font-semibold text-slate-900 text-sm">Automatización 24/7</h3>
         <p class="text-xs text-slate-600 leading-relaxed">Respuesta inmediata fuera de horario, mensajes de enganche según el perfil, recordatorio de visita 24 h antes y cola priorizada para primera hora del día siguiente.</p>
-        <span class="text-[10px] text-blue-400/70 font-semibold uppercase tracking-wider">Ningún lead sin respuesta</span>
+        <span class="text-[10px] text-blue-400/70 font-semibold uppercase tracking-wider mt-auto">Ningún lead sin respuesta</span>
       </div>
-    </div>
-    <div class="mb-3">
-      <div class="card border-emerald-500/30 bg-emerald-500/5 space-y-2">
+      <div class="card border-emerald-500/30 bg-emerald-500/5 flex flex-col gap-1.5">
         <div class="flex items-center gap-2">
           <span class="text-[10px] font-semibold uppercase tracking-widest text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full flex-shrink-0">NUEVO</span>
           <h3 class="font-semibold text-slate-900 text-sm">Plano virtual de disponibilidad</h3>
         </div>
-        <p class="text-xs text-slate-600 leading-relaxed">Herramienta en línea construida a medida donde el equipo comercial consulta en tiempo real qué puestos están disponibles, separados o vendidos. El comprador puede ver la ubicación exacta de cada unidad, su metraje y los detalles antes de visitar el proyecto. Acorta el ciclo de cierre y elimina objeciones sobre disponibilidad.</p>
-        <a href="/plano" target="_blank" class="inline-flex items-center gap-1.5 mt-1 text-[10px] font-semibold uppercase tracking-wider text-emerald-400 hover:text-emerald-300 transition-colors">Ver demo del plano →</a>
+        <p class="text-xs text-slate-600 leading-relaxed">Herramienta en línea a medida donde el equipo consulta en tiempo real qué puestos están disponibles, separados o vendidos. El comprador ve la ubicación y el metraje de cada unidad antes de visitar. Acorta el cierre y elimina objeciones sobre disponibilidad.</p>
+        <a href="/plano" target="_blank" class="inline-flex items-center gap-1.5 mt-auto text-[10px] font-semibold uppercase tracking-wider text-emerald-400 hover:text-emerald-300 transition-colors">Ver demo del plano →</a>
       </div>
     </div>
     <div class="card border-slate-200 bg-slate-50 flex items-start gap-3">
       <span class="text-emerald-400 flex-shrink-0 mt-0.5">✓</span>
-      <p class="text-xs text-slate-600 leading-relaxed"><span class="text-slate-800 font-semibold">Los datos son del proyecto.</span> El número de WhatsApp, la base de leads, el historial de conversaciones y el estado del plano de puestos son propiedad del mercado. Exportables en cualquier momento, sin dependencia de nuestra plataforma.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ── S16 DECISIONES TÉCNICAS ── -->
-<section class="slide min-h-screen flex flex-col justify-center px-5 sm:px-10 lg:px-16 py-20 bg-slate-50" id="s16" data-title="Decisiones técnicas">
-  <div class="slide-wrap">
-    <span class="kicker text-blue-400">Decisiones técnicas</span>
-    <h2 class="heading">Dos definiciones que conviene explicar</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="card space-y-3">
-        <h3 class="font-semibold text-slate-900">WhatsApp API, no WhatsApp Business</h3>
-        <p class="text-sm text-slate-600 leading-relaxed">La app Business no permite varios comerciales sobre un mismo número con asignación y control. Sin API no hay bandeja compartida, ni registro por comercial, ni reportes. Toda la trazabilidad depende de esta decisión.</p>
-      </div>
-      <div class="card space-y-3">
-        <h3 class="font-semibold text-slate-900">Marcación asistida, no predictiva</h3>
-        <p class="text-sm text-slate-600 leading-relaxed">Con un puesto de este valor, la venta es consultiva y cada contacto es demasiado valioso para arriesgar una llamada abandonada. Se usa marcación asistida con grabación, y se reevalúa si el volumen de base fría lo justifica.</p>
-      </div>
+      <p class="text-xs text-slate-600 leading-relaxed"><span class="text-slate-800 font-semibold">Los datos son del proyecto.</span> El número de WhatsApp, la base de leads y el historial de conversaciones son propiedad del mercado y exportables cuando lo pidan. Nuestro rol es vender, no gestionar: el embudo queda disponible para consulta, sin obligación de presentar informes periódicos.</p>
     </div>
   </div>
 </section>
@@ -645,7 +625,7 @@ import Layout from '../layouts/Layout.astro';
   <div class="slide-wrap">
     <span class="kicker text-blue-400">Implementación</span>
     <h2 class="heading">Solo pedimos tiempo para montar la operación</h2>
-    <p class="rule-text">Arrancamos con una posición de contacto (máximo dos), no con un equipo completo: todavía no hay data de conversión ni de volumen real de leads. Primero medimos con datos reales y después escalamos por resultado.</p>
+    <p class="rule-text">El setup e implementación de todas las herramientas (plataforma, WhatsApp API, telefonía, CRM y automatizaciones) se monta completo desde el inicio. El arranque lean es solo del equipo comercial: empezamos con una posición de contacto (máximo dos) porque todavía no hay data de conversión ni de volumen de leads. Primero medimos, después escalamos por resultado.</p>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
       <div class="step card flex flex-col gap-2">
         <span class="text-2xl font-bold text-slate-200">1</span>
