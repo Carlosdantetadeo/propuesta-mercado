@@ -126,8 +126,8 @@ import Layout from '../layouts/Layout.astro';
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
       <div class="card border-amber-500/30 bg-amber-500/5 flex flex-col gap-3">
         <span class="text-[10px] font-semibold uppercase tracking-widest text-amber-400">Implementación · pago único</span>
-        <span class="text-5xl font-bold text-amber-400">S/ 6,000</span>
-        <p class="text-sm text-slate-600 leading-relaxed">Montaje del sistema comercial. Se paga una sola vez.</p>
+        <span class="text-5xl font-bold text-amber-400">A definir</span>
+        <p class="text-sm text-slate-600 leading-relaxed">Según el alcance que acordemos. Se paga una sola vez, al inicio.</p>
       </div>
       <div class="card border-emerald-500/30 bg-emerald-500/5 flex flex-col gap-3">
         <span class="text-[10px] font-semibold uppercase tracking-widest text-emerald-400">Comisión · por resultado</span>
@@ -138,10 +138,12 @@ import Layout from '../layouts/Layout.astro';
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
       <div class="card flex flex-col gap-2">
         <span class="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Qué cubre la implementación</span>
-        <div class="flex items-center justify-between text-sm text-slate-600"><span>Infraestructura, servidor y troncal</span><span class="font-semibold text-slate-500 tabular-nums">S/ 1,500</span></div>
-        <div class="flex items-center justify-between text-sm text-slate-600"><span>Configuración e integración del CRM</span><span class="font-semibold text-slate-500 tabular-nums">S/ 2,000</span></div>
-        <div class="flex items-center justify-between text-sm text-slate-600"><span>Automatizaciones y montaje del sistema</span><span class="font-semibold text-slate-500 tabular-nums">S/ 2,500</span></div>
-        <div class="flex items-center justify-between text-sm border-t border-slate-200 pt-2 mt-1"><span class="font-semibold text-slate-800">Total · pago único</span><span class="font-bold text-amber-500 tabular-nums">S/ 6,000</span></div>
+        <ul class="text-sm text-slate-600 leading-relaxed space-y-1.5">
+          <li class="flex items-start gap-2"><span class="text-amber-400 flex-shrink-0 mt-0.5">✓</span>Infraestructura, servidor y troncal</li>
+          <li class="flex items-start gap-2"><span class="text-amber-400 flex-shrink-0 mt-0.5">✓</span>Configuración e integración del CRM</li>
+          <li class="flex items-start gap-2"><span class="text-amber-400 flex-shrink-0 mt-0.5">✓</span>Automatizaciones y montaje del sistema</li>
+        </ul>
+        <p class="text-xs text-slate-500 mt-1 border-t border-slate-200 pt-2">El monto se define según el alcance final que acordemos.</p>
       </div>
       <div class="card border-slate-200 bg-slate-50 flex flex-col gap-2">
         <span class="text-[10px] font-semibold uppercase tracking-widest text-slate-500">A nuestro cargo · no lo paga el proyecto</span>
@@ -215,7 +217,7 @@ import Layout from '../layouts/Layout.astro';
       <div class="card border-amber-500/30 bg-amber-500/5 flex flex-col gap-4">
         <h3 class="font-semibold text-amber-600">El proyecto</h3>
         <ul class="space-y-2">
-          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-amber-400 flex-shrink-0 mt-0.5">✓</span>S/ 6,000 de implementación al inicio</li>
+          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-amber-400 flex-shrink-0 mt-0.5">✓</span>Implementación al inicio (monto a definir)</li>
           <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-amber-400 flex-shrink-0 mt-0.5">✓</span>Leads de campaña y pauta</li>
           <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-amber-400 flex-shrink-0 mt-0.5">✓</span>Número de WhatsApp y espacio para el call</li>
           <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-amber-400 flex-shrink-0 mt-0.5">✓</span>Precio, financiamiento y bloque de puestos</li>
@@ -236,7 +238,7 @@ import Layout from '../layouts/Layout.astro';
         <span class="w-8 h-8 rounded-full bg-amber-400 text-slate-950 text-sm font-bold inline-flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
         <div>
           <p class="text-sm sm:text-base text-slate-700 font-semibold leading-snug">Modelo económico</p>
-          <p class="text-sm text-slate-500 leading-relaxed mt-0.5">S/ 6,000 único + comisión a tratar por puesto vendido.</p>
+          <p class="text-sm text-slate-500 leading-relaxed mt-0.5">Implementación única + comisión por puesto vendido, ambos a definir.</p>
         </div>
       </li>
       <li class="agreement flex items-start gap-4">
