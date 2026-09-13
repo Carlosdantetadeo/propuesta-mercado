@@ -1,22 +1,23 @@
-﻿---
+---
 import Layout from '../layouts/Layout.astro';
 ---
 <Layout
   title="Propuesta Comercial · Para el Directorio"
-  description="Resumen ejecutivo de la propuesta de operación comercial para el directorio del mercado."
+  description="Resumen ejecutivo de la propuesta de operación comercial para el directorio de PROMARSA."
 >
 
 <!-- ── D1 PORTADA ── -->
 <section class="slide min-h-screen flex flex-col justify-center px-5 sm:px-10 lg:px-16 py-20 bg-white relative overflow-hidden" id="d1" data-title="Portada">
   <div class="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_0%_40%,rgba(251,191,36,0.07),transparent)] pointer-events-none"></div>
   <div class="slide-wrap">
-    <span class="kicker text-amber-400">Para el Directorio</span>
+    <span class="kicker text-amber-400">Para el Directorio · PROMARSA</span>
     <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold text-slate-900 leading-none mb-6">
       Operación<br /><span class="text-amber-400">Comercial</span>
     </h1>
-    <p class="text-base sm:text-lg text-slate-600 max-w-xl leading-relaxed mb-10">
-      Resumen ejecutivo de la propuesta de colocación de puestos de PROMARSA. Todo lo que el Directorio necesita para evaluar y decidir.
+    <p class="text-base sm:text-lg text-slate-600 max-w-xl leading-relaxed mb-3">
+      Vendemos los puestos por ustedes. El proyecto entrega los leads; nosotros los cerramos.
     </p>
+    <p class="text-sm text-slate-500 mb-10">6 puntos para decidir.</p>
     <a href="#d2" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-amber-400 text-slate-950 font-semibold text-sm hover:bg-amber-300 transition-colors">
       Ver resumen ↓
     </a>
@@ -27,22 +28,22 @@ import Layout from '../layouts/Layout.astro';
 <section class="slide min-h-screen flex flex-col justify-center px-5 sm:px-10 lg:px-16 py-20 bg-slate-50" id="d2" data-title="Por qué nosotros">
   <div class="slide-wrap">
     <span class="kicker text-amber-400">Por qué nosotros</span>
-    <h2 class="heading">El valor que aportamos al proyecto</h2>
+    <h2 class="heading">Tres razones</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div class="card space-y-3">
+      <div class="card flex flex-col gap-3">
         <div class="w-10 h-10 rounded-xl bg-amber-400/10 flex items-center justify-center text-lg font-bold text-amber-400/60">01</div>
-        <h3 class="font-semibold text-slate-900">Riesgo a cargo nuestro</h3>
-        <p class="text-sm text-slate-600 leading-relaxed">El equipo y la plataforma los ponemos nosotros. El proyecto no asume costo operativo mensual.</p>
+        <h3 class="font-semibold text-slate-900">Cero riesgo mensual</h3>
+        <p class="text-sm text-slate-600 leading-relaxed">Equipo y plataforma los ponemos nosotros. El proyecto no paga costo fijo.</p>
       </div>
-      <div class="card space-y-3">
+      <div class="card flex flex-col gap-3">
         <div class="w-10 h-10 rounded-xl bg-amber-400/10 flex items-center justify-center text-lg font-bold text-amber-400/60">02</div>
-        <h3 class="font-semibold text-slate-900">Incentivos alineados</h3>
-        <p class="text-sm text-slate-600 leading-relaxed">Solo cobramos cuando se vende. Sin honorario mensual ni pago por gestión: nuestro interés es el mismo del proyecto.</p>
+        <h3 class="font-semibold text-slate-900">Cobramos si se vende</h3>
+        <p class="text-sm text-slate-600 leading-relaxed">Comisión por resultado. Nuestro interés es el mismo del proyecto.</p>
       </div>
-      <div class="card space-y-3">
+      <div class="card flex flex-col gap-3">
         <div class="w-10 h-10 rounded-xl bg-amber-400/10 flex items-center justify-center text-lg font-bold text-amber-400/60">03</div>
-        <h3 class="font-semibold text-slate-900">Especialización en mercados</h3>
-        <p class="text-sm text-slate-600 leading-relaxed">Conocemos al comprador, sus objeciones y el guion que cierra. No aprendemos el rubro sobre la marcha.</p>
+        <h3 class="font-semibold text-slate-900">Expertos en mercados</h3>
+        <p class="text-sm text-slate-600 leading-relaxed">Guion, perfiles y objeciones ya dominados. No aprendemos sobre la marcha.</p>
       </div>
     </div>
   </div>
@@ -52,90 +53,130 @@ import Layout from '../layouts/Layout.astro';
 <section class="slide min-h-screen flex flex-col justify-center px-5 sm:px-10 lg:px-16 py-14 bg-white" id="d-tech" data-title="La tecnología">
   <div class="slide-wrap">
     <span class="kicker text-blue-400">La tecnología</span>
-    <h2 class="heading">El sistema que opera detrás de cada venta</h2>
-    <p class="text-sm text-slate-700 bg-slate-50 border border-slate-200 rounded-xl px-5 py-3 leading-relaxed mb-4">Los S/ 15,000 de implementación cubren el montaje y configuración de este stack. La comisión por venta financia su operación continua y al equipo que lo usa.</p>
-    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-3">
-      <div class="card space-y-1.5">
+    <h2 class="heading">Una máquina de venta lista para operar</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 auto-rows-fr mb-3">
+      <div class="card flex flex-col gap-1">
         <h3 class="font-semibold text-slate-900 text-sm">Servidores propios</h3>
-        <p class="text-xs text-slate-600 leading-relaxed">Infraestructura dedicada exclusivamente al proyecto. Sin SaaS compartido: velocidad, privacidad de datos y disponibilidad garantizadas desde el primer día.</p>
-        <span class="text-[10px] text-blue-400/70 font-semibold uppercase tracking-wider">Infraestructura exclusiva</span>
+        <p class="text-xs text-slate-600 leading-relaxed">Infraestructura dedicada al proyecto.</p>
       </div>
-      <div class="card space-y-1.5">
+      <div class="card flex flex-col gap-1">
         <h3 class="font-semibold text-slate-900 text-sm">WhatsApp Business API</h3>
-        <p class="text-xs text-slate-600 leading-relaxed">Número oficial del proyecto. Inbox compartida para todo el equipo, asignación por comercial, trazabilidad completa y automatizaciones activas las 24 horas.</p>
-        <span class="text-[10px] text-blue-400/70 font-semibold uppercase tracking-wider">Canal oficial · No replicable</span>
+        <p class="text-xs text-slate-600 leading-relaxed">Canal oficial, multiusuario y trazable.</p>
       </div>
-      <div class="card space-y-1.5">
+      <div class="card flex flex-col gap-1">
         <h3 class="font-semibold text-slate-900 text-sm">Telefonía con grabación</h3>
-        <p class="text-xs text-slate-600 leading-relaxed">Marcación integrada desde el CRM. Grabación automática por llamada, registro del resultado de cada intento y auditoría completa del trabajo del equipo comercial.</p>
-        <span class="text-[10px] text-blue-400/70 font-semibold uppercase tracking-wider">Control total · Auditoría</span>
+        <p class="text-xs text-slate-600 leading-relaxed">Cada llamada grabada y auditable.</p>
       </div>
-      <div class="card space-y-1.5">
+      <div class="card flex flex-col gap-1">
         <h3 class="font-semibold text-slate-900 text-sm">CRM comercial propio</h3>
-        <p class="text-xs text-slate-600 leading-relaxed">Pipeline diseñado específicamente para la venta de puestos de mercado. Calificación, historial por contacto, seguimiento por etapa y embudo visible para el proyecto.</p>
-        <span class="text-[10px] text-blue-400/70 font-semibold uppercase tracking-wider">Diseñado para este proceso</span>
+        <p class="text-xs text-slate-600 leading-relaxed">Pipeline hecho para vender puestos.</p>
       </div>
-      <div class="card space-y-1.5">
+      <div class="card flex flex-col gap-1">
         <h3 class="font-semibold text-slate-900 text-sm">Automatización 24/7</h3>
-        <p class="text-xs text-slate-600 leading-relaxed">Respuesta inmediata fuera de horario, mensajes de enganche según el perfil, recordatorio de visita 24 h antes y cola priorizada para primera hora del día siguiente.</p>
-        <span class="text-[10px] text-blue-400/70 font-semibold uppercase tracking-wider">Ningún lead sin respuesta</span>
+        <p class="text-xs text-slate-600 leading-relaxed">Ningún lead sin respuesta.</p>
       </div>
-    </div>
-    <div class="mb-3">
-      <div class="card border-emerald-500/30 bg-emerald-500/5 space-y-2">
+      <div class="card border-emerald-500/30 bg-emerald-500/5 flex flex-col gap-1">
         <div class="flex items-center gap-2">
           <span class="text-[10px] font-semibold uppercase tracking-widest text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full flex-shrink-0">NUEVO</span>
-          <h3 class="font-semibold text-slate-900 text-sm">Plano virtual de disponibilidad</h3>
+          <h3 class="font-semibold text-slate-900 text-sm">Plano virtual</h3>
         </div>
-        <p class="text-xs text-slate-600 leading-relaxed">Herramienta en línea construida a medida donde el equipo comercial consulta en tiempo real qué puestos están disponibles, separados o vendidos. El comprador puede ver la ubicación exacta de cada unidad, su metraje y los detalles antes de visitar el proyecto. Acorta el ciclo de cierre y elimina objeciones sobre disponibilidad.</p>
-        <a href="/plano" target="_blank" class="inline-flex items-center gap-1.5 mt-1 text-[10px] font-semibold uppercase tracking-wider text-emerald-400 hover:text-emerald-300 transition-colors">Ver demo del plano →</a>
+        <p class="text-xs text-slate-600 leading-relaxed">Disponibilidad de puestos en tiempo real.</p>
+        <a href="/plano" target="_blank" class="inline-flex items-center gap-1.5 mt-auto text-[10px] font-semibold uppercase tracking-wider text-emerald-400 hover:text-emerald-300 transition-colors">Ver demo →</a>
       </div>
     </div>
     <div class="card border-slate-200 bg-slate-50 flex items-start gap-3">
       <span class="text-emerald-400 flex-shrink-0 mt-0.5">✓</span>
-      <p class="text-xs text-slate-600 leading-relaxed"><span class="text-slate-800 font-semibold">Los datos son del proyecto.</span> El número de WhatsApp, la base de leads, el historial de conversaciones y el estado del plano de puestos son propiedad del mercado. Exportables en cualquier momento, sin dependencia de nuestra plataforma.</p>
+      <p class="text-xs text-slate-600 leading-relaxed"><span class="text-slate-800 font-semibold">Los datos son del proyecto.</span> Número de WhatsApp, base de leads e historial: propiedad del mercado, exportables cuando lo pidan.</p>
     </div>
   </div>
 </section>
 
 <!-- ── D3 MODELO ECONÓMICO ── -->
-<section class="slide min-h-screen flex flex-col justify-center px-5 sm:px-10 lg:px-16 py-20 bg-white" id="d3" data-title="Modelo económico">
+<section class="slide min-h-screen flex flex-col justify-center px-5 sm:px-10 lg:px-16 py-20 bg-slate-50" id="d3" data-title="Modelo económico">
   <div class="slide-wrap">
     <span class="kicker text-emerald-400">Modelo económico</span>
-    <h2 class="heading">Dos componentes. Sin costos ocultos.</h2>
+    <h2 class="heading">Sin costos ocultos</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-      <div class="card border-amber-500/30 bg-amber-500/5 space-y-4">
-        <span class="text-[10px] font-semibold uppercase tracking-widest text-amber-400">Pago único de implementación</span>
-        <div>
-          <span class="text-5xl font-bold text-amber-400">S/ 15,000</span>
-          <p class="text-xs text-slate-500 mt-1">Pago único al inicio del contrato</p>
-        </div>
-        <p class="text-sm text-slate-600 leading-relaxed">Cubre el montaje completo de la operación: configuración de la plataforma, WhatsApp API, telefonía, guiones y capacitación del equipo. Se paga una sola vez.</p>
+      <div class="card border-amber-500/30 bg-amber-500/5 flex flex-col gap-3">
+        <span class="text-[10px] font-semibold uppercase tracking-widest text-amber-400">Implementación · pago único</span>
+        <span class="text-5xl font-bold text-amber-400">S/ 15,000</span>
+        <p class="text-sm text-slate-600 leading-relaxed">Todo el sistema montado, probado y operando. Se paga una sola vez.</p>
       </div>
-      <div class="card border-emerald-500/30 bg-emerald-500/5 space-y-4">
-        <span class="text-[10px] font-semibold uppercase tracking-widest text-emerald-400">Comisión por resultado</span>
-        <div>
-          <span class="text-5xl font-bold text-emerald-400">A tratar</span>
-          <p class="text-xs text-slate-500 mt-1">Porcentaje sobre cada puesto vendido</p>
-        </div>
-        <p class="text-sm text-slate-600 leading-relaxed">Porcentaje a definir con el proyecto. Se devenga a la firma notarial del contrato de compraventa.</p>
+      <div class="card border-emerald-500/30 bg-emerald-500/5 flex flex-col gap-3">
+        <span class="text-[10px] font-semibold uppercase tracking-widest text-emerald-400">Comisión · por resultado</span>
+        <span class="text-5xl font-bold text-emerald-400">A tratar</span>
+        <p class="text-sm text-slate-600 leading-relaxed">Porcentaje por puesto vendido, a definir. Solo se cobra cuando se vende.</p>
       </div>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-      <div class="card space-y-1">
-        <span class="text-[10px] font-semibold uppercase tracking-widest text-slate-500 block">Honorario mensual</span>
+      <div class="card flex flex-col gap-0.5">
+        <span class="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Honorario mensual</span>
         <p class="text-sm font-semibold text-slate-700">S/ 0</p>
-        <p class="text-xs text-slate-500">No existe. No hay costo fijo mensual.</p>
       </div>
-      <div class="card space-y-1">
-        <span class="text-[10px] font-semibold uppercase tracking-widest text-slate-500 block">Bonos por meta</span>
+      <div class="card flex flex-col gap-0.5">
+        <span class="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Bonos por meta</span>
         <p class="text-sm font-semibold text-slate-700">A convenir</p>
-        <p class="text-xs text-slate-500">Incentivos adicionales al superar la meta mensual acordada.</p>
       </div>
-      <div class="card space-y-1">
-        <span class="text-[10px] font-semibold uppercase tracking-widest text-slate-500 block">Momento de pago</span>
+      <div class="card flex flex-col gap-0.5">
+        <span class="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Se paga a</span>
         <p class="text-sm font-semibold text-slate-700">Firma notarial</p>
-        <p class="text-xs text-slate-500">La comisión se liquida tras la firma del contrato con el comprador.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── D-COST QUÉ INCLUYE LA IMPLEMENTACIÓN ── -->
+<section class="slide min-h-screen flex flex-col justify-center px-5 sm:px-10 lg:px-16 py-20 bg-white" id="d-cost" data-title="La implementación">
+  <div class="slide-wrap">
+    <span class="kicker text-amber-400">La implementación</span>
+    <h2 class="heading">Qué cubren los S/ 15,000</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+      <div class="card p-0 overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-2.5 border-b border-slate-100">
+          <span class="text-sm text-slate-700">Servidores e infraestructura dedicada</span>
+          <span class="text-sm font-semibold text-slate-500 tabular-nums">S/ 2,000</span>
+        </div>
+        <div class="flex items-center justify-between px-5 py-2.5 border-b border-slate-100">
+          <span class="text-sm text-slate-700">WhatsApp Business API (alta y verificación)</span>
+          <span class="text-sm font-semibold text-slate-500 tabular-nums">S/ 2,500</span>
+        </div>
+        <div class="flex items-center justify-between px-5 py-2.5 border-b border-slate-100">
+          <span class="text-sm text-slate-700">CRM comercial a medida</span>
+          <span class="text-sm font-semibold text-slate-500 tabular-nums">S/ 4,000</span>
+        </div>
+        <div class="flex items-center justify-between px-5 py-2.5 border-b border-slate-100">
+          <span class="text-sm text-slate-700">Telefonía con grabación integrada</span>
+          <span class="text-sm font-semibold text-slate-500 tabular-nums">S/ 2,000</span>
+        </div>
+        <div class="flex items-center justify-between px-5 py-2.5 border-b border-slate-100">
+          <span class="text-sm text-slate-700">Automatizaciones y respuesta 24/7</span>
+          <span class="text-sm font-semibold text-slate-500 tabular-nums">S/ 2,500</span>
+        </div>
+        <div class="flex items-center justify-between px-5 py-2.5 border-b border-slate-100">
+          <span class="text-sm text-slate-700">Plano virtual de disponibilidad</span>
+          <span class="text-sm font-semibold text-slate-500 tabular-nums">S/ 3,500</span>
+        </div>
+        <div class="flex items-center justify-between px-5 py-2.5">
+          <span class="text-sm text-slate-700">Guiones, capacitación y puesta en marcha</span>
+          <span class="text-sm font-semibold text-slate-500 tabular-nums">S/ 2,000</span>
+        </div>
+      </div>
+      <div class="flex flex-col gap-3">
+        <div class="card flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-semibold uppercase tracking-widest text-slate-500 block">Contratado por separado</span>
+            <p class="text-xs text-slate-500">Precio referencial de mercado</p>
+          </div>
+          <span class="text-2xl font-bold text-slate-400 line-through tabular-nums">S/ 18,500</span>
+        </div>
+        <div class="card border-amber-500/30 bg-amber-500/5 flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-semibold uppercase tracking-widest text-amber-400 block">Integrado con nosotros</span>
+            <p class="text-xs text-slate-600">Pago único, todo funcionando</p>
+          </div>
+          <span class="text-3xl font-bold text-amber-500 tabular-nums">S/ 15,000</span>
+        </div>
+        <p class="text-xs text-slate-500 leading-relaxed px-1">El montaje de todas las herramientas se hace completo desde el inicio, sin importar con cuántas posiciones comerciales arranque la operación.</p>
       </div>
     </div>
   </div>
@@ -145,37 +186,37 @@ import Layout from '../layouts/Layout.astro';
 <section class="slide min-h-screen flex flex-col justify-center px-5 sm:px-10 lg:px-16 py-20 bg-slate-50" id="d4" data-title="Proyección de ejemplo">
   <div class="slide-wrap">
     <span class="kicker text-emerald-400">Proyección de ejemplo</span>
-    <h2 class="heading">Qué puede cerrar una sola posición</h2>
-    <p class="rule-text">Ejemplo ilustrativo con una posición de contacto. Los porcentajes son estimados y se ajustan con la data real de las primeras semanas: sirven para dimensionar, no son un compromiso.</p>
+    <h2 class="heading">Qué cierra una sola posición</h2>
+    <p class="rule-text">Ejemplo ilustrativo con una posición. Los porcentajes se ajustan con data real: sirven para dimensionar, no son un compromiso.</p>
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-4">
       <div class="card flex flex-col items-center text-center gap-1 p-4">
         <span class="text-3xl font-bold text-slate-900">200</span>
         <h3 class="text-xs font-semibold text-slate-700">Leads / mes</h3>
-        <p class="text-[10px] text-slate-500 leading-relaxed">Entregados por campaña</p>
+        <p class="text-[10px] text-slate-500 leading-relaxed">Del proyecto</p>
       </div>
       <div class="card flex flex-col items-center text-center gap-1 p-4">
         <span class="text-3xl font-bold text-slate-900">120</span>
         <h3 class="text-xs font-semibold text-slate-700">Contactados</h3>
-        <p class="text-[10px] text-slate-500 leading-relaxed">60% de los leads</p>
+        <p class="text-[10px] text-slate-500 leading-relaxed">60%</p>
       </div>
       <div class="card flex flex-col items-center text-center gap-1 p-4">
         <span class="text-3xl font-bold text-slate-900">48</span>
         <h3 class="text-xs font-semibold text-slate-700">Calificados</h3>
-        <p class="text-[10px] text-slate-500 leading-relaxed">40% de contactados</p>
+        <p class="text-[10px] text-slate-500 leading-relaxed">40%</p>
       </div>
       <div class="card flex flex-col items-center text-center gap-1 p-4">
         <span class="text-3xl font-bold text-slate-900">~22</span>
         <h3 class="text-xs font-semibold text-slate-700">Visitas</h3>
-        <p class="text-[10px] text-slate-500 leading-relaxed">45% de calificados</p>
+        <p class="text-[10px] text-slate-500 leading-relaxed">45%</p>
       </div>
       <div class="card border-emerald-500/30 bg-emerald-500/5 flex flex-col items-center text-center gap-1 p-4">
         <span class="text-3xl font-bold text-emerald-500">~3</span>
-        <h3 class="text-xs font-semibold text-emerald-600">Puestos cerrados</h3>
+        <h3 class="text-xs font-semibold text-emerald-600">Puestos</h3>
         <p class="text-[10px] text-slate-500 leading-relaxed">15% de visitas</p>
       </div>
     </div>
     <div class="card border-emerald-500/20 bg-emerald-500/5">
-      <p class="text-sm text-slate-700 leading-relaxed"><span class="font-semibold text-slate-900">Con esos supuestos, una posición cierra ~3 puestos al mes.</span> Sumar posiciones y ampliar el bloque de puestos asignados se decide recién cuando esta conversión se confirma con data real, no antes.</p>
+      <p class="text-sm text-slate-700 leading-relaxed"><span class="font-semibold text-slate-900">Una posición cierra ~3 puestos al mes.</span> Sumamos más y ampliamos el bloque de puestos solo cuando la data lo confirma.</p>
     </div>
   </div>
 </section>
@@ -184,26 +225,24 @@ import Layout from '../layouts/Layout.astro';
 <section class="slide min-h-screen flex flex-col justify-center px-5 sm:px-10 lg:px-16 py-20 bg-white" id="d5" data-title="Reparto de roles">
   <div class="slide-wrap">
     <span class="kicker text-amber-400">Reparto de roles</span>
-    <h2 class="heading">Qué pone cada parte</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-      <div class="card space-y-4">
-        <h3 class="font-semibold text-slate-900">Nosotros aportamos</h3>
+    <h2 class="heading">Quién pone qué</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="card flex flex-col gap-4">
+        <h3 class="font-semibold text-slate-900">Nosotros</h3>
         <ul class="space-y-2">
-          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-emerald-400 flex-shrink-0 mt-0.5">✓</span>Equipo comercial de contacto y de piso</li>
-          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-emerald-400 flex-shrink-0 mt-0.5">✓</span>Plataforma CRM y telefonía con grabación</li>
-          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-emerald-400 flex-shrink-0 mt-0.5">✓</span>WhatsApp API, automatizaciones y respuesta 24/7</li>
-          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-emerald-400 flex-shrink-0 mt-0.5">✓</span>Guiones, capacitación y supervisión continua</li>
-          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-emerald-400 flex-shrink-0 mt-0.5">✓</span>Embudo disponible para consulta del proyecto, sin obligación de informes periódicos</li>
+          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-emerald-400 flex-shrink-0 mt-0.5">✓</span>Equipo comercial (contacto y piso)</li>
+          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-emerald-400 flex-shrink-0 mt-0.5">✓</span>CRM, telefonía y automatizaciones</li>
+          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-emerald-400 flex-shrink-0 mt-0.5">✓</span>Configuración del WhatsApp API</li>
+          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-emerald-400 flex-shrink-0 mt-0.5">✓</span>Guiones, capacitación y supervisión</li>
         </ul>
       </div>
-      <div class="card border-amber-500/30 bg-amber-500/5 space-y-4">
-        <h3 class="font-semibold text-amber-600">El proyecto aporta</h3>
+      <div class="card border-amber-500/30 bg-amber-500/5 flex flex-col gap-4">
+        <h3 class="font-semibold text-amber-600">El proyecto</h3>
         <ul class="space-y-2">
           <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-amber-400 flex-shrink-0 mt-0.5">✓</span>S/ 15,000 de implementación al inicio</li>
-          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-amber-400 flex-shrink-0 mt-0.5">✓</span>Leads de campaña y presupuesto de pauta publicitaria</li>
-          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-amber-400 flex-shrink-0 mt-0.5">✓</span>Espacio físico para el call center dentro del proyecto</li>
-          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-amber-400 flex-shrink-0 mt-0.5">✓</span>Precio de lista, condiciones de pago y margen de descuento</li>
-          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-amber-400 flex-shrink-0 mt-0.5">✓</span>Bloque inicial de puestos para vender, ampliable según resultados</li>
+          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-amber-400 flex-shrink-0 mt-0.5">✓</span>Leads de campaña y pauta</li>
+          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-amber-400 flex-shrink-0 mt-0.5">✓</span>Número de WhatsApp y espacio para el call</li>
+          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-amber-400 flex-shrink-0 mt-0.5">✓</span>Precio, financiamiento y bloque de puestos</li>
         </ul>
       </div>
     </div>
@@ -215,34 +254,34 @@ import Layout from '../layouts/Layout.astro';
   <div class="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_100%_100%,rgba(251,191,36,0.06),transparent)] pointer-events-none"></div>
   <div class="slide-wrap">
     <span class="kicker text-amber-400">Decisión</span>
-    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 leading-tight mb-8">Tres puntos para aprobar hoy</h2>
+    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 leading-tight mb-8">Tres puntos para aprobar</h2>
     <ol class="space-y-5 mb-10">
       <li class="agreement flex items-start gap-4">
         <span class="w-8 h-8 rounded-full bg-amber-400 text-slate-950 text-sm font-bold inline-flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
         <div>
           <p class="text-sm sm:text-base text-slate-700 font-semibold leading-snug">Modelo económico</p>
-          <p class="text-sm text-slate-500 leading-relaxed mt-0.5">S/ 15,000 de implementación única + comisión por puesto vendido (porcentaje a tratar), devengada a firma notarial.</p>
+          <p class="text-sm text-slate-500 leading-relaxed mt-0.5">S/ 15,000 único + comisión a tratar por puesto vendido.</p>
         </div>
       </li>
       <li class="agreement flex items-start gap-4">
         <span class="w-8 h-8 rounded-full bg-amber-400 text-slate-950 text-sm font-bold inline-flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
         <div>
-          <p class="text-sm sm:text-base text-slate-700 font-semibold leading-snug">Asignación de puestos y meta mensual</p>
-          <p class="text-sm text-slate-500 leading-relaxed mt-0.5">Bloque inicial de puestos asignados, ampliable según resultados, y meta de colocación mensual. Sin exclusividad: el proyecto puede tener otros equipos vendiendo en paralelo.</p>
+          <p class="text-sm sm:text-base text-slate-700 font-semibold leading-snug">Puestos y meta</p>
+          <p class="text-sm text-slate-500 leading-relaxed mt-0.5">Bloque inicial de puestos (ampliable) y meta mensual. Sin exclusividad.</p>
         </div>
       </li>
       <li class="agreement flex items-start gap-4">
         <span class="w-8 h-8 rounded-full bg-amber-400 text-slate-950 text-sm font-bold inline-flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
         <div>
-          <p class="text-sm sm:text-base text-slate-700 font-semibold leading-snug">Interlocutor único y fecha de arranque</p>
-          <p class="text-sm text-slate-500 leading-relaxed mt-0.5">Un responsable del proyecto con poder para aprobar descuentos. Con eso definido, el equipo opera en la semana 5 desde el acuerdo.</p>
+          <p class="text-sm sm:text-base text-slate-700 font-semibold leading-snug">Interlocutor y arranque</p>
+          <p class="text-sm text-slate-500 leading-relaxed mt-0.5">Un responsable del proyecto y fecha de inicio. Operamos en 4 semanas.</p>
         </div>
       </li>
     </ol>
     <div class="card border-emerald-500/20 bg-emerald-500/5">
       <p class="text-sm sm:text-base text-slate-800 font-medium leading-relaxed">
-        Con estos tres puntos cerrados, el plazo de implementación es de cuatro semanas.<br />
-        <span class="text-slate-600 font-normal text-sm">La versión operativa completa de esta propuesta está disponible para el equipo comercial y de gestión.</span>
+        Con estos tres puntos, arrancamos.<br />
+        <span class="text-slate-600 font-normal text-sm">El plan operativo completo está disponible para el equipo comercial y de gestión.</span>
       </p>
     </div>
   </div>
