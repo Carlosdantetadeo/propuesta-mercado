@@ -206,12 +206,12 @@ import Layout from '../layouts/Layout.astro';
   <div class="slide-wrap">
     <span class="kicker text-blue-400">Primer contacto</span>
     <h2 class="heading">Un solo flujo, con variantes según la situación</h2>
-    <p class="rule-text">Regla base: todo lead nuevo se llama en menos de 5 minutos. Lo que cambia es qué se hace cuando esa llamada no ocurre o no prospera.</p>
+    <p class="rule-text">Regla base: todo lead nuevo se llama de frente en menos de 5 minutos. Ya mostró interés, no se pide permiso. El WhatsApp se usa para mensajes de enganche según el perfil; el plano solo se envía cuando el lead presenta interés real.</p>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-      <div class="card"><h3 class="font-semibold text-slate-900 mb-1 text-sm">Situación normal</h3><p class="text-[10px] text-slate-500 mb-2">Lead entra en horario</p><p class="text-xs text-slate-600 leading-relaxed">Llamada inmediata de 2 minutos. Al colgar, WhatsApp con plano de puestos, ubicación y confirmación de la cita.</p></div>
-      <div class="card"><h3 class="font-semibold text-slate-900 mb-1 text-sm">No contesta</h3><p class="text-[10px] text-slate-500 mb-2">Primer intento fallido</p><p class="text-xs text-slate-600 leading-relaxed">WhatsApp inmediato con el plano adjunto. Segundo intento a las 2 horas, tercero al día siguiente en otro horario.</p></div>
-      <div class="card"><h3 class="font-semibold text-slate-900 mb-1 text-sm">Entra fuera de horario</h3><p class="text-[10px] text-slate-500 mb-2">Ejemplo: 11 de la noche</p><p class="text-xs text-slate-600 leading-relaxed">Respuesta automática en el minuto con bienvenida y plano. Queda en cola priorizada y se llama a primera hora.</p></div>
-      <div class="card"><h3 class="font-semibold text-slate-900 mb-1 text-sm">Escribe por WhatsApp</h3><p class="text-[10px] text-slate-500 mb-2">El lead inicia el contacto</p><p class="text-xs text-slate-600 leading-relaxed">Se atiende y califica por chat. Se pide permiso para llamar: "¿le puedo llamar 2 minutos para darle precios?".</p></div>
+      <div class="card"><h3 class="font-semibold text-slate-900 mb-1 text-sm">Situación normal</h3><p class="text-[10px] text-slate-500 mb-2">Lead entra en horario</p><p class="text-xs text-slate-600 leading-relaxed">Llamada inmediata de 2 minutos, sin pedir permiso. Al colgar, WhatsApp con confirmación de la cita, ubicación y un mensaje de valor según su perfil.</p></div>
+      <div class="card"><h3 class="font-semibold text-slate-900 mb-1 text-sm">No contesta</h3><p class="text-[10px] text-slate-500 mb-2">Primer intento fallido</p><p class="text-xs text-slate-600 leading-relaxed">WhatsApp inmediato con un mensaje de enganche según su consulta. Segundo intento a las 2 horas, tercero al día siguiente en otro horario.</p></div>
+      <div class="card"><h3 class="font-semibold text-slate-900 mb-1 text-sm">Entra fuera de horario</h3><p class="text-[10px] text-slate-500 mb-2">Ejemplo: 11 de la noche</p><p class="text-xs text-slate-600 leading-relaxed">Respuesta automática en el minuto con bienvenida. Queda en cola priorizada y se llama a primera hora.</p></div>
+      <div class="card"><h3 class="font-semibold text-slate-900 mb-1 text-sm">Escribe por WhatsApp</h3><p class="text-[10px] text-slate-500 mb-2">El lead inicia el contacto</p><p class="text-xs text-slate-600 leading-relaxed">Se le llama de frente: ya mostró interés al escribir. La calificación se hace en la llamada, no por chat.</p></div>
       <div class="card"><h3 class="font-semibold text-slate-900 mb-1 text-sm">Sin interés hoy</h3><p class="text-[10px] text-slate-500 mb-2">No descarta, pospone</p><p class="text-xs text-slate-600 leading-relaxed">Se registra motivo y fecha de recontacto. Vuelve a la cola en el plazo definido, nunca se pierde.</p></div>
     </div>
   </div>
@@ -261,17 +261,17 @@ import Layout from '../layouts/Layout.astro';
       <div class="card space-y-2">
         <span class="text-[10px] font-semibold uppercase tracking-widest text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full inline-block">Automático + comercial</span>
         <h3 class="font-semibold text-slate-900 text-sm">1 · Al colgar</h3>
-        <p class="text-xs text-slate-600 leading-relaxed">Confirmación de la cita, plano de puestos disponibles y ubicación en Google Maps.</p>
+        <p class="text-xs text-slate-600 leading-relaxed">Confirmación de la cita, ubicación en Google Maps y un mensaje de valor según su perfil (comerciante o inversionista).</p>
       </div>
       <div class="card space-y-2">
         <span class="text-[10px] font-semibold uppercase tracking-widest text-blue-400 bg-blue-400/10 px-2 py-0.5 rounded-full inline-block">Comercial</span>
         <h3 class="font-semibold text-slate-900 text-sm">2 · Si no contestó</h3>
-        <p class="text-xs text-slate-600 leading-relaxed">"Señor [nombre], le escribo del mercado [nombre] por su consulta. Le dejo el plano. ¿Le llamo hoy o mañana?"</p>
+        <p class="text-xs text-slate-600 leading-relaxed">"Señor [nombre], le escribo de PROMARSA por su consulta. ¿Le llamo hoy o mañana?" Mensaje de enganche, sin plano.</p>
       </div>
       <div class="card space-y-2">
         <span class="text-[10px] font-semibold uppercase tracking-widest text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full inline-block">Automático</span>
         <h3 class="font-semibold text-slate-900 text-sm">3 · Fuera de horario</h3>
-        <p class="text-xs text-slate-600 leading-relaxed">Bienvenida automática con plano y aviso de que se le llamará a primera hora.</p>
+        <p class="text-xs text-slate-600 leading-relaxed">Bienvenida automática y aviso de que se le llamará a primera hora.</p>
       </div>
       <div class="card space-y-2">
         <span class="text-[10px] font-semibold uppercase tracking-widest text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full inline-block">Automático</span>
@@ -442,7 +442,7 @@ import Layout from '../layouts/Layout.astro';
       </div>
       <div class="card space-y-1.5">
         <h3 class="font-semibold text-slate-900 text-sm">Automatización 24/7</h3>
-        <p class="text-xs text-slate-600 leading-relaxed">Respuesta inmediata fuera de horario, envío automático del plano de puestos, recordatorio de visita 24 h antes y cola priorizada para primera hora del día siguiente.</p>
+        <p class="text-xs text-slate-600 leading-relaxed">Respuesta inmediata fuera de horario, mensajes de enganche según el perfil, recordatorio de visita 24 h antes y cola priorizada para primera hora del día siguiente.</p>
         <span class="text-[10px] text-blue-400/70 font-semibold uppercase tracking-wider">Ningún lead sin respuesta</span>
       </div>
       <div class="card space-y-1.5">
