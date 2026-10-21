@@ -15,7 +15,7 @@ const actionText:Record<Accion,string>={separar:'Separar',liberar:'Liberar',vend
 export async function startApp(){
   const provider=new Provider(),store=new PlanoStore(),camera=new Camera($<SVGSVGElement>('map'));
   let sectorId:string|null=null,selectedId:string|null=null,listMode=false,multi=false,limit=60,toastTimer:ReturnType<typeof setTimeout>;
-  const selected=new Set<string>(),stallNodes=new Map<string,SVGGElement>(),sectorNodes=new Map<string,SVGGElement>(),cardNodes=new Map<string,HTMLButtonElement>(),listNodes=new Map<string,HTMLButtonElement>();
+  const selected=new Set<string>(),stallNodes=new Map<string,SVGGElement>(),sectorNodes=new Map<string,SVGGElement>(),cardNodes=new Map<string,HTMLButtonElement>(),mobileCardNodes=new Map<string,HTMLButtonElement>(),listNodes=new Map<string,HTMLButtonElement>();
   const geometryCache=new Map<string,{path:string;bounds:Rect}>();
   let confirmTask:((reason:string)=>Promise<void>)|null=null;
   let lastFocused:Element|null=null;
@@ -47,10 +47,10 @@ export async function startApp(){
     const s=store.sectores.get(id);if(!s)return;
     const c=store.counts.get(id)??conteo([]),node=sectorNodes.get(id),card=cardNodes.get(id);
     if(node){node.querySelector('.sector-free')!.textContent=`${c.disponible} libres`;node.setAttribute('aria-label',`${s.nombre}: ${c.disponible} disponibles, ${c.separado} separados, ${c.vendido} vendidos, ${c.bloqueado} bloqueados. Entrar al sector.`);}
-    if(card){card.querySelector('.sector-metrics')!.innerHTML=`<div class="sector-available"><b>${c.disponible} disponibles</b><span>${c.avance}% vendido</span></div><p class="sector-counts">◷ ${c.separado} separados · ✓ ${c.vendido} vendidos · ⊘ ${c.bloqueado} bloqueados</p><div class="progress" role="progressbar" aria-label="Avance de ${esc(s.nombre)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${c.avance}"><span style="width:${c.avance}%"></span></div>`;}
+    for(const card of [cardNodes.get(id),mobileCardNodes.get(id)])if(card){card.querySelector('.sector-metrics')!.innerHTML=`<div class="sector-available"><b>${c.disponible} disponibles</b><span>${c.avance}% vendido</span></div><p class="sector-counts">◷ ${c.separado} separados · ✓ ${c.vendido} vendidos · ⊘ ${c.bloqueado} bloqueados</p><div class="progress" role="progressbar" aria-label="Avance de ${esc(s.nombre)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${c.avance}"><span style="width:${c.avance}%"></span></div>`;}
   }
   function renderSectors(){
-    geometryCache.clear();sectorNodes.clear();cardNodes.clear();$('sector-layer').replaceChildren();$('sector-cards').replaceChildren();
+    geometryCache.clear();sectorNodes.clear();cardNodes.clear();$('sector-layer').replaceChildren();$('sector-cards').replaceChildren();$('mobile-sector-cards').replaceChildren();mobileCardNodes.clear();
     const sectors=[...store.sectores.values()].sort((a,b)=>a.orden-b.orden);
     for(const s of sectors){
       const g=geometry(s),color=/^#[0-9a-f]{6}$/i.test(s.color)?s.color:'#49603e';
@@ -61,7 +61,7 @@ export async function startApp(){
       }
       const card=document.createElement('button');card.className='sector-card';card.dataset.sector=s.id;
       card.innerHTML=`<span class="sector-title"><span class="sector-icon" aria-hidden="true">${icon(s)}</span><b>${esc(s.nombre)}</b><span aria-hidden="true">↗</span></span><div class="sector-metrics"></div>`;
-      $('sector-cards').append(card);cardNodes.set(s.id,card);updateSector(s.id);
+      $('sector-cards').append(card);cardNodes.set(s.id,card);const mobileCard=card.cloneNode(true) as HTMLButtonElement;mobileCard.classList.add('mobile-sector-card');$('mobile-sector-cards').append(mobileCard);mobileCardNodes.set(s.id,mobileCard);updateSector(s.id);
     }
     $('sector-total').textContent=String(sectors.length);
     for(const id of ['filter-sector','bulk-sector','assign-sector']){
@@ -99,7 +99,7 @@ export async function startApp(){
     $('map-stage').classList.toggle('sector-detail',!!sectorId);
     if(sectorId)store.list(sectorId).forEach(addStall);
     sectorNodes.forEach((node,id)=>{node.classList.toggle('active',id===sectorId);node.setAttribute('aria-pressed',String(id===sectorId));});
-    cardNodes.forEach((node,id)=>{node.classList.toggle('active',id===sectorId);node.setAttribute('aria-pressed',String(id===sectorId));});
+    cardNodes.forEach((node,id)=>{node.classList.toggle('active',id===sectorId);node.setAttribute('aria-pressed',String(id===sectorId));});mobileCardNodes.forEach((node,id)=>{node.classList.toggle('active',id===sectorId);node.setAttribute('aria-pressed',String(id===sectorId));});
     levelOfDetail();
   }
   function levelOfDetail(){
@@ -135,7 +135,7 @@ export async function startApp(){
     closeDetail(false);sectorId=id;limit=60;
     renderStalls();breadcrumbs();setList(false);$<HTMLSelectElement>('bulk-sector').value=id;
     if(fit)camera.fit(activeBounds());
-    if(mobile())$('map-stage').scrollIntoView({block:'center',behavior:'smooth'});
+    if(mobile()){$('map-stage').scrollIntoView({block:'center',behavior:'smooth'});renderList();$('list-panel').hidden=false;}
     if(!store.list(id).some(p=>p.geometria))setList(true);
     announce(`Sector ${store.sectores.get(id)!.nombre}. ${store.list(id).length} puestos.`);
   }
