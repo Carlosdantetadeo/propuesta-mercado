@@ -1,0 +1,118 @@
+---
+import '../../styles/recursos.css';
+---
+<div class="resource-page">
+  <div class="resource-shell">
+    <header class="resource-header">
+      <a class="resource-brand" href="/">PROMARSA<small>MERCADO MAYORISTA NARANJAL</small></a>
+      <nav aria-label="Navegación"><a href="/">← Plano</a><button id="resource-logout" type="button" hidden>Salir</button></nav>
+    </header>
+    <main class="resource-main">
+      <p class="resource-eyebrow">HERRAMIENTAS PARA EL EQUIPO</p>
+      <h1>Recursos comerciales</h1>
+      <p class="resource-lead">Material actualizado para acompañar a cada cliente: presentación del mercado, precios y condiciones, datos de pago y documentos de separación.</p>
+      <div id="resource-message" class="resource-banner" role="status">Verificando acceso seguro…</div>
+      <section id="resource-login" class="resource-login" hidden aria-labelledby="resource-login-title">
+        <h2 id="resource-login-title">Inicia sesión para continuar</h2>
+        <p>Usa la cuenta asignada por el administrador.</p>
+        <form id="resource-login-form">
+          <label>Correo<input id="resource-email" type="email" autocomplete="username" required /></label>
+          <label>Contraseña<input id="resource-password" type="password" autocomplete="current-password" required /></label>
+          <button class="resource-action" type="submit">Entrar</button>
+        </form>
+      </section>
+      <section id="resource-grid" class="resource-grid" aria-label="Archivos para asesores" hidden></section>
+      <p class="resource-bottom">Los archivos se mantienen en almacenamiento privado y se abren mediante enlaces temporales. Si un documento aún no está cargado, solicita al administrador que lo publique desde esta misma página.</p>
+    </main>
+  </div>
+</div>
+<script>
+  import { supabase } from '../../lib/supabase';
+
+  const bucket = 'recursos-asesores';
+  const resources = [
+    { key: 'triptico.pdf', title: 'Tríptico PROMARSA', description: 'Presentación del mercado para compartir con clientes.', icon: '▤' },
+    { key: 'precios-condiciones.pdf', title: 'Precios y condiciones de pago', description: 'Lista de precios, formas y condiciones de pago vigentes.', icon: 'S/' },
+    { key: 'cuentas-promarsa.pdf', title: 'Cuentas de PROMARSA', description: 'Datos oficiales para realizar pagos.', icon: '⌁' },
+    { key: 'constancia-separacion.pdf', title: 'Constancia de separación', description: 'Formato de constancia para formalizar una separación.', icon: '▧' },
+  ] as const;
+
+  const message = document.querySelector<HTMLElement>('#resource-message')!;
+  const login = document.querySelector<HTMLElement>('#resource-login')!;
+  const grid = document.querySelector<HTMLElement>('#resource-grid')!;
+  const logout = document.querySelector<HTMLButtonElement>('#resource-logout')!;
+  const setMessage = (text: string, error = false) => { message.textContent = text; message.classList.toggle('error', error); message.hidden = false; };
+  const esc = (value: string) => value.replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[char] ?? char));
+
+  async function renderResources() {
+    if (!supabase) {
+      login.hidden = true;
+      setMessage('Falta configurar Supabase en Vercel. El portal requiere el proyecto conectado para validar los roles y servir archivos privados.', true);
+      return;
+    }
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) throw sessionError;
+    if (!sessionData.session) {
+      login.hidden = false; grid.hidden = true; logout.hidden = true;
+      setMessage('Inicia sesión con tu cuenta de asesor o administrador.');
+      return;
+    }
+
+    const { data: profile, error: profileError } = await supabase.from('perfiles').select('rol,nombre').eq('id', sessionData.session.user.id).maybeSingle();
+    if (profileError) throw profileError;
+    if (!profile || !['admin', 'asesor'].includes(profile.rol)) {
+      login.hidden = true; grid.hidden = true; logout.hidden = true;
+      await supabase.auth.signOut();
+      setMessage('Tu cuenta no tiene permiso para consultar los recursos del equipo.', true);
+      return;
+    }
+    login.hidden = true; logout.hidden = false; grid.hidden = false;
+    setMessage(profile.nombre ? 'Acceso autorizado · ' + profile.nombre : 'Acceso autorizado · ' + profile.rol);
+
+    const { data: files, error: listError } = await supabase.storage.from(bucket).list('', { limit: 100 });
+    if (listError) throw listError;
+    grid.innerHTML = '';
+    for (const resource of resources) {
+      const file = files?.find(item => item.name === resource.key);
+      let link = '';
+      if (file) {
+        const { data, error } = await supabase.storage.from(bucket).createSignedUrl(resource.key, 3600);
+        if (!error && data?.signedUrl) link = data.signedUrl;
+      }
+      const canUpload = profile.rol === 'admin';
+      const action = link
+        ? '<a class="resource-action" href="' + esc(link) + '" target="_blank" rel="noopener">Abrir PDF ↗</a>'
+        : '<span class="resource-status">Pendiente de carga</span>';
+      const upload = canUpload
+        ? '<label class="resource-upload">' + (file ? 'Reemplazar archivo' : 'Subir PDF') + '<input type="file" accept="application/pdf,.pdf" data-resource="' + resource.key + '" /></label>'
+        : '';
+      grid.insertAdjacentHTML('beforeend', '<article class="resource-card"><div class="resource-card-top"><span class="resource-icon" aria-hidden="true">' + resource.icon + '</span><div><h2>' + resource.title + '</h2><p>' + resource.description + '</p></div></div><footer>' + action + upload + '</footer></article>');
+    }
+    grid.querySelectorAll<HTMLInputElement>('input[data-resource]').forEach(input => input.addEventListener('change', async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      if (file.type !== 'application/pdf' || file.size > 100 * 1024 * 1024) {
+        setMessage('Selecciona un PDF de hasta 100 MB.', true); input.value = ''; return;
+      }
+      input.disabled = true;
+      setMessage('Subiendo ' + file.name + ' de forma privada…');
+      const { error } = await supabase!.storage.from(bucket).upload(input.dataset.resource!, file, { upsert: true, contentType: 'application/pdf' });
+      if (error) { setMessage('No se pudo subir el archivo: ' + error.message, true); input.disabled = false; return; }
+      setMessage('Archivo actualizado correctamente.');
+      await renderResources();
+    }));
+  }
+
+  document.querySelector<HTMLFormElement>('#resource-login-form')!.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (!supabase) return;
+    const email = (document.querySelector<HTMLInputElement>('#resource-email')!).value.trim();
+    const password = document.querySelector<HTMLInputElement>('#resource-password')!.value;
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) { setMessage('No se pudo iniciar sesión. Revisa tu correo y contraseña.', true); return; }
+    await renderResources();
+  });
+  logout.addEventListener('click', async () => { await supabase?.auth.signOut(); await renderResources(); });
+  supabase?.auth.onAuthStateChange(() => { void renderResources(); });
+  renderResources().catch(error => setMessage(error instanceof Error ? error.message : 'No se pudo cargar el portal de recursos.', true));
+</script>
