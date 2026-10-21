@@ -1,3 +1,19 @@
 node_modules/
 dist/
 .astro/
+
+.vercel
+.claude/
+.env*
+!.env.example
+test-results/
+playwright-report/
+
+# Material local de trabajo; el plano publicado se versiona en public/promarsa/.
+/CONSTANCIA DE SEPARACIÓN COMPRADORESS (1).pdf
+/PRECIOS Y CONDICIONES DE PAGO MM NARANJAL AL 1510.pdf
+/TRIPTICO AI 10 10.pdf
+/operacion-comercial-mercado (1).pptx
+/promarsa/*.pdf
+/live-*.png
+/shot-*.png

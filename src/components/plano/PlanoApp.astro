@@ -1,0 +1,77 @@
+﻿---
+import '../../styles/plano.css';
+---
+<div class="plano-app" id="app" aria-busy="true">
+  <header class="app-header">
+    <a class="brand" href="/" aria-label="Promarsa, volver al inicio"><span class="brand-mark" aria-hidden="true">P<span>◒</span></span><span>PROMARSA<small>MERCADO MAYORISTA NARANJAL</small></span></a>
+    <div class="header-right"><span id="connection-label" class="connection"><i></i>Conectando</span><a href="/admin/puestos/" id="admin-link" hidden>Administrar</a><button id="logout" hidden>Salir</button><span class="avatar" id="avatar" aria-hidden="true">P</span></div>
+  </header>
+  <div id="connection-banner" class="connection-banner" role="status" hidden></div>
+  <div id="demo-banner" class="demo-banner" hidden><span><b>Demostración</b> · 30 puestos de ejemplo. Códigos, precios y geometría interna ilustrativos; cambios solo en esta sesión.</span><label>Ver como <select id="demo-role"><option value="admin">Administrador</option><option value="asesor">Asesor</option><option value="lector">Solo lectura</option></select></label></div>
+  <main class="app-main">
+    <section class="heading-row"><div><p class="eyebrow">ESPACIOS PARA CRECER</p><h1>Encuentra tu lugar.</h1><p class="subtitle">Explora el mercado, entra a un sector y elige tu próximo espacio.</p></div><a class="original-download" href="/promarsa/plano-original.pdf" target="_blank" rel="noopener">Plano original ↗</a></section>
+    <section class="totals" aria-label="Resumen de comercialización" id="totals"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></section>
+    <div class="workbench">
+      <section class="map-column" aria-label="Explorador del mercado">
+        <div class="search-row"><label class="search-label"><span aria-hidden="true">⌕</span><span class="sr-only">Buscar puesto por código o sector</span><input id="search" type="search" placeholder="Buscar código o sector…" autocomplete="off" /></label><button id="filters-toggle" aria-expanded="false" aria-controls="filters">☷ <span>Filtros</span></button></div>
+        <div class="filter-strip" id="filters" hidden>
+          <label>Estado<select id="filter-state"><option value="">Todos</option><option value="disponible">Disponible</option><option value="separado">Separado</option><option value="vendido">Vendido</option><option value="bloqueado">Bloqueado</option></select></label>
+          <label>Sector<select id="filter-sector"><option value="">Todos</option></select></label>
+          <label>Precio mínimo S/<input id="price-min" type="number" min="0" placeholder="Sin mínimo" /></label><label>Precio máximo S/<input id="price-max" type="number" min="0" placeholder="Sin máximo" /></label>
+          <label>Área mín. m²<input id="area-min" type="number" min="0" step=".1" placeholder="Desde" /></label><label>Área máx. m²<input id="area-max" type="number" min="0" step=".1" placeholder="Hasta" /></label><button id="clear-filters">Limpiar</button>
+        </div>
+        <nav class="map-nav" aria-label="Ubicación en el plano"><div id="breadcrumbs"><button id="home-map">Plano</button></div><div class="view-toggle"><button id="map-view" aria-pressed="true">◫ Mapa</button><button id="list-view" aria-pressed="false">☷ Lista</button></div></nav>
+        <div class="map-stage" id="map-stage">
+          <svg id="map" viewBox="0 0 1888 778" role="group" aria-label="Plano interactivo. Selecciona un sector. Usa flechas para desplazarte y más o menos para ampliar." tabindex="0">
+            <defs>
+              <pattern id="blocked-stripes" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="6" height="6" fill="#e2e5e8"/><rect width="2" height="6" fill="#66717c"/></pattern>
+              <pattern id="map-grid" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".7" fill="#cdd6cc"/></pattern>
+            </defs>
+            <g id="clean-plan"><rect x="0" y="0" width="1888" height="778" fill="#f1f3ec"/><rect x="0" y="0" width="1888" height="778" fill="url(#map-grid)"/><g id="reference-zones"></g><g id="facilities"></g></g>
+            <image id="original-image" href="/promarsa/plano-original.webp" x="0" y="0" width="1888" height="778" preserveAspectRatio="none" visibility="hidden" aria-label="Plano original de Promarsa" />
+            <g id="sector-layer"></g><g id="stall-layer"></g>
+          </svg>
+          <div class="map-top-label"><span class="live-dot"></span><span id="map-caption">VISTA GENERAL · SECTORES</span></div>
+          <div class="zoom-controls"><button id="zoom-in" aria-label="Acercar">+</button><button id="zoom-out" aria-label="Alejar">−</button><button id="fit-map" aria-label="Ajustar vista">⛶</button></div>
+          <button id="back-overview" hidden>← Plano completo</button><div class="north" aria-hidden="true">↑<span>N</span></div>
+          <div id="loading-map" class="loading-map"><span class="skeleton"></span><p>Cargando espacios…</p></div>
+        </div>
+        <div id="list-fallback" class="list-fallback" hidden><span>Los puestos son pequeños a esta escala.</span><button id="fallback-list">Ver lista accesible →</button></div>
+        <div id="list-panel" hidden><p id="results-count"></p><div id="stall-list" class="stall-list"></div></div>
+        <div id="empty-state" class="empty-state" hidden><b>No encontramos espacios</b><p>Prueba otro código o ajusta los filtros.</p></div>
+        <div class="map-footer"><label class="original-switch"><input id="show-original" type="checkbox" /> Ver plano original</label><details class="legend"><summary>Leyenda de estados</summary><div><span class="state-disponible">○ Disponible</span><span class="state-separado">◷ Separado</span><span class="state-vendido">✓ Vendido</span><span class="state-bloqueado">⊘ Bloqueado</span></div></details></div>
+        <p class="map-hint">Desliza para moverte · Pellizca o toca dos veces para ampliar · Flechas y + / − con teclado</p>
+      </section>
+      <aside class="inspector" id="inspector" aria-label="Sectores y detalle del puesto">
+        <div id="sector-overview"><div class="aside-heading"><div><p class="eyebrow">ELIGE UNA ZONA</p><h2>Sectores del mercado</h2></div><span id="sector-total"></span></div><div id="sector-cards"></div><p class="quiet">Avance = vendidos / puestos comercializables. Los bloqueados se excluyen.</p><div class="reference-note"><span>↗</span><div><b>Tu ubicación, en contexto.</b><p>La distribución de referencia conserva los pasillos y rubros del documento de Promarsa.</p></div></div></div>
+        <section id="stall-detail" hidden aria-labelledby="detail-code">
+          <button id="sheet-handle" class="sheet-handle" aria-label="Cambiar altura de la ficha del puesto"><span></span></button>
+          <div class="detail-heading"><div><p class="eyebrow" id="detail-sector"></p><h2 id="detail-code"></h2></div><button id="close-detail" aria-label="Cerrar ficha">×</button></div><span id="detail-state" class="status-badge"></span>
+          <div class="detail-content"><dl class="detail-grid"><div><dt>Área</dt><dd id="detail-area"></dd></div><div><dt>Precio</dt><dd id="detail-price"></dd></div></dl><p id="detail-reason"></p><div class="detail-location"><span aria-hidden="true">⌖</span><div><b>Mercado Mayorista Naranjal</b><p>Av. Alfredo Mendiola · Promarsa</p></div></div><p class="quiet" id="detail-note"></p></div>
+          <div id="actions" class="action-bar"></div>
+        </section>
+      </aside>
+    </div>
+    <section id="admin-tools" class="admin-tools" hidden aria-label="Administración de puestos">
+      <div class="admin-heading"><div><p class="eyebrow">ADMINISTRACIÓN</p><h2>Gestiona varios espacios.</h2></div><button id="toggle-multi" aria-pressed="false">Seleccionar puestos</button><button id="show-audit">Ver auditoría</button></div>
+      <p class="quiet">Las operaciones masivas se confirman y se aplican completas o se rechazan completas.</p>
+      <div class="bulk-controls"><label>Sector de trabajo<select id="bulk-sector"></select></label><button id="select-sector">Seleccionar sector completo</button><button id="clear-selection">Quitar selección</button><output id="selection-count">0 seleccionados</output></div>
+      <div class="bulk-controls"><button id="bulk-block">Bloquear selección</button><button id="bulk-unblock">Desbloquear selección</button><label>Mover a sector<select id="assign-sector"></select></label><button id="assign-selection">Asignar selección</button><label class="file-label">Importar CSV<input id="csv-file" type="file" accept=".csv,text/csv" /></label><a href="/promarsa/asignacion-ejemplo.csv" download>Plantilla CSV ↓</a></div>
+      <p class="quiet">CSV: columnas <code>codigo,sector</code>. Revisa la vista previa antes de confirmar. La asignación conserva el código y la posición física del puesto.</p>
+      <div id="audit-panel" hidden><h3>Últimos movimientos</h3><div id="audit-list"></div></div>
+    </section>
+    <footer class="app-footer"><span>PROMARSA · NARANJAL</span><span>Un lugar para tu próximo gran paso.</span></footer>
+  </main>
+  <dialog id="confirm-dialog" aria-labelledby="confirm-title"><form id="confirm-form"><p class="eyebrow">CONFIRMAR OPERACIÓN</p><h2 id="confirm-title"></h2><p id="confirm-description"></p><div id="confirm-preview"></div><label>Motivo<textarea id="confirm-reason" rows="3" required maxlength="1000" placeholder="Describe el motivo de este cambio"></textarea></label><p id="confirm-error" role="alert"></p><div class="dialog-actions"><button type="button" id="cancel-confirm">Cancelar</button><button class="primary" id="submit-confirm" type="submit">Confirmar</button></div></form></dialog>
+  <dialog id="login-dialog" aria-labelledby="login-title"><form id="login-form"><p class="eyebrow">ACCESO AL MERCADO</p><h2 id="login-title">Inicia sesión</h2><p>Accede con la cuenta que te asignó el administrador.</p><label>Correo<input id="login-email" type="email" autocomplete="username" required /></label><label>Contraseña<input id="login-password" type="password" autocomplete="current-password" required /></label><p id="login-error" role="alert"></p><button type="submit" class="primary">Entrar</button></form></dialog>
+  <div id="toast" role="status" aria-live="polite" hidden></div><div class="sr-only" id="live-announcement" role="status" aria-live="polite"></div>
+</div>
+<script>
+  import { startApp } from '../../lib/plano/app';
+  startApp().catch(error => {
+    const el = document.querySelector<HTMLElement>('#connection-banner')!;
+    el.hidden=false;el.textContent=error instanceof Error?error.message:'No se pudo cargar el plano.';
+    document.querySelector('#app')?.setAttribute('aria-busy','false');
+    (document.querySelector('#loading-map') as HTMLElement).hidden=true;
+  });
+</script>

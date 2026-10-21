@@ -1,0 +1,9 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "types": ["vite/client"],
+    "skipLibCheck": true
+  },
+  "include": ["src/lib/**/*.ts", "src/data/**/*.ts", "src/env.d.ts"]
+}

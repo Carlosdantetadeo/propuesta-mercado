@@ -5,11 +5,24 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "typecheck": "tsc --noEmit",
+    "test:db": "node --test tests/db/rules.test.mjs",
+    "test:unit": "tsx --test tests/unit/*.test.ts",
+    "test:e2e": "playwright test",
+    "test": "npm run typecheck && npm run test:unit && npm run test:db"
   },
   "dependencies": {
-    "astro": "^4.16.0",
     "@astrojs/tailwind": "^5.1.0",
+    "@supabase/supabase-js": "^2.118.0",
+    "astro": "^4.16.0",
     "tailwindcss": "^3.4.16"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@electric-sql/pglite": "^0.5.10",
+    "@playwright/test": "^1.64.1",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3"
   }
 }

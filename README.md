@@ -35,3 +35,7 @@ Abre `index.html` directamente en el navegador, o levanta un servidor simple:
 python -m http.server 8000
 # luego abre http://localhost:8000
 ```
+
+## Nuevo mapa de puestos Promarsa
+
+Abre `/plano/` para el plano interactivo y `/admin/puestos/` para la gestión. La configuración del backend, las dos migraciones, las reglas de acceso, las pruebas y los pendientes de publicación están en [la guía del mapa](docs/plano-promarsa.md).
