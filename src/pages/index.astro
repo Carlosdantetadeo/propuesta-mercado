@@ -1,53 +1,14 @@
 ---
-import '../styles/global.css';
+import PlanoApp from '../components/plano/PlanoApp.astro';
 ---
 <!doctype html>
-<html lang="es" style="height:100%;overflow:hidden;">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Operación Comercial · PROMASA</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,1,600&display=swap" rel="stylesheet" />
-</head>
-<body class="bg-white text-slate-900" style="height:100%;overflow:hidden;display:flex;align-items:center;justify-content:center;">
-
-  <div class="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_50%,rgba(251,191,36,0.05),transparent)] pointer-events-none"></div>
-
-  <div class="relative z-10 flex flex-col items-center text-center px-5 sm:px-10 lg:px-16 py-20 w-full max-w-3xl mx-auto">
-    <span class="kicker text-amber-400">Operación Comercial · PROMASA</span>
-    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight mb-4">¿Cómo querés<br />ver la propuesta?</h1>
-    <p class="text-sm text-slate-500 mb-8 max-w-md">Seleccioná la versión según el contexto. El contenido es el mismo modelo; cambia el nivel de detalle.</p>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl mb-4">
-      <a href="/directorio" class="group card border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10 hover:border-amber-400/50 transition-all duration-200 flex flex-col gap-3 text-left">
-        <div class="flex items-center justify-between">
-          <span class="text-[10px] font-semibold uppercase tracking-widest text-amber-400">Para el Directorio</span>
-          <span class="text-amber-400 group-hover:translate-x-1 transition-transform">→</span>
-        </div>
-        <h2 class="text-lg font-bold text-slate-900">Plan Ejecutivo</h2>
-        <p class="text-sm text-slate-600 leading-relaxed">8 slides. Valor, tecnología, modelo económico y tres puntos para decidir hoy.</p>
-        <span class="text-xs text-slate-600 mt-1">Implementación según alcance · comisión a tratar</span>
-      </a>
-      <a href="/operaciones" class="group card hover:bg-slate-100 hover:border-slate-300 transition-all duration-200 flex flex-col gap-3 text-left">
-        <div class="flex items-center justify-between">
-          <span class="text-[10px] font-semibold uppercase tracking-widest text-blue-400">Versión completa</span>
-          <span class="text-slate-600 group-hover:translate-x-1 transition-transform">→</span>
-        </div>
-        <h2 class="text-lg font-bold text-slate-900">Plan de Operaciones</h2>
-        <p class="text-sm text-slate-600 leading-relaxed">24 slides. Proceso comercial, guiones, estructura del equipo y tecnología en detalle.</p>
-        <span class="text-xs text-slate-600 mt-1">Para el equipo comercial y de gestión</span>
-      </a>
-      <a href="/plano" class="group card border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 hover:border-emerald-400/40 transition-all duration-200 flex items-center justify-between col-span-1 sm:col-span-2">
-        <div class="flex flex-col gap-1">
-          <span class="text-[10px] font-semibold uppercase tracking-widest text-emerald-400">Herramienta</span>
-          <h2 class="text-base font-bold text-slate-900">Plano de disponibilidad de puestos</h2>
-          <p class="text-sm text-slate-600">Ver en tiempo real qué puestos están disponibles, separados o vendidos por zona.</p>
-        </div>
-        <span class="text-emerald-400 group-hover:translate-x-1 transition-transform ml-6 text-xl flex-shrink-0">→</span>
-      </a>
-    </div>
-  </div>
-
-</body>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#183b2d" />
+    <meta name="description" content="Plano interactivo de disponibilidad de puestos de Promarsa Naranjal." />
+    <title>Plano de puestos · Promarsa Naranjal</title>
+  </head>
+  <body><PlanoApp /></body>
 </html>
