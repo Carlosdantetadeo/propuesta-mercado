@@ -2,7 +2,6 @@ import csv, json, collections
 
 SALES_CSV = 'docs/mercado/puestos-extraidos.csv'
 GEO_CSV = 'docs/mercado/plano-ocr/puestos.csv'
-OLD_GEOMETRY = 'src/data/plano-geometria.json'
 OUT = 'src/data/plano-geometria.json'
 
 VB_W, VB_H = 2400, 989  # matches plano_general.jpg pixel size exactly
@@ -15,11 +14,6 @@ geo_codes = set(geo_by_code)
 clean = sorted(sales_codes & geo_codes)
 mismatched = sorted(sales_codes - geo_codes)
 assert len(clean) + len(mismatched) == len(sales_codes) == 1020
-print(f'clean match: {len(clean)}, kept at legacy position: {len(mismatched)}')
-
-old = json.load(open(OLD_GEOMETRY, encoding='utf-8'))
-old_stalls = old['stalls']
-assert set(mismatched) <= set(old_stalls), 'legacy codes must already have a position'
 
 # --- pitch estimation per ubicacion type, in hires pixel space ---
 by_bloque = collections.defaultdict(list)
@@ -56,8 +50,6 @@ py_ = sorted(set(int(r['y_px']) for r in patio_items))
 patio_dy = sorted(b - a for a, b in zip(py_, py_[1:]) if b - a > 20)
 patio_dy = patio_dy[len(patio_dy) // 2]
 
-print('pitch px (hires 11233x4630): bloque', bloque_dx, bloque_dy, 'franja_dx', franja_dx, 'patio', patio_dx, patio_dy)
-
 FX = VB_W / 11233
 FY = VB_H / 4630
 FILL = 0.85
@@ -66,48 +58,41 @@ def cellsize(ubicacion):
     if ubicacion == 'bloque':
         return bloque_dx * FX * FILL, bloque_dy * FY * FILL
     if ubicacion == 'franja':
-        return franja_dx * FX * FILL, bloque_dy * FY * FILL  # franja: own width pitch, bloque-row height as proxy
+        return franja_dx * FX * FILL, bloque_dy * FY * FILL  # franja: own width pitch, bloque-row height proxy
     if ubicacion == 'patio_comidas':
         return patio_dx * FX * FILL, patio_dy * FY * FILL
     raise ValueError(ubicacion)
 
-stalls = {}
-for code in clean:
-    r = geo_by_code[code]
+def rect_from_ocr(r):
     cx = float(r['x_norm']) * VB_W
     cy = float(r['y_norm']) * VB_H
     w, h = cellsize(r['ubicacion'])
-    stalls[code] = dict(x=round(cx - w / 2, 2), y=round(cy - h / 2, 2), w=round(w, 2), h=round(h, 2))
+    return dict(x=round(cx - w / 2, 2), y=round(cy - h / 2, 2), w=round(w, 2), h=round(h, 2))
 
-for code in mismatched:
-    stalls[code] = old_stalls[code]
+stalls = {}
+# 822 codes that appear in both sources -> exact OCR position.
+for code in clean:
+    stalls[code] = rect_from_ocr(geo_by_code[code])
+
+# 198 codes where sales and the printed plan disagree on numbering: the sales
+# code has no direct position on the plan, but there are exactly 198 OCR stalls
+# with no sales match (the same physical stalls, relabeled). Pair them by sorted
+# code so every sales code lands on a real, aligned stall position instead of a
+# leftover coordinate from the previous plan image. This can place a given code
+# on a physically-adjacent slot, but never floats a cell outside the plan.
+def code_key(c):
+    pre, num = c.split('-')
+    return (pre, int(num))
+
+ocr_extra = sorted((r for r in geo_rows if r['codigo'] not in sales_codes),
+                   key=lambda r: code_key(r['codigo']))
+sales_missing = sorted(mismatched, key=code_key)
+assert len(ocr_extra) == len(sales_missing) == 198
+for sales_code, ocr_row in zip(sales_missing, ocr_extra):
+    stalls[sales_code] = rect_from_ocr(ocr_row)
 
 assert set(stalls) == sales_codes
 
-# --- blocks: new source grouped by its own 'bloque' field ---
-blocks = []
-new_by_bloque = collections.defaultdict(list)
-for code in clean:
-    new_by_bloque[geo_by_code[code]['bloque']].append(code)
-for bloque_id, codes in new_by_bloque.items():
-    rects = [stalls[c] for c in codes]
-    x0 = min(r['x'] for r in rects); y0 = min(r['y'] for r in rects)
-    x1 = max(r['x'] + r['w'] for r in rects); y1 = max(r['y'] + r['h'] for r in rects)
-    blocks.append(dict(x=round(x0, 2), y=round(y0, 2), w=round(x1 - x0, 2), h=round(y1 - y0, 2),
-                        codes=sorted(codes), label=True))
-
-# --- blocks: legacy, filtered down to surviving (kept-in-place) codes only ---
-keep_set = set(mismatched)
-for b in old.get('blocks', []):
-    kept = [c for c in b['codes'] if c in keep_set]
-    if not kept:
-        continue
-    rects = [stalls[c] for c in kept]
-    x0 = min(r['x'] for r in rects); y0 = min(r['y'] for r in rects)
-    x1 = max(r['x'] + r['w'] for r in rects); y1 = max(r['y'] + r['h'] for r in rects)
-    blocks.append(dict(x=round(x0, 2), y=round(y0, 2), w=round(x1 - x0, 2), h=round(y1 - y0, 2),
-                        codes=kept, label=b.get('label', True)))
-
-out = dict(source='plano-original.webp', stalls=stalls, blocks=blocks)
+out = dict(source='plano-original.webp', stalls=stalls, blocks=[])
 json.dump(out, open(OUT, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
-print(f'{len(stalls)} stalls, {len(blocks)} blocks written to {OUT}')
+print(f'{len(stalls)} stalls written to {OUT} ({len(clean)} exact, {len(sales_missing)} paired)')

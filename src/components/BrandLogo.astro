@@ -5,21 +5,21 @@ interface Props {
   className?: string;
 }
 const { size = 'md', href = '/', className = '' } = Astro.props;
-// Full brand lockup: roof icon cropped from the real logo photo + redrawn
-// wordmark (fixes PROMMASA -> PROMASA). Intrinsic PNG size: 1224 x 295.
-const heights = { md: 46, sm: 30 };
+// Original brand artwork exactly as provided, white background removed.
+// Intrinsic PNG size: 1230 x 754 (stacked lockup).
+const heights = { md: 62, sm: 42 };
 const height = heights[size];
-const width = Math.round((height * 1224) / 295);
+const width = Math.round((height * 1230) / 754);
 ---
 <a
   class:list={['brand-logo', `brand-logo--${size}`, className]}
   href={href}
-  aria-label="Mercado Mayorista Naranjal · PROMASA"
+  aria-label="Mercado Mayorista Naranjal · PROMMASA"
 >
   <img
     class="brand-logo__img"
-    src="/brand/logo-horizontal.png"
-    alt="Mercado Mayorista Naranjal · PROMASA"
+    src="/brand/logo-original-transp.png"
+    alt="Mercado Mayorista Naranjal · PROMMASA"
     width={width}
     height={height}
     decoding="async"
@@ -27,9 +27,9 @@ const width = Math.round((height * 1224) / 295);
 </a>
 <style>
   .brand-logo { display: inline-flex; align-items: center; text-decoration: none; }
-  .brand-logo__img { display: block; width: auto; height: 46px; }
-  .brand-logo--sm .brand-logo__img { height: 30px; }
+  .brand-logo__img { display: block; width: auto; height: 62px; }
+  .brand-logo--sm .brand-logo__img { height: 42px; }
   @media (max-width: 850px) {
-    .brand-logo--md .brand-logo__img { height: 36px; }
+    .brand-logo--md .brand-logo__img { height: 48px; }
   }
 </style>
