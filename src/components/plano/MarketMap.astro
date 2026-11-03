@@ -2,7 +2,7 @@
 import '../../styles/market-map.css';
 ---
 <main class="market-map" id="market-app">
-  <header class="market-header"><a href="/" class="market-brand"><span class="market-monogram">N</span><span>NARANJAL<small>PLANO DEL MERCADO</small></span></a><div class="market-counts"><span><i class="dot free"></i><b id="count-free">—</b> disponibles</span><span><i class="dot occupied"></i><b id="count-occupied">—</b> ocupados</span><span class="optional-count"><b id="count-total">956</b> puestos</span></div><span id="map-connection" role="status">Cargando datos…</span></header>
+  <header class="market-header"><a href="/" class="market-brand"><span class="market-monogram">N</span><span>NARANJAL<small>PLANO DEL MERCADO</small></span></a><div class="market-counts"><span><i class="dot free"></i><b id="count-free">—</b> disponibles</span><span><i class="dot occupied"></i><b id="count-occupied">—</b> ocupados</span><span class="optional-count"><b id="count-total">1020</b> puestos</span></div><span id="map-connection" role="status">Cargando datos…</span></header>
   <div class="market-toolbar">
     <label class="map-search"><span>⌕</span><input id="map-search" type="search" placeholder="Buscar puesto: A-1, V-21…" aria-label="Buscar puesto por código" /><button id="search-go" aria-label="Buscar puesto">↵</button></label>
     <select id="map-sector" aria-label="Ir a un sector"><option value="">Todos los sectores</option></select>
@@ -23,7 +23,7 @@ import '../../styles/market-map.css';
     <section id="map-detail" class="map-detail" aria-label="Detalle del puesto" hidden><button id="close-map-detail" aria-label="Cerrar detalle">×</button><div><small id="detail-rubro"></small><h1 id="detail-code"></h1></div><span id="detail-status"></span><div class="detail-price"><small>PRECIO · IGV INCLUIDO</small><strong id="detail-price"></strong></div></section>
     <div id="map-loading" class="map-loading">Cargando disponibilidad de los puestos…</div>
   </section>
-  <footer class="market-footer"><span>Arrastra para recorrer · Rueda o dos dedos para ampliar</span><span id="visible-map-count">956 puestos en el plano</span><a href="/promarsa/plano-original.pdf" target="_blank" rel="noopener">Plano original ↗</a></footer>
+  <footer class="market-footer"><span>Arrastra para recorrer · Rueda o dos dedos para ampliar</span><span id="visible-map-count">1020 puestos en el plano</span><a href="/promarsa/plano-original.pdf" target="_blank" rel="noopener">Plano original ↗</a></footer>
 </main>
 <script>
   import { startMarketMap } from '../../lib/plano/market-map';
