@@ -19,7 +19,7 @@ export async function startMarketMap(){
   const svg=$<SVGSVGElement>('market-svg'),camera=new Camera(svg),provider=new Provider();
   let puestos:Puesto[]=[],sectores=new Map<string,Sector>(),byCode=new Map<string,Puesto>(),selected='',state='',initialized=false;
   const nodes=new Map<string,SVGGElement>();
-  const commercial={x:164,y:47,w:1150,h:670};
+  const commercial={x:190,y:53,w:1640,h:862};
   const fitAll=()=>camera.fit(commercial);
   function message(text=''){ $('map-message').textContent=text;$('map-message').hidden=!text; }
   function matches(p:Puesto){
@@ -35,13 +35,13 @@ export async function startMarketMap(){
       selected='';nodes.forEach(n=>n.classList.remove('selected'));
       $('map-detail').hidden=true;
       for(const field of ['detail-code','detail-rubro','detail-status','detail-price'])$(field).textContent='';
-      if(zoom){const r=geometry[p.codigo];if(r)camera.fit({x:r.x-65,y:r.y-70,w:r.w+130,h:r.h+140});message('Este puesto no está disponible.');}
+      if(zoom){const r=geometry[p.codigo];if(r)camera.fit({x:r.x-83,y:r.y-89,w:r.w+166,h:r.h+178});message('Este puesto no está disponible.');}
       return;
     }
     selected=id;nodes.forEach((n,key)=>n.classList.toggle('selected',key===id));
     $('detail-code').textContent=p.codigo;$('detail-rubro').textContent=sectores.get(p.sector_id)?.nombre??'';
     $('detail-status').textContent=stateLabel[p.estado];$('detail-price').textContent=money(p.precio);$('map-detail').hidden=false;
-    if(zoom){const r=geometry[p.codigo];if(r)camera.fit({x:r.x-65,y:r.y-70,w:r.w+130,h:r.h+140});}
+    if(zoom){const r=geometry[p.codigo];if(r)camera.fit({x:r.x-83,y:r.y-89,w:r.w+166,h:r.h+178});}
   }
   function render(data:Snapshot){
     puestos=data.puestos;sectores=new Map(data.sectores.map(s=>[s.id,s]));byCode=new Map(puestos.map(p=>[p.codigo,p]));
@@ -68,7 +68,6 @@ export async function startMarketMap(){
       if(previous&&previous.name===name&&Math.abs(previous.rect.y-r.y)<1&&r.x-previous.rect.x-previous.rect.w<35){previous.rect=bounds([previous.rect,r]);previous.codes.push(...b.codes);}
       else groups.push({name,codes:[...b.codes],rect:r});
     }
-    groups.push({name:'PATIO DE COMIDAS',codes:puestos.filter(p=>sectores.get(p.sector_id)?.nombre==='PATIO DE COMIDAS').map(p=>p.codigo),rect:{x:567,y:378,w:315,h:31}});
     $('market-labels').innerHTML=groups.map((g,i)=>{
       const r=g.rect,font=Math.min(7.3,Math.max(3.4,r.w/(g.name.length*.57))),y=r.y-11;
       return `<g class="map-sector-label" data-group="${i}" role="button" tabindex="0" aria-label="Acercar sector ${esc(g.name)}"><rect x="${r.x-2}" y="${y}" width="${r.w+4}" height="9" rx="1.4"/><text x="${r.x+r.w/2}" y="${y+4.7}" font-size="${font}" textLength="${Math.min(r.w-2,g.name.length*font*.58)}" lengthAdjust="spacingAndGlyphs">${esc(g.name)}</text></g>`;
@@ -89,7 +88,7 @@ export async function startMarketMap(){
   $('map-sector').addEventListener('change',()=>{filters();const found=puestos.filter(matches).map(p=>geometry[p.codigo]).filter(Boolean);if(found.length)camera.fit(bounds(found));});
   document.querySelectorAll<HTMLButtonElement>('[data-state]').forEach(b=>b.addEventListener('click',()=>{state=b.dataset.state!;document.querySelectorAll('[data-state]').forEach(n=>n.setAttribute('aria-pressed',String(n===b)));filters();}));
   $('market-plus').addEventListener('click',()=>camera.zoom(.65));$('market-minus').addEventListener('click',()=>camera.zoom(1.5));$('market-fit').addEventListener('click',fitAll);
-  $('reset-map').addEventListener('click',()=>{$<HTMLInputElement>('map-search').value='';$<HTMLSelectElement>('map-sector').value='';state='';selected='';document.querySelectorAll<HTMLElement>('[data-state]').forEach(n=>n.setAttribute('aria-pressed',String(n.dataset.state==='')));message();filters();camera.fit({x:100,y:30,w:1720,h:710});});
+  $('reset-map').addEventListener('click',()=>{$<HTMLInputElement>('map-search').value='';$<HTMLSelectElement>('map-sector').value='';state='';selected='';document.querySelectorAll<HTMLElement>('[data-state]').forEach(n=>n.setAttribute('aria-pressed',String(n.dataset.state==='')));message();filters();camera.fit({x:127,y:38,w:2187,h:903});});
   $('close-map-detail').addEventListener('click',()=>{selected='';$('map-detail').hidden=true;nodes.forEach(n=>n.classList.remove('selected'));});
   window.addEventListener('keydown',e=>{if(e.key==='Escape')$('close-map-detail').click();});
   camera.fit(commercial,false);

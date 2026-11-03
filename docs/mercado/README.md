@@ -48,3 +48,15 @@ La fuente `tabla de mercado 03_11.pdf` reemplaza la base de datos como catálogo
 ### Pendiente antes de ver los 64 puestos nuevos en el plano visual
 
 El trazado de geometría es manual sobre la imagen `plano-original.webp`; no existe una imagen de planta para la sección donde físicamente están estos 64 puestos nuevos. Hasta tener esa referencia (plano/foto con su ubicación), esos códigos existen en los datos pero no se dibujan en el mapa — el mapa ya está diseñado para tolerar esto (`${pendientes} puestos pendientes de ubicar`).
+
+## Actualización 03/11/2026 (tarde) — plano real con coordenadas de los 1020 puestos
+
+El usuario entregó `plano_naranjal_puestos.zip`: una digitalización (OCR + validación de secuencia) de `26 10 MASTER PLAN DE VENTAS.pdf`, con coordenadas x/y por puesto sobre una imagen base de 11233×4630 px. Resuelve el pendiente anterior.
+
+- **822 de 1020 códigos coinciden exactamente** entre la tabla de ventas (fuente de precio/estado, ya verificada) y este plano OCR — para esos se usó la posición real del plano nuevo, incluidos los 64 que antes no tenían geometría.
+- **198 códigos no coinciden entre fuentes** (ej. tabla de ventas dice `A-111`, el plano OCR trae `A-133` en una posición cercana): son bloques donde las dos digitalizaciones independientes (tabla de ventas vs. plano maestro) infirieron o leyeron una numeración distinta para la misma zona físicamente ambigua. **No se adivinó cuál de las dos tiene razón.** Esos 198 conservan la posición ya trazada a mano en la versión anterior (verificada visualmente), sin tocar.
+- Se reemplazó la imagen de fondo (`public/promarsa/plano-original.webp`) por el plano general del zip (2400×989, ya a esta escala) y se actualizó el `viewBox` del SVG y las cámaras de encuadre (`commercial`, `reset-map`, zoom de detalle) de 1888×778 a 2400×989.
+- Alineación verificada superponiendo las 1020 posiciones generadas sobre la imagen nueva (zoom en cada sector) antes de publicar — no es una suposición.
+- El grupo "PATIO DE COMIDAS" ahora se arma automáticamente por `bloque` del plano OCR (un solo bloque de 42 puestos); se eliminó el rectángulo de etiqueta manual que existía en `market-map.ts` para ese caso especial.
+- Archivos fuente de esta digitalización archivados en `plano-ocr/` (README propio, `puestos.csv`, `sectores.json` y la imagen de validación con bordes rojo/naranja por confianza). El `sectores.json` de esa carpeta **no se usó** para sector/rubro — esos ya vienen verificados de la tabla de ventas; el plano OCR marca 140 puestos con "confianza de sector baja" que no afectan geometría pero sí advierten sobre su propio etiquetado de rubro.
+- Pendiente real restante: ninguno de los 1020 puestos queda ya sin geometría. Los 198 con numeración en disputa entre fuentes podrían revisarse a futuro contra el plano físico si se quiere subir su confianza, pero no es bloqueante — ya se muestran correctamente en el mapa con su posición original verificada.
