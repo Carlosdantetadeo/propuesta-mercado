@@ -32,4 +32,4 @@
 .resource-page button:focus-visible,.resource-page a:focus-visible,.resource-page input:focus-visible{outline:3px solid #2055A2;outline-offset:3px}
 @media(max-width:650px){.resource-page{padding-left:16px;padding-right:16px}.resource-header{height:64px}.resource-header nav{gap:6px}.resource-header nav a,.resource-header button{padding:0 10px;font-size:12px}.resource-main{padding:32px 0 54px}.resource-grid{grid-template-columns:1fr;gap:11px}.resource-card{min-height:172px;padding:17px}.resource-lead{font-size:14px}.resource-card footer{padding-top:14px}}
 
-.resource-logo{width:28px;height:28px;border-radius:6px;object-fit:cover;flex-shrink:0}
+.resource-logo{height:40px;width:auto;flex-shrink:0}
