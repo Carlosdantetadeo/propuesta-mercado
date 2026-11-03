@@ -1,7 +1,7 @@
 import layout from '../../data/plano-geometria.json';
 import { Camera } from './camera';
 import { Provider } from './provider';
-import type { Puesto, Rect, Sector, Snapshot } from './types';
+import { acciones, type Accion, type Puesto, type Rect, type Sector, type Snapshot } from './types';
 
 const $ = <T extends Element = HTMLElement>(id:string) => document.getElementById(id)! as unknown as T;
 const esc = (v:unknown) => String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
@@ -14,8 +14,12 @@ const bounds=(rects:Rect[]):Rect=>{
   return {x,y,w:Math.max(...rects.map(r=>r.x+r.w))-x,h:Math.max(...rects.map(r=>r.y+r.h))-y};
 };
 const shortName=(s:string)=>({'PLASTICOS Y LIMPIEZA':'PLÁSTICOS Y LIMPIEZA','LECHE, HUEVOS QUESOS Y':'LECHE / HUEVOS / QUESOS','PRODUCTOS DE LA SIERRA':'PRODUCTOS DE LA SIERRA','PRODUCTOS NATURALES':'P. NATURALES','TIENDA DE CONVENIENCIA':'CONVENIENCIA','PAPAS Y TUBERCULOS':'PAPAS Y TUBÉRCULOS','ESPECERIA / MOLIDOS':'ESPECIAS / MOLIDOS','JOLLERIA':'JOYERÍA'}[s]??s);
+const actionLabel:Record<Accion,string>={separar:'Separar',liberar:'Liberar',vender:'Vender',bloquear:'Bloquear',desbloquear:'Desbloquear'};
+const needsMotivo=new Set<Accion>(['bloquear','desbloquear','vender']);
+const roleLabel={admin:'Administrador',asesor:'Asesor',lector:'Lector'} as const;
 
-export async function startMarketMap(){
+export async function startMarketMap(opts?:{admin?:boolean}){
+  const admin=!!opts?.admin;
   const svg=$<SVGSVGElement>('market-svg'),camera=new Camera(svg),provider=new Provider();
   let puestos:Puesto[]=[],sectores=new Map<string,Sector>(),byCode=new Map<string,Puesto>(),selected='',state='',initialized=false;
   const nodes=new Map<string,SVGGElement>();
@@ -29,9 +33,44 @@ export async function startMarketMap(){
   function filters(){let count=0;for(const p of puestos){const match=matches(p);if(match)count++;nodes.get(p.id)?.classList.toggle('dimmed',!match);}$('visible-map-count').textContent=`${count} de ${puestos.length} puestos`;$('map-detail').hidden=!selected;}
   function lod(){const scale=Math.hypot(svg.getScreenCTM()?.a??1,svg.getScreenCTM()?.b??0);nodes.forEach((node)=>{const w=Number(node.dataset.width);node.classList.toggle('code-hidden',w*scale<23);});}
   camera.onFrame=lod;
+  const canManage=()=>admin&&provider.role!=='lector';
+  function renderActions(p:Puesto){
+    const box=document.getElementById('detail-actions');if(!box)return;
+    const actions=acciones(p,provider.role,provider.userId);
+    box.innerHTML=actions.map(a=>`<button type="button" data-action="${a}" class="detail-action-btn ${needsMotivo.has(a)?'warn':''}">${actionLabel[a]}</button>`).join('')
+      +(provider.role==='admin'?`<label class="detail-assign">Mover a sector<select id="assign-sector-select"><option value="">—</option>${[...sectores.values()].map(s=>`<option value="${esc(s.id)}" ${s.id===p.sector_id?'selected':''}>${esc(shortName(s.nombre))}</option>`).join('')}</select></label>`:'')
+      +`<div id="action-confirm" class="action-confirm" hidden><input id="action-motivo" type="text" placeholder="Motivo (obligatorio)" /><button type="button" id="action-confirm-go">Confirmar</button><button type="button" id="action-confirm-cancel">Cancelar</button></div>`
+      +`<p id="action-error" class="action-error" hidden></p>`;
+    const confirmBox=document.getElementById('action-confirm') as HTMLElement;
+    const motivoInput=document.getElementById('action-motivo') as HTMLInputElement;
+    const errorBox=document.getElementById('action-error') as HTMLElement;
+    const showError=(msg:string)=>{errorBox.textContent=msg;errorBox.hidden=false;};
+    const run=async(action:Accion,motivo:string)=>{
+      errorBox.hidden=true;
+      try{ await provider.change([p],action,motivo); confirmBox.hidden=true; }
+      catch(e){ showError(e instanceof Error?e.message:'No se pudo completar la acción.'); }
+    };
+    box.querySelectorAll<HTMLButtonElement>('[data-action]').forEach(btn=>btn.addEventListener('click',()=>{
+      const action=btn.dataset.action as Accion;
+      errorBox.hidden=true;
+      if(needsMotivo.has(action)){ confirmBox.hidden=false; motivoInput.value=''; motivoInput.focus();
+        document.getElementById('action-confirm-go')!.onclick=()=>void run(action,motivoInput.value);
+      } else void run(action,'');
+    }));
+    const cancelBtn=document.getElementById('action-confirm-cancel');
+    if(cancelBtn) cancelBtn.onclick=()=>{confirmBox.hidden=true;errorBox.hidden=true;};
+    const sectorSelect=document.getElementById('assign-sector-select') as HTMLSelectElement|null;
+    if(sectorSelect) sectorSelect.addEventListener('change',async()=>{
+      const sectorId=sectorSelect.value;if(!sectorId||sectorId===p.sector_id)return;
+      const motivo=prompt('Motivo del cambio de sector:')??'';
+      if(!motivo.trim()){sectorSelect.value=p.sector_id;return;}
+      try{ await provider.assign([{id:p.id,sector_id:sectorId,version:p.version}],motivo); }
+      catch(e){ showError(e instanceof Error?e.message:'No se pudo reasignar el sector.'); sectorSelect.value=p.sector_id; }
+    });
+  }
   function detail(id:string,zoom=false){
     const p=puestos.find(p=>p.id===id);if(!p)return;
-    if(p.estado==='vendido'||p.estado==='bloqueado'){
+    if(!canManage()&&(p.estado==='vendido'||p.estado==='bloqueado')){
       selected='';nodes.forEach(n=>n.classList.remove('selected'));
       $('map-detail').hidden=true;
       for(const field of ['detail-code','detail-rubro','detail-status','detail-price'])$(field).textContent='';
@@ -41,6 +80,7 @@ export async function startMarketMap(){
     selected=id;nodes.forEach((n,key)=>n.classList.toggle('selected',key===id));
     $('detail-code').textContent=p.codigo;$('detail-rubro').textContent=sectores.get(p.sector_id)?.nombre??'';
     $('detail-status').textContent=stateLabel[p.estado];$('detail-price').textContent=money(p.precio);$('map-detail').hidden=false;
+    if(canManage())renderActions(p);
     if(zoom){const r=geometry[p.codigo];if(r)camera.fit({x:r.x-83,y:r.y-89,w:r.w+166,h:r.h+178});}
   }
   function render(data:Snapshot){
@@ -92,9 +132,34 @@ export async function startMarketMap(){
   $('close-map-detail').addEventListener('click',()=>{selected='';$('map-detail').hidden=true;nodes.forEach(n=>n.classList.remove('selected'));});
   window.addEventListener('keydown',e=>{if(e.key==='Escape')$('close-map-detail').click();});
   camera.fit(commercial,false);
+  if(admin){
+    const loginForm=document.getElementById('login-form') as HTMLFormElement|null;
+    const loginError=document.getElementById('login-error');
+    loginForm?.addEventListener('submit',async e=>{
+      e.preventDefault();
+      const email=(document.getElementById('login-email') as HTMLInputElement).value.trim();
+      const password=(document.getElementById('login-password') as HTMLInputElement).value;
+      const submitBtn=loginForm.querySelector('button[type=submit]') as HTMLButtonElement;
+      submitBtn.disabled=true; if(loginError) loginError.hidden=true;
+      try{ await provider.login(email,password); }
+      catch(err){ if(loginError){loginError.textContent=err instanceof Error?err.message:'No se pudo iniciar sesión.';loginError.hidden=false;} }
+      finally{ submitBtn.disabled=false; }
+    });
+    document.getElementById('account-logout')?.addEventListener('click',()=>void provider.logout());
+  }
   await provider.start({snapshot:render,change:p=>{const index=puestos.findIndex(x=>x.id===p.id);if(index>=0)puestos[index]=p;render({puestos,sectores:[...sectores.values()]});},connection:(state,text)=>{
+    if(admin){
+      const loginPanel=document.getElementById('login-panel');
+      const toolbar=document.querySelector<HTMLElement>('.market-toolbar');
+      const badge=document.getElementById('account-badge');
+      if(loginPanel) loginPanel.hidden=state!=='login';
+      if(toolbar) toolbar.hidden=state==='login';
+      if(badge){ badge.hidden=state==='login';
+        if(state!=='login'){ const nameEl=document.getElementById('account-name'); if(nameEl) nameEl.textContent=`${provider.nombre||'Cuenta'} · ${roleLabel[provider.role]}`; }
+      }
+    }
     $('map-connection').textContent=state==='ready'?'Disponibilidad actualizada':'Actualizando…';
-    $('map-loading').hidden=state==='ready'||initialized;
+    $('map-loading').hidden=state==='ready'||initialized||state==='login';
     if(state==='error'||text)message(text??'No se pudo actualizar la disponibilidad.');else if(state==='ready')message();
-  }});
+  }},{requireAuth:admin});
 }

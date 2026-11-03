@@ -7,7 +7,9 @@ export class Provider {
   demo = !supabase;
   role: Rol = 'lector';
   userId = '';
+  nombre = '';
   publicRead = false;
+  requireAuth = false;
   ready = false;
   audit: { codigo: string; accion: string; motivo: string; fecha: string }[] = [];
   private data = structuredClone(demoData) as Snapshot;
@@ -20,10 +22,11 @@ export class Provider {
   private setConnection(state: Connection, message?: string) {
     this.ready = state === 'ready'; this.cb.connection(state,message);
   }
-  async start(cb: Callbacks) {
+  async start(cb: Callbacks, opts?: { requireAuth?: boolean }) {
     this.cb = cb;
+    this.requireAuth = !!opts?.requireAuth;
     if (this.demo) {
-      this.role = 'admin'; this.userId = 'demo-admin';
+      this.role = 'admin'; this.userId = 'demo-admin'; this.nombre = 'Demo';
       // Development-only render benchmark. Never injected into a connected backend.
       if (import.meta.env.DEV && new URLSearchParams(location.search).get('stress') === '1000') {
         const source = this.data.puestos;
@@ -34,32 +37,43 @@ export class Provider {
         });
       }
       cb.snapshot(structuredClone(this.data)); this.setConnection('ready');
-    } else {
-      const {data,error} = await supabase!.auth.getSession();
-      if(error) throw error;
-      if(!data.session) {
-        this.publicRead = true;
-        await this.sync();
-        window.setInterval(() => { if(navigator.onLine && !document.hidden) void this.sync(); }, 30000);
-        window.addEventListener('online', () => void this.sync());
-        window.addEventListener('offline', () => this.setConnection('reconnecting','Sin conexión. Mostrando la última información recibida.'));
-        document.addEventListener('visibilitychange', () => { if(!document.hidden && navigator.onLine) void this.sync(); });
-        return;
-      }
-      this.userId=data.session.user.id;
-      const {data:profile,error:profileError}=await supabase!.from('perfiles').select('rol').eq('id',this.userId).single();
-      if(profileError || !profile) throw new Error('Tu cuenta no tiene un rol asignado. Contacta al administrador.');
-      this.role=profile.rol;
-      this.subscribe();
-      supabase!.auth.onAuthStateChange((event) => {
-        if(event==='SIGNED_OUT') { this.ready=false; location.reload(); }
-      });
+      return;
     }
+    const {data,error} = await supabase!.auth.getSession();
+    if(error) throw error;
+    if(!data.session) {
+      if(this.requireAuth) { this.setConnection('login'); return; }
+      this.publicRead = true;
+      await this.sync();
+      window.setInterval(() => { if(navigator.onLine && !document.hidden) void this.sync(); }, 30000);
+      window.addEventListener('online', () => void this.sync());
+      window.addEventListener('offline', () => this.setConnection('reconnecting','Sin conexión. Mostrando la última información recibida.'));
+      document.addEventListener('visibilitychange', () => { if(!document.hidden && navigator.onLine) void this.sync(); });
+      return;
+    }
+    await this.afterLogin(data.session.user.id);
     window.addEventListener('offline',() => this.setConnection('reconnecting','Sin conexión. Las acciones están deshabilitadas.'));
-    window.addEventListener('online',() => {
-      if (this.demo) this.setConnection('ready');
-      else this.subscribe();
+    window.addEventListener('online',() => this.subscribe());
+  }
+  private async afterLogin(userId: string) {
+    this.userId = userId;
+    const {data:profile,error:profileError}=await supabase!.from('perfiles').select('rol,nombre').eq('id',this.userId).single();
+    if(profileError || !profile) { await supabase!.auth.signOut(); throw new Error('Tu cuenta no tiene un rol asignado. Contacta al administrador.'); }
+    this.role=profile.rol; this.nombre=profile.nombre||'';
+    this.subscribe();
+    supabase!.auth.onAuthStateChange((event) => {
+      if(event==='SIGNED_OUT') { this.ready=false; location.reload(); }
     });
+  }
+  async login(email: string, password: string) {
+    if(this.demo || !supabase) throw new Error('No disponible en modo demostración.');
+    const {data,error} = await supabase.auth.signInWithPassword({email,password});
+    if(error) throw new Error('No se pudo iniciar sesión. Revisa tu correo y contraseña.');
+    await this.afterLogin(data.user.id);
+  }
+  async logout() {
+    if(this.demo || !supabase) return;
+    await supabase.auth.signOut();
   }
   private subscribe() {
     if(this.channel) void supabase!.removeChannel(this.channel);

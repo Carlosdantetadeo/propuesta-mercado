@@ -2,629 +2,629 @@
   "sectores": [
     {
       "id": "10000000-0000-4000-8000-000000000001",
-      "nombre": "Pescados y mariscos",
-      "rubro": "Pescados y mariscos",
-      "color": "#186b80",
+      "nombre": "CARNE",
+      "rubro": "CARNE",
+      "color": "#9f4937",
       "orden": 1,
       "contorno": [
         [
           [
-            176,
-            201
+            0,
+            0
           ],
           [
-            326,
-            201
+            1,
+            0
           ],
           [
-            326,
-            302
+            1,
+            1
           ],
           [
-            176,
-            302
+            0,
+            1
           ]
         ]
       ],
-      "icono": "pescado"
+      "icono": "local"
     },
     {
       "id": "10000000-0000-4000-8000-000000000002",
-      "nombre": "Carnes",
-      "rubro": "Carnes",
-      "color": "#9f4937",
+      "nombre": "POLLO",
+      "rubro": "POLLO",
+      "color": "#b5892b",
       "orden": 2,
       "contorno": [
         [
           [
-            176,
-            96
+            0,
+            0
           ],
           [
-            326,
-            96
+            1,
+            0
           ],
           [
-            326,
-            193
+            1,
+            1
           ],
           [
-            176,
-            193
+            0,
+            1
           ]
         ]
       ],
-      "icono": "carne"
+      "icono": "local"
     },
     {
       "id": "10000000-0000-4000-8000-000000000003",
-      "nombre": "Abarrotes",
-      "rubro": "Abarrotes",
-      "color": "#506a34",
+      "nombre": "VERDURAS",
+      "rubro": "VERDURAS",
+      "color": "#1FA138",
       "orden": 3,
       "contorno": [
         [
           [
-            1009,
-            438
+            0,
+            0
           ],
           [
-            1110,
-            438
+            1,
+            0
           ],
           [
-            1110,
-            541
+            1,
+            1
           ],
           [
-            1009,
-            541
+            0,
+            1
           ]
         ]
       ],
-      "icono": "abarrotes"
+      "icono": "local"
     }
   ],
   "puestos": [
     {
       "id": "20000000-0000-4000-8000-000000000101",
-      "codigo": "PES-01",
+      "codigo": "A-1",
       "sector_id": "10000000-0000-4000-8000-000000000001",
       "estado": "disponible",
       "area": 9,
-      "precio": 84000,
+      "precio": 71000,
       "geometria": {
-        "x": 181.0,
-        "y": 206.0,
-        "w": 25.0,
-        "h": 41.5
+        "x": 226.72,
+        "y": 136.11,
+        "w": 21.72,
+        "h": 20.43
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000102",
-      "codigo": "PES-02",
+      "codigo": "A-2",
       "sector_id": "10000000-0000-4000-8000-000000000001",
       "estado": "disponible",
       "area": 9,
-      "precio": 90000,
+      "precio": 71000,
       "geometria": {
-        "x": 209.0,
-        "y": 206.0,
-        "w": 25.0,
-        "h": 41.5
+        "x": 250.45,
+        "y": 136.11,
+        "w": 21.72,
+        "h": 20.43
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000103",
-      "codigo": "PES-03",
+      "codigo": "A-3",
       "sector_id": "10000000-0000-4000-8000-000000000001",
       "estado": "disponible",
       "area": 9,
-      "precio": 96000,
+      "precio": 66000,
       "geometria": {
-        "x": 237.0,
-        "y": 206.0,
-        "w": 25.0,
-        "h": 41.5
+        "x": 226.72,
+        "y": 157.47,
+        "w": 21.72,
+        "h": 20.43
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000104",
-      "codigo": "PES-04",
+      "codigo": "A-4",
       "sector_id": "10000000-0000-4000-8000-000000000001",
       "estado": "disponible",
       "area": 9,
-      "precio": 84000,
+      "precio": 66000,
       "geometria": {
-        "x": 265.0,
-        "y": 206.0,
-        "w": 25.0,
-        "h": 41.5
+        "x": 250.45,
+        "y": 157.47,
+        "w": 21.72,
+        "h": 20.43
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000105",
-      "codigo": "PES-05",
+      "codigo": "A-5",
       "sector_id": "10000000-0000-4000-8000-000000000001",
       "estado": "disponible",
       "area": 9,
-      "precio": 90000,
+      "precio": 66000,
       "geometria": {
-        "x": 293.0,
-        "y": 206.0,
-        "w": 25.0,
-        "h": 41.5
+        "x": 226.72,
+        "y": 179.04,
+        "w": 21.72,
+        "h": 20.43
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000106",
-      "codigo": "PES-06",
+      "codigo": "A-6",
       "sector_id": "10000000-0000-4000-8000-000000000001",
       "estado": "disponible",
       "area": 9,
-      "precio": 96000,
+      "precio": 66000,
       "geometria": {
-        "x": 181.0,
-        "y": 251.5,
-        "w": 25.0,
-        "h": 41.5
+        "x": 250.45,
+        "y": 179.04,
+        "w": 21.72,
+        "h": 20.43
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000107",
-      "codigo": "PES-07",
+      "codigo": "A-7",
       "sector_id": "10000000-0000-4000-8000-000000000001",
       "estado": "disponible",
       "area": 9,
-      "precio": 84000,
+      "precio": 66000,
       "geometria": {
-        "x": 209.0,
-        "y": 251.5,
-        "w": 25.0,
-        "h": 41.5
+        "x": 226.72,
+        "y": 200.4,
+        "w": 21.72,
+        "h": 20.43
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000108",
-      "codigo": "PES-08",
+      "codigo": "A-8",
       "sector_id": "10000000-0000-4000-8000-000000000001",
       "estado": "vendido",
       "area": 9,
-      "precio": 90000,
+      "precio": 66000,
       "geometria": {
-        "x": 237.0,
-        "y": 251.5,
-        "w": 25.0,
-        "h": 41.5
+        "x": 250.45,
+        "y": 200.4,
+        "w": 21.72,
+        "h": 20.43
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000109",
-      "codigo": "PES-09",
+      "codigo": "A-9",
       "sector_id": "10000000-0000-4000-8000-000000000001",
       "estado": "vendido",
       "area": 9,
-      "precio": 96000,
+      "precio": 71000,
       "geometria": {
-        "x": 265.0,
-        "y": 251.5,
-        "w": 25.0,
-        "h": 41.5
+        "x": 226.72,
+        "y": 200.61,
+        "w": 21.72,
+        "h": 20.43
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000110",
-      "codigo": "PES-10",
+      "codigo": "A-10",
       "sector_id": "10000000-0000-4000-8000-000000000001",
       "estado": "bloqueado",
       "area": 9,
-      "precio": 84000,
+      "precio": 71000,
       "geometria": {
-        "x": 293.0,
-        "y": 251.5,
-        "w": 25.0,
-        "h": 41.5
+        "x": 250.45,
+        "y": 200.61,
+        "w": 21.72,
+        "h": 20.43
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": "Ejemplo: reservado por el propietario",
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000201",
-      "codigo": "CAR-01",
+      "codigo": "A-131",
       "sector_id": "10000000-0000-4000-8000-000000000002",
       "estado": "disponible",
       "area": 9,
-      "precio": 84000,
+      "precio": 71000,
       "geometria": {
-        "x": 181.0,
-        "y": 101.0,
-        "w": 25.0,
-        "h": 39.5
+        "x": 436.12,
+        "y": 136.11,
+        "w": 21.72,
+        "h": 20.43
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000202",
-      "codigo": "CAR-02",
+      "codigo": "A-132",
       "sector_id": "10000000-0000-4000-8000-000000000002",
       "estado": "disponible",
       "area": 9,
-      "precio": 90000,
+      "precio": 71000,
       "geometria": {
-        "x": 209.0,
-        "y": 101.0,
-        "w": 25.0,
-        "h": 39.5
+        "x": 459.83,
+        "y": 136.11,
+        "w": 21.72,
+        "h": 20.43
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000203",
-      "codigo": "CAR-03",
+      "codigo": "V-133",
       "sector_id": "10000000-0000-4000-8000-000000000002",
       "estado": "disponible",
       "area": 9,
-      "precio": 96000,
+      "precio": 66000,
       "geometria": {
-        "x": 237.0,
-        "y": 101.0,
-        "w": 25.0,
-        "h": 39.5
+        "x": 341.762,
+        "y": 123.404,
+        "w": 18.196,
+        "h": 16.612
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000204",
-      "codigo": "CAR-04",
+      "codigo": "A-134",
       "sector_id": "10000000-0000-4000-8000-000000000002",
       "estado": "disponible",
       "area": 9,
-      "precio": 84000,
+      "precio": 66000,
       "geometria": {
-        "x": 265.0,
-        "y": 101.0,
-        "w": 25.0,
-        "h": 39.5
+        "x": 459.83,
+        "y": 157.9,
+        "w": 21.72,
+        "h": 20.43
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000205",
-      "codigo": "CAR-05",
+      "codigo": "A-135",
       "sector_id": "10000000-0000-4000-8000-000000000002",
       "estado": "disponible",
       "area": 9,
-      "precio": 90000,
+      "precio": 66000,
       "geometria": {
-        "x": 293.0,
-        "y": 101.0,
-        "w": 25.0,
-        "h": 39.5
+        "x": 436.55,
+        "y": 179.68,
+        "w": 21.72,
+        "h": 20.43
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000206",
-      "codigo": "CAR-06",
+      "codigo": "V-136",
       "sector_id": "10000000-0000-4000-8000-000000000002",
       "estado": "disponible",
       "area": 9,
-      "precio": 96000,
+      "precio": 66000,
       "geometria": {
-        "x": 181.0,
-        "y": 144.5,
-        "w": 25.0,
-        "h": 39.5
+        "x": 359.958,
+        "y": 140.016,
+        "w": 18.196,
+        "h": 16.612
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000207",
-      "codigo": "CAR-07",
+      "codigo": "V-137",
       "sector_id": "10000000-0000-4000-8000-000000000002",
       "estado": "disponible",
       "area": 9,
-      "precio": 84000,
+      "precio": 66000,
       "geometria": {
-        "x": 209.0,
-        "y": 144.5,
-        "w": 25.0,
-        "h": 39.5
+        "x": 341.762,
+        "y": 156.628,
+        "w": 18.196,
+        "h": 16.612
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000208",
-      "codigo": "CAR-08",
+      "codigo": "V-138",
       "sector_id": "10000000-0000-4000-8000-000000000002",
       "estado": "vendido",
       "area": 9,
-      "precio": 90000,
+      "precio": 66000,
       "geometria": {
-        "x": 237.0,
-        "y": 144.5,
-        "w": 25.0,
-        "h": 39.5
+        "x": 359.958,
+        "y": 156.628,
+        "w": 18.196,
+        "h": 16.612
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000209",
-      "codigo": "CAR-09",
+      "codigo": "V-139",
       "sector_id": "10000000-0000-4000-8000-000000000002",
       "estado": "vendido",
       "area": 9,
-      "precio": 96000,
+      "precio": 71000,
       "geometria": {
-        "x": 265.0,
-        "y": 144.5,
-        "w": 25.0,
-        "h": 39.5
+        "x": 341.762,
+        "y": 173.24,
+        "w": 18.196,
+        "h": 16.612
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000210",
-      "codigo": "CAR-10",
+      "codigo": "V-140",
       "sector_id": "10000000-0000-4000-8000-000000000002",
       "estado": "bloqueado",
       "area": 9,
-      "precio": 84000,
+      "precio": 71000,
       "geometria": {
-        "x": 293.0,
-        "y": 144.5,
-        "w": 25.0,
-        "h": 39.5
+        "x": 359.958,
+        "y": 173.24,
+        "w": 18.196,
+        "h": 16.612
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": "Ejemplo: reservado por el propietario",
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000301",
-      "codigo": "ABA-01",
+      "codigo": "A-611",
       "sector_id": "10000000-0000-4000-8000-000000000003",
       "estado": "disponible",
       "area": 9,
-      "precio": 84000,
+      "precio": 71000,
       "geometria": {
-        "x": 1014.0,
-        "y": 443.0,
-        "w": 15.2,
-        "h": 42.5
+        "x": 1285.6,
+        "y": 273.24,
+        "w": 21.72,
+        "h": 20.43
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000302",
-      "codigo": "ABA-02",
+      "codigo": "A-612",
       "sector_id": "10000000-0000-4000-8000-000000000003",
       "estado": "disponible",
       "area": 9,
-      "precio": 90000,
+      "precio": 71000,
       "geometria": {
-        "x": 1032.2,
-        "y": 443.0,
-        "w": 15.2,
-        "h": 42.5
+        "x": 1311.66,
+        "y": 273.24,
+        "w": 21.72,
+        "h": 20.43
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000303",
-      "codigo": "ABA-03",
+      "codigo": "A-613",
       "sector_id": "10000000-0000-4000-8000-000000000003",
       "estado": "disponible",
       "area": 9,
-      "precio": 96000,
+      "precio": 66000,
       "geometria": {
-        "x": 1050.4,
-        "y": 443.0,
-        "w": 15.2,
-        "h": 42.5
+        "x": 1285.81,
+        "y": 294.61,
+        "w": 21.72,
+        "h": 20.43
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000304",
-      "codigo": "ABA-04",
+      "codigo": "A-614",
       "sector_id": "10000000-0000-4000-8000-000000000003",
       "estado": "disponible",
       "area": 9,
-      "precio": 84000,
+      "precio": 66000,
       "geometria": {
-        "x": 1068.6,
-        "y": 443.0,
-        "w": 15.2,
-        "h": 42.5
+        "x": 1311.66,
+        "y": 294.61,
+        "w": 21.72,
+        "h": 20.43
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000305",
-      "codigo": "ABA-05",
+      "codigo": "A-615",
       "sector_id": "10000000-0000-4000-8000-000000000003",
       "estado": "disponible",
       "area": 9,
-      "precio": 90000,
+      "precio": 66000,
       "geometria": {
-        "x": 1086.8,
-        "y": 443.0,
-        "w": 15.2,
-        "h": 42.5
+        "x": 1285.81,
+        "y": 316.18,
+        "w": 21.72,
+        "h": 20.43
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000306",
-      "codigo": "ABA-06",
+      "codigo": "A-616",
       "sector_id": "10000000-0000-4000-8000-000000000003",
       "estado": "disponible",
       "area": 9,
-      "precio": 96000,
+      "precio": 66000,
       "geometria": {
-        "x": 1014.0,
-        "y": 489.5,
-        "w": 15.2,
-        "h": 42.5
+        "x": 1311.66,
+        "y": 316.18,
+        "w": 21.72,
+        "h": 20.43
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000307",
-      "codigo": "ABA-07",
+      "codigo": "A-617",
       "sector_id": "10000000-0000-4000-8000-000000000003",
       "estado": "disponible",
       "area": 9,
-      "precio": 84000,
+      "precio": 66000,
       "geometria": {
-        "x": 1032.2,
-        "y": 489.5,
-        "w": 15.2,
-        "h": 42.5
+        "x": 1285.81,
+        "y": 337.76,
+        "w": 21.72,
+        "h": 20.43
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000308",
-      "codigo": "ABA-08",
+      "codigo": "A-618",
       "sector_id": "10000000-0000-4000-8000-000000000003",
       "estado": "vendido",
       "area": 9,
-      "precio": 90000,
+      "precio": 66000,
       "geometria": {
-        "x": 1050.4,
-        "y": 489.5,
-        "w": 15.2,
-        "h": 42.5
+        "x": 1311.66,
+        "y": 337.76,
+        "w": 21.72,
+        "h": 20.43
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000309",
-      "codigo": "ABA-09",
+      "codigo": "A-619",
       "sector_id": "10000000-0000-4000-8000-000000000003",
       "estado": "vendido",
       "area": 9,
-      "precio": 96000,
+      "precio": 71000,
       "geometria": {
-        "x": 1068.6,
-        "y": 489.5,
-        "w": 15.2,
-        "h": 42.5
+        "x": 1285.81,
+        "y": 359.54,
+        "w": 21.72,
+        "h": 20.43
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": null,
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     },
     {
       "id": "20000000-0000-4000-8000-000000000310",
-      "codigo": "ABA-10",
+      "codigo": "A-620",
       "sector_id": "10000000-0000-4000-8000-000000000003",
       "estado": "bloqueado",
       "area": 9,
-      "precio": 84000,
+      "precio": 71000,
       "geometria": {
-        "x": 1086.8,
-        "y": 489.5,
-        "w": 15.2,
-        "h": 42.5
+        "x": 1311.66,
+        "y": 359.54,
+        "w": 21.72,
+        "h": 20.43
       },
       "version": 1,
       "separado_por": null,
       "motivo_bloqueo": "Ejemplo: reservado por el propietario",
-      "actualizado_en": "2026-10-20T00:00:00Z"
+      "actualizado_en": "2026-11-03T00:00:00Z"
     }
   ]
 }

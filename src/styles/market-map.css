@@ -7,3 +7,36 @@
 /* Upper toolbar: consistent controls and clearly selected filters. */
 .market-toolbar{gap:10px;padding:14px 24px;flex-wrap:wrap;box-shadow:0 3px 12px #193d2b06;z-index:2}.map-search{height:46px;border-radius:12px;background:#f7f9f5;transition:border-color .18s,box-shadow .18s}.map-search:focus-within{border-color:#2055A2;box-shadow:0 0 0 3px #dce8f5}.map-search button{width:34px;height:34px;border-radius:8px;background:#e9efe6;flex-shrink:0}.market-toolbar select{height:46px;border-radius:12px;padding:0 34px 0 14px;color:#345340;background:#fff;font-size:13px}.status-filters{padding:4px;gap:3px;border:1px solid #e1e7de;border-radius:13px;background:#f3f5f0}.status-filters button{min-height:38px;padding:0 16px;border-radius:9px;font-size:13px;font-weight:600;transition:background .18s,color .18s,box-shadow .18s}.status-filters button:hover{background:#fdeee1;color:#c85f1d}.status-filters button[aria-pressed=true]{background:#EE7326;color:#fff;box-shadow:0 2px 5px #c85f1d33}.status-filters button[data-state=disponible]:before,.status-filters button[data-state=ocupado]:before{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:7px;background:#1FA138}.status-filters button[data-state=ocupado]:before{background:#db5754}.status-filters button[aria-pressed=true]:before{box-shadow:0 0 0 2px #ffffff30}.cards-toggle,.map-reset{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;height:auto;padding:0 17px;border-radius:12px;font-size:13px;font-weight:600;text-decoration:none;transition:background .18s,box-shadow .18s,transform .18s}.cards-toggle{background:#EE7326;border:1px solid #EE7326;color:#fff;box-shadow:0 3px 8px #ee732633}.cards-toggle:hover{background:#c85f1d;box-shadow:0 4px 12px #ee732640}.map-reset{background:#fff;border:1px solid #d8e1d4;color:#345340}.map-reset:hover{background:#edf3e9;border-color:#a9bca2}.cards-toggle:active,.map-reset:active{transform:translateY(1px)}
 @media(max-width:850px){.market-toolbar{padding:10px 12px;gap:8px}.map-search{flex:1 1 170px}.market-toolbar select{flex:1 1 140px;max-width:none;min-width:0}.status-filters{flex:1 1 100%;width:100%}.status-filters button{min-height:40px;padding:0 12px}.cards-toggle{flex:1;min-height:44px;font-size:12px}.map-reset{min-height:44px;margin-left:0;font-size:12px}}
+
+/* Admin: account badge, login panel, per-stall action controls. */
+.account-badge{display:flex;align-items:center;gap:10px;margin-left:12px;padding:5px 6px 5px 12px;border:1px solid #e1e7de;border-radius:20px;background:#f7f9f5;font-size:11px;color:#345340;white-space:nowrap}
+.account-badge button{border:0;background:#fff;border:1px solid #d8e1d4;color:#345340;border-radius:14px;padding:5px 11px;font-size:11px;font-weight:600}
+.account-badge button:hover{background:#edf3e9}
+.login-panel{position:absolute;inset:0;z-index:5;display:grid;place-items:center;background:#f3f5efe8;padding:24px}
+.login-form{width:min(360px,100%);background:#fff;border:1px solid #e0e5df;border-radius:14px;padding:28px 26px;box-shadow:0 12px 45px #183b3018}
+.login-form h1{font-size:18px;margin:0 0 6px;color:#193e2e}
+.login-form>p{font-size:12px;color:#66736d;margin:0 0 18px;line-height:1.5}
+.login-form label{display:block;font-size:12px;font-weight:600;color:#345340;margin:0 0 12px}
+.login-form input{display:block;width:100%;height:42px;margin-top:6px;padding:0 12px;border:1px solid #d9e0d8;border-radius:9px;font-size:13px}
+.login-form input:focus-visible{outline:3px solid #2055A2;outline-offset:1px}
+.login-form button[type=submit]{width:100%;height:44px;margin-top:4px;background:#EE7326;color:#fff;border:0;border-radius:10px;font-size:13px;font-weight:700}
+.login-form button[type=submit]:disabled{opacity:.6}
+.login-form button[type=submit]:hover:not(:disabled){background:#c85f1d}
+.login-form a{display:block;text-align:center;margin-top:16px;font-size:12px;color:#66736d;text-decoration:none}
+.login-error{font-size:12px;color:#ae3734;background:#fff0ef;border:1px solid #f3cdca;border-radius:8px;padding:8px 10px;margin:-2px 0 12px}
+.map-detail{flex-wrap:wrap}
+.detail-actions{flex-basis:100%;display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid #eef1ea}
+.detail-action-btn{height:38px;padding:0 15px;border-radius:9px;border:1px solid #d8e1d4;background:#fff;color:#234b35;font-size:12px;font-weight:650}
+.detail-action-btn:hover{background:#f1f5ef}
+.detail-action-btn.warn{border-color:#EE7326;color:#c85f1d}
+.detail-action-btn.warn:hover{background:#fdeee1}
+.detail-assign{display:flex;align-items:center;gap:7px;font-size:11px;color:#66736d}
+.detail-assign select{height:36px;border-radius:8px;border:1px solid #d9e0d8;padding:0 8px;font-size:12px}
+.action-confirm{flex-basis:100%;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.action-confirm input{flex:1;min-width:160px;height:38px;padding:0 11px;border:1px solid #d9e0d8;border-radius:8px;font-size:12px}
+.action-confirm button{height:38px;padding:0 13px;border-radius:8px;font-size:12px;font-weight:650;border:0}
+#action-confirm-go{background:#EE7326;color:#fff}
+#action-confirm-go:hover{background:#c85f1d}
+#action-confirm-cancel{background:#f1f5ef;color:#4a5750}
+.action-error{flex-basis:100%;font-size:12px;color:#ae3734;background:#fff0ef;border:1px solid #f3cdca;border-radius:8px;padding:8px 10px;margin:0}
+@media(max-width:850px){.account-badge{font-size:10px;gap:7px;padding:4px 4px 4px 10px}.account-badge button{padding:4px 9px;font-size:10px}.login-form{padding:22px 18px}}

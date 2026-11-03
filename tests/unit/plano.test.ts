@@ -18,8 +18,8 @@ test('evento realtime actualiza solo el puesto afectado e ignora versiones repet
 test('CSV soporta BOM, CRLF, comillas y punto y coma; rechaza filas ambiguas',()=>{
   const f=fixture();
   assert.deepEqual(parseCSV('\uFEFFcodigo;sector\r\n"PES-01";"Pescados y mariscos"\r\n'),[['codigo','sector'],['PES-01','Pescados y mariscos']]);
-  assert.equal(assignmentsCSV('codigo,sector\nPES-01,Carnes',f.puestos,f.sectores)[0].sector_id,f.sectores[1].id);
-  for(const csv of ['codigo,sector\nPES-01,Carnes\nPES-01,Carnes','codigo,sector\nBAD,Carnes','codigo,sector\nPES-01,BAD','codigo,sector\n"PES-01,Carnes']){
+  assert.equal(assignmentsCSV('codigo,sector\nA-1,POLLO',f.puestos,f.sectores)[0].sector_id,f.sectores[1].id);
+  for(const csv of ['codigo,sector\nA-1,POLLO\nA-1,POLLO','codigo,sector\nBAD,POLLO','codigo,sector\nA-1,BAD','codigo,sector\n"A-1,POLLO']){
     assert.throws(()=>assignmentsCSV(csv,f.puestos,f.sectores));
   }
 });
