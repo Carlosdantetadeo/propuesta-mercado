@@ -33,11 +33,13 @@ export async function startMarketMap(opts?:{admin?:boolean}){
   function filters(){let count=0;for(const p of puestos){const match=matches(p);if(match)count++;nodes.get(p.id)?.classList.toggle('dimmed',!match);}$('visible-map-count').textContent=`${count} de ${puestos.length} puestos`;$('map-detail').hidden=!selected;}
   function lod(){const scale=Math.hypot(svg.getScreenCTM()?.a??1,svg.getScreenCTM()?.b??0);nodes.forEach((node)=>{const w=Number(node.dataset.width);node.classList.toggle('code-hidden',w*scale<23);});}
   camera.onFrame=lod;
-  const canManage=()=>admin&&provider.role!=='lector';
+  const canManage=()=>admin;
   function renderActions(p:Puesto){
     const box=document.getElementById('detail-actions');if(!box)return;
-    const actions=acciones(p,provider.role,provider.userId);
-    box.innerHTML=actions.map(a=>`<button type="button" data-action="${a}" class="detail-action-btn ${needsMotivo.has(a)?'warn':''}">${actionLabel[a]}</button>`).join('')
+    const open:('separar'|'liberar')[]=p.estado==='disponible'?['separar']:p.estado==='separado'?['liberar']:[];
+    const adminExtra=provider.role==='admin'?acciones(p,'admin','').filter(a=>needsMotivo.has(a)):[];
+    box.innerHTML=open.map(a=>`<button type="button" data-kind="open" data-action="${a}" class="detail-action-btn">${actionLabel[a]}</button>`).join('')
+      +adminExtra.map(a=>`<button type="button" data-kind="admin" data-action="${a}" class="detail-action-btn warn">${actionLabel[a]}</button>`).join('')
       +(provider.role==='admin'?`<label class="detail-assign">Mover a sector<select id="assign-sector-select"><option value="">—</option>${[...sectores.values()].map(s=>`<option value="${esc(s.id)}" ${s.id===p.sector_id?'selected':''}>${esc(shortName(s.nombre))}</option>`).join('')}</select></label>`:'')
       +`<div id="action-confirm" class="action-confirm" hidden><input id="action-motivo" type="text" placeholder="Motivo (obligatorio)" /><button type="button" id="action-confirm-go">Confirmar</button><button type="button" id="action-confirm-cancel">Cancelar</button></div>`
       +`<p id="action-error" class="action-error" hidden></p>`;
@@ -45,17 +47,22 @@ export async function startMarketMap(opts?:{admin?:boolean}){
     const motivoInput=document.getElementById('action-motivo') as HTMLInputElement;
     const errorBox=document.getElementById('action-error') as HTMLElement;
     const showError=(msg:string)=>{errorBox.textContent=msg;errorBox.hidden=false;};
-    const run=async(action:Accion,motivo:string)=>{
+    const runOpen=async(action:'separar'|'liberar')=>{
+      errorBox.hidden=true;
+      try{ await provider.openChange([p],action); }
+      catch(e){ showError(e instanceof Error?e.message:'No se pudo completar la acción.'); }
+    };
+    const runAdmin=async(action:Accion,motivo:string)=>{
       errorBox.hidden=true;
       try{ await provider.change([p],action,motivo); confirmBox.hidden=true; }
       catch(e){ showError(e instanceof Error?e.message:'No se pudo completar la acción.'); }
     };
     box.querySelectorAll<HTMLButtonElement>('[data-action]').forEach(btn=>btn.addEventListener('click',()=>{
-      const action=btn.dataset.action as Accion;
+      const action=btn.dataset.action!,kind=btn.dataset.kind;
       errorBox.hidden=true;
-      if(needsMotivo.has(action)){ confirmBox.hidden=false; motivoInput.value=''; motivoInput.focus();
-        document.getElementById('action-confirm-go')!.onclick=()=>void run(action,motivoInput.value);
-      } else void run(action,'');
+      if(kind==='open'){ void runOpen(action as 'separar'|'liberar'); return; }
+      confirmBox.hidden=false; motivoInput.value=''; motivoInput.focus();
+      document.getElementById('action-confirm-go')!.onclick=()=>void runAdmin(action as Accion,motivoInput.value);
     }));
     const cancelBtn=document.getElementById('action-confirm-cancel');
     if(cancelBtn) cancelBtn.onclick=()=>{confirmBox.hidden=true;errorBox.hidden=true;};
@@ -132,34 +139,38 @@ export async function startMarketMap(opts?:{admin?:boolean}){
   $('close-map-detail').addEventListener('click',()=>{selected='';$('map-detail').hidden=true;nodes.forEach(n=>n.classList.remove('selected'));});
   window.addEventListener('keydown',e=>{if(e.key==='Escape')$('close-map-detail').click();});
   camera.fit(commercial,false);
+  function refreshAccountUI(){
+    const badge=document.getElementById('account-badge');
+    const trigger=document.getElementById('admin-login-trigger');
+    const isAdmin=provider.role==='admin';
+    if(badge){ badge.hidden=!isAdmin;
+      if(isAdmin){ const nameEl=document.getElementById('account-name'); if(nameEl) nameEl.textContent=`${provider.nombre||'Cuenta'} · ${roleLabel[provider.role]}`; }
+    }
+    if(trigger) trigger.hidden=isAdmin;
+    if(selected) detail(selected);
+  }
   if(admin){
+    const loginPanel=document.getElementById('login-panel');
     const loginForm=document.getElementById('login-form') as HTMLFormElement|null;
     const loginError=document.getElementById('login-error');
+    document.getElementById('admin-login-trigger')?.addEventListener('click',()=>{ if(loginPanel) loginPanel.hidden=false; });
+    document.getElementById('login-cancel')?.addEventListener('click',()=>{ if(loginPanel) loginPanel.hidden=true; });
     loginForm?.addEventListener('submit',async e=>{
       e.preventDefault();
       const email=(document.getElementById('login-email') as HTMLInputElement).value.trim();
       const password=(document.getElementById('login-password') as HTMLInputElement).value;
       const submitBtn=loginForm.querySelector('button[type=submit]') as HTMLButtonElement;
       submitBtn.disabled=true; if(loginError) loginError.hidden=true;
-      try{ await provider.login(email,password); }
+      try{ await provider.login(email,password); if(loginPanel) loginPanel.hidden=true; refreshAccountUI(); }
       catch(err){ if(loginError){loginError.textContent=err instanceof Error?err.message:'No se pudo iniciar sesión.';loginError.hidden=false;} }
       finally{ submitBtn.disabled=false; }
     });
-    document.getElementById('account-logout')?.addEventListener('click',()=>void provider.logout());
+    document.getElementById('account-logout')?.addEventListener('click',async()=>{ await provider.logout(); refreshAccountUI(); });
+    refreshAccountUI();
   }
   await provider.start({snapshot:render,change:p=>{const index=puestos.findIndex(x=>x.id===p.id);if(index>=0)puestos[index]=p;render({puestos,sectores:[...sectores.values()]});},connection:(state,text)=>{
-    if(admin){
-      const loginPanel=document.getElementById('login-panel');
-      const toolbar=document.querySelector<HTMLElement>('.market-toolbar');
-      const badge=document.getElementById('account-badge');
-      if(loginPanel) loginPanel.hidden=state!=='login';
-      if(toolbar) toolbar.hidden=state==='login';
-      if(badge){ badge.hidden=state==='login';
-        if(state!=='login'){ const nameEl=document.getElementById('account-name'); if(nameEl) nameEl.textContent=`${provider.nombre||'Cuenta'} · ${roleLabel[provider.role]}`; }
-      }
-    }
     $('map-connection').textContent=state==='ready'?'Disponibilidad actualizada':'Actualizando…';
-    $('map-loading').hidden=state==='ready'||initialized||state==='login';
+    $('map-loading').hidden=state==='ready'||initialized;
     if(state==='error'||text)message(text??'No se pudo actualizar la disponibilidad.');else if(state==='ready')message();
-  }},{requireAuth:admin});
+  }});
 }

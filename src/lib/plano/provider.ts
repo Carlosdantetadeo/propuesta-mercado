@@ -1,7 +1,7 @@
 import { supabase } from '../supabase';
 import demoData from '../../data/plano-demo.json';
 import { acciones, type Accion, type Asignacion, type Puesto, type Rol, type Snapshot } from './types';
-export type Connection = 'loading' | 'ready' | 'reconnecting' | 'error' | 'login';
+export type Connection = 'loading' | 'ready' | 'reconnecting' | 'error';
 type Callbacks = { snapshot: (data: Snapshot) => void; change: (p: Puesto) => void; connection: (s:Connection, message?:string) => void };
 export class Provider {
   demo = !supabase;
@@ -9,7 +9,6 @@ export class Provider {
   userId = '';
   nombre = '';
   publicRead = false;
-  requireAuth = false;
   ready = false;
   audit: { codigo: string; accion: string; motivo: string; fecha: string }[] = [];
   private data = structuredClone(demoData) as Snapshot;
@@ -22,11 +21,9 @@ export class Provider {
   private setConnection(state: Connection, message?: string) {
     this.ready = state === 'ready'; this.cb.connection(state,message);
   }
-  async start(cb: Callbacks, opts?: { requireAuth?: boolean }) {
+  async start(cb: Callbacks) {
     this.cb = cb;
-    this.requireAuth = !!opts?.requireAuth;
     if (this.demo) {
-      this.role = 'admin'; this.userId = 'demo-admin'; this.nombre = 'Demo';
       // Development-only render benchmark. Never injected into a connected backend.
       if (import.meta.env.DEV && new URLSearchParams(location.search).get('stress') === '1000') {
         const source = this.data.puestos;
@@ -41,39 +38,35 @@ export class Provider {
     }
     const {data,error} = await supabase!.auth.getSession();
     if(error) throw error;
-    if(!data.session) {
-      if(this.requireAuth) { this.setConnection('login'); return; }
+    if(data.session) { await this.afterLogin(data.session.user.id); }
+    else {
       this.publicRead = true;
       await this.sync();
-      window.setInterval(() => { if(navigator.onLine && !document.hidden) void this.sync(); }, 30000);
-      window.addEventListener('online', () => void this.sync());
-      window.addEventListener('offline', () => this.setConnection('reconnecting','Sin conexión. Mostrando la última información recibida.'));
-      document.addEventListener('visibilitychange', () => { if(!document.hidden && navigator.onLine) void this.sync(); });
-      return;
     }
-    await this.afterLogin(data.session.user.id);
-    window.addEventListener('offline',() => this.setConnection('reconnecting','Sin conexión. Las acciones están deshabilitadas.'));
-    window.addEventListener('online',() => this.subscribe());
+    window.setInterval(() => { if(navigator.onLine && !document.hidden) void this.sync(); }, 30000);
+    window.addEventListener('online', () => { if(this.publicRead) void this.sync(); else this.subscribe(); });
+    window.addEventListener('offline', () => this.setConnection('reconnecting','Sin conexión. Mostrando la última información recibida.'));
+    document.addEventListener('visibilitychange', () => { if(!document.hidden && navigator.onLine && this.publicRead) void this.sync(); });
   }
   private async afterLogin(userId: string) {
     this.userId = userId;
     const {data:profile,error:profileError}=await supabase!.from('perfiles').select('rol,nombre').eq('id',this.userId).single();
     if(profileError || !profile) { await supabase!.auth.signOut(); throw new Error('Tu cuenta no tiene un rol asignado. Contacta al administrador.'); }
-    this.role=profile.rol; this.nombre=profile.nombre||'';
+    this.role=profile.rol; this.nombre=profile.nombre||''; this.publicRead=false;
     this.subscribe();
     supabase!.auth.onAuthStateChange((event) => {
       if(event==='SIGNED_OUT') { this.ready=false; location.reload(); }
     });
   }
   async login(email: string, password: string) {
-    if(this.demo || !supabase) throw new Error('No disponible en modo demostración.');
-    const {data,error} = await supabase.auth.signInWithPassword({email,password});
+    if(this.demo) { this.role='admin'; this.userId='demo-admin'; this.nombre='Demo'; this.setConnection('ready'); return; }
+    const {data,error} = await supabase!.auth.signInWithPassword({email,password});
     if(error) throw new Error('No se pudo iniciar sesión. Revisa tu correo y contraseña.');
     await this.afterLogin(data.user.id);
   }
   async logout() {
-    if(this.demo || !supabase) return;
-    await supabase.auth.signOut();
+    if(this.demo) { this.role='lector'; this.userId=''; this.nombre=''; this.setConnection('ready'); return; }
+    await supabase!.auth.signOut();
   }
   private subscribe() {
     if(this.channel) void supabase!.removeChannel(this.channel);
@@ -127,11 +120,32 @@ export class Provider {
       if(this.repeat) { this.repeat=false; void this.sync(); }
     }
   }
-  setDemoRole(role: Rol) {
-    if(!this.demo) return;
-    this.role=role; this.userId=role==='asesor'?'demo-asesor':'demo-admin';
-  }
   private checkReady() { if(!this.ready || !navigator.onLine) throw new Error('Espera a recuperar la conexión antes de continuar.'); }
+  /** Acceso comercial abierto: separar/liberar sin cuenta, sin registrar quién lo hizo. */
+  async openChange(puestos: Puesto[], action: 'separar'|'liberar') {
+    this.checkReady();
+    if(!this.demo) {
+      const {data,error}=await supabase!.rpc('separar_o_liberar_publico',{
+        p_cambios:puestos.map(p=>({id:p.id,version:p.version})),p_accion:action
+      });
+      if(error) { void this.sync(); throw new Error(error.message); }
+      (data as Puesto[]).forEach(p=>this.cb.change(p)); return;
+    }
+    const selected=puestos.map(p=>{
+      const actual=this.data.puestos.find(x=>x.id===p.id)!;
+      if(actual.version!==p.version) throw new Error('El puesto cambió. Actualiza y vuelve a intentar.');
+      if(action==='separar' && actual.estado!=='disponible') throw new Error(`El puesto ${actual.codigo} ya no está disponible.`);
+      if(action==='liberar' && actual.estado!=='separado') throw new Error(`El puesto ${actual.codigo} ya no está separado.`);
+      return actual;
+    });
+    for(const p of selected) {
+      p.estado=action==='separar'?'separado':'disponible'; p.separado_por=null;
+      p.version++; p.actualizado_en=new Date().toISOString();
+      this.audit.unshift({codigo:p.codigo,accion:action,motivo:'Acceso comercial abierto',fecha:p.actualizado_en});
+      this.cb.change(structuredClone(p));
+    }
+  }
+  /** Acciones administrativas: requieren la cuenta única de administrador. */
   async change(puestos: Puesto[], action: Accion, motivo: string) {
     this.checkReady();
     if(!this.demo) {

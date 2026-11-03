@@ -10,6 +10,7 @@ const { admin = false } = Astro.props;
     <div class="market-counts"><span><i class="dot free"></i><b id="count-free">—</b> disponibles</span><span><i class="dot occupied"></i><b id="count-occupied">—</b> ocupados</span><span class="optional-count"><b id="count-total">1020</b> puestos</span></div>
     <span id="map-connection" role="status">Cargando datos…</span>
     {admin && <div class="account-badge" id="account-badge" hidden><span id="account-name"></span><button id="account-logout" type="button">Salir</button></div>}
+    {admin && <button id="admin-login-trigger" class="admin-login-trigger" type="button" hidden>Acceso administrador</button>}
   </header>
   <div class="market-toolbar">
     <label class="map-search" hidden><span>⌕</span><input id="map-search" type="search" placeholder="Buscar puesto: A-1, V-21…" aria-label="Buscar puesto por código" /><button id="search-go" aria-label="Buscar puesto">↵</button></label>
@@ -39,13 +40,13 @@ const { admin = false } = Astro.props;
     {admin && (
       <section id="login-panel" class="login-panel" aria-label="Iniciar sesión" hidden>
         <form id="login-form" class="login-form">
-          <h1>Acceso comercial / administrativo</h1>
-          <p>Inicia sesión con tu cuenta asignada por el administrador.</p>
+          <h1>Acceso administrador</h1>
+          <p>Separar y liberar puestos no necesita cuenta. Esta sesión es solo para vender, bloquear/desbloquear y mover de sector.</p>
           <label>Correo<input id="login-email" type="email" autocomplete="username" required /></label>
           <label>Contraseña<input id="login-password" type="password" autocomplete="current-password" required /></label>
           <p id="login-error" class="login-error" hidden></p>
           <button type="submit">Entrar</button>
-          <a href="/">← Volver al plano público</a>
+          <button type="button" id="login-cancel" class="login-cancel">Cancelar</button>
         </form>
       </section>
     )}
