@@ -46,7 +46,22 @@ block(915,4,1276,810,49,249,1,False)
 block(919,17,1434,810,786,60,17,False)
 block(936,17,1434,997,786,60,17,False)
 block(953,4,2323,810,43,249,1,False)
-assert len(stalls)==956 and set(stalls)=={r['codigo'] for r in rows}
+assert len(stalls)==956
+
+# Stalls traced above are keyed by current codigo for each numbered slot. If a
+# slot's prefix/rubro changed since the previous extraction (renumbering), keep
+# the old codigo pointing at the same rect too, so it keeps rendering until the
+# live database is updated to the new codigo. Stall numbers beyond the traced
+# raster (new construction) have no coordinates yet and are left unplaced.
+previous = Path('src/data/plano-geometria.json')
+if previous.exists():
+    for old_code, rect in json.loads(previous.read_text())['stalls'].items():
+        stalls.setdefault(old_code, rect)
+
+all_codes = {r['codigo'] for r in rows}
+unplaced = sorted(all_codes - set(stalls), key=lambda c: (c.split('-')[0], int(c.split('-')[1])))
 target=Path('src/data/plano-geometria.json')
 target.write_text(json.dumps(dict(source='plano-original.webp',stalls=stalls,blocks=blocks),ensure_ascii=False,separators=(',',':')),encoding='utf-8')
-print(f'{len(stalls)} mapped stalls in {len(blocks)} traced blocks')
+print(f'{len(stalls)} mapped stalls ({len(stalls)-956} legacy aliases) in {len(blocks)} traced blocks')
+print(f'{len(unplaced)} stalls without coordinates (new construction, pending real floor-plan trace):')
+print(unplaced)
