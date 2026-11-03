@@ -5,7 +5,7 @@ import BrandLogo from '../BrandLogo.astro';
 <main class="market-map" id="market-app">
   <header class="market-header"><BrandLogo /><div class="market-counts"><span><i class="dot free"></i><b id="count-free">—</b> disponibles</span><span><i class="dot occupied"></i><b id="count-occupied">—</b> ocupados</span><span class="optional-count"><b id="count-total">1020</b> puestos</span></div><span id="map-connection" role="status">Cargando datos…</span></header>
   <div class="market-toolbar">
-    <label class="map-search"><span>⌕</span><input id="map-search" type="search" placeholder="Buscar puesto: A-1, V-21…" aria-label="Buscar puesto por código" /><button id="search-go" aria-label="Buscar puesto">↵</button></label>
+    <label class="map-search" hidden><span>⌕</span><input id="map-search" type="search" placeholder="Buscar puesto: A-1, V-21…" aria-label="Buscar puesto por código" /><button id="search-go" aria-label="Buscar puesto">↵</button></label>
     <select id="map-sector" aria-label="Ir a un sector"><option value="">Todos los sectores</option></select>
     <div class="status-filters" aria-label="Filtrar disponibilidad"><button data-state="" aria-pressed="true">Todos</button><button data-state="disponible" aria-pressed="false">Disponibles</button><button data-state="ocupado" aria-pressed="false">Ocupados</button></div>
     <a class="cards-toggle" href="/recursos/">Documentos comerciales ↗</a>
