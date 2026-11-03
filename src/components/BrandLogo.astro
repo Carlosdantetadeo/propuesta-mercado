@@ -1,0 +1,45 @@
+---
+interface Props {
+  subtitle?: string;
+  theme?: 'light' | 'dark';
+  size?: 'sm' | 'md';
+  href?: string;
+  className?: string;
+}
+const { subtitle = '', theme = 'light', size = 'md', href = '/', className = '' } = Astro.props;
+---
+<a
+  class:list={['brand-logo', `brand-logo--${theme}`, `brand-logo--${size}`, className]}
+  href={href}
+  aria-label={`Mercado Mayorista Naranjal${subtitle ? ' · ' + subtitle : ''}`}
+>
+  <svg class="brand-logo__mark" viewBox="0 0 128 50" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+    <polygon points="8,34 66,7 66,17 8,44" fill="#EE7326" />
+    <polygon points="66,7 96,19 96,29 66,17" fill="#2055A2" />
+    <polygon points="96,19 121,29 121,39 96,29" fill="#1FA138" />
+  </svg>
+  <span class="brand-logo__text">
+    <span class="brand-logo__name">NARANJAL</span>
+    {subtitle && <span class="brand-logo__sub">{subtitle}</span>}
+  </span>
+</a>
+<style>
+  .brand-logo { display: inline-flex; align-items: center; gap: 11px; text-decoration: none; }
+  .brand-logo__mark { height: 40px; width: auto; display: block; flex-shrink: 0; }
+  .brand-logo__text { display: flex; flex-direction: column; line-height: 1; }
+  .brand-logo__name { font: 800 20px/1 'Manrope', 'Segoe UI', system-ui, sans-serif; letter-spacing: 1.5px; color: #2055A2; }
+  .brand-logo__sub { margin-top: 4px; font: 600 8.5px/1 'Segoe UI', system-ui, sans-serif; letter-spacing: 2px; color: #7a8a80; }
+  .brand-logo--dark .brand-logo__name { color: #fff; }
+  .brand-logo--dark .brand-logo__sub { color: #cdd8c6; }
+
+  .brand-logo--sm { gap: 8px; }
+  .brand-logo--sm .brand-logo__mark { height: 24px; }
+  .brand-logo--sm .brand-logo__name { font-size: 13px; letter-spacing: 1px; }
+
+  @media (max-width: 850px) {
+    .brand-logo--md { gap: 8px; }
+    .brand-logo--md .brand-logo__mark { height: 32px; }
+    .brand-logo--md .brand-logo__name { font-size: 16px; letter-spacing: 1px; }
+    .brand-logo--md .brand-logo__sub { font-size: 7px; letter-spacing: 1.3px; }
+  }
+</style>

@@ -1,10 +1,22 @@
 ---
 import '../../styles/recursos-asesores.css';
+import BrandLogo from '../../components/BrandLogo.astro';
 ---
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#EE7326" />
+  <meta name="robots" content="noindex" />
+  <link rel="icon" type="image/png" href="/brand/favicon-32.png" />
+  <title>Recursos del equipo · PROMASA Naranjal</title>
+</head>
+<body>
 <div class="resource-page">
   <div class="resource-shell">
     <header class="resource-header">
-      <a class="resource-brand" href="/"><img class="resource-logo" src="/brand/mark-naranjal.png" alt="" width="156" height="40" /> PROMASA<small>MERCADO MAYORISTA NARANJAL</small></a>
+      <BrandLogo subtitle="MERCADO MAYORISTA NARANJAL" />
       <nav aria-label="Navegación"><a href="/">← Plano</a><button id="resource-logout" type="button" hidden>Salir</button></nav>
     </header>
     <main class="resource-main">
@@ -116,3 +128,5 @@ import '../../styles/recursos-asesores.css';
   supabase?.auth.onAuthStateChange(() => { void renderResources(); });
   renderResources().catch(error => setMessage(error instanceof Error ? error.message : 'No se pudo cargar el portal de recursos.', true));
 </script>
+</body>
+</html>
