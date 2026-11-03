@@ -1,19 +1,19 @@
 ---
 import '../styles/recursos.css';
 const recursos = [
-  { n:'01',grupo:'Presentación',filtro:'informacion',titulo:'Tríptico del mercado',detalle:'Conoce el Mercado Mayorista Naranjal y sus espacios comerciales.',archivo:'/recursos/triptico-promarsa.pdf',tipo:'6 páginas',estilo:'triptych',accion:'Abrir tríptico',marca:'NARANJAL' },
+  { n:'01',grupo:'Presentación',filtro:'informacion',titulo:'Tríptico del mercado',detalle:'Conoce el Mercado Mayorista Naranjal y sus espacios comerciales.',archivo:'/recursos/triptico-promasa.pdf',tipo:'6 páginas',estilo:'triptych',accion:'Abrir tríptico',marca:'NARANJAL' },
   { n:'02',grupo:'Información de compra',filtro:'informacion',titulo:'Precios y condiciones de pago',detalle:'Revisa las condiciones para separar y adquirir un puesto.',archivo:'/recursos/precios-condiciones-de-pago.pdf',tipo:'Documento oficial',estilo:'prices',accion:'Consultar precios',marca:'PRECIOS · PAGOS' },
   { n:'03',grupo:'Formato comercial',filtro:'separacion',titulo:'Constancia de separación',detalle:'Formato para formalizar la separación de un puesto.',archivo:'/recursos/constancia-de-separacion.pdf',tipo:'Formato PDF',estilo:'certificate',accion:'Abrir constancia',marca:'CONSTANCIA' },
-  { n:'04',grupo:'Información de pago',filtro:'pagos',titulo:'Cuentas de Prommasa',detalle:'Cuentas de Prommasa en Caja Piura para realizar pagos.',archivo:'/recursos/cuentas-prommasa-caja-piura.pdf',tipo:'Datos bancarios',estilo:'accounts',accion:'Ver cuentas bancarias',marca:'CAJA PIURA' },
+  { n:'04',grupo:'Información de pago',filtro:'pagos',titulo:'Cuentas de PROMASA',detalle:'Cuentas de PROMASA en Caja Piura para realizar pagos.',archivo:'/recursos/cuentas-promasa-caja-piura.pdf',tipo:'Datos bancarios',estilo:'accounts',accion:'Ver cuentas bancarias',marca:'CAJA PIURA' },
 ];
 ---
 <!doctype html>
 <html lang="es">
-<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><meta name="theme-color" content="#EE7326" /><meta name="description" content="Consulta y descarga el tríptico, precios, constancia de separación y cuentas de Prommasa del Mercado Mayorista Naranjal." /><link rel="icon" type="image/png" href="/brand/favicon-32.png" /><title>Documentos comerciales | Mercado Naranjal</title></head>
+<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><meta name="theme-color" content="#EE7326" /><meta name="description" content="Consulta y descarga el tríptico, precios, constancia de separación y cuentas de PROMASA del Mercado Mayorista Naranjal." /><link rel="icon" type="image/png" href="/brand/favicon-32.png" /><title>Documentos comerciales | Mercado Naranjal</title></head>
 <body>
 <main class="resources-page">
   <header class="resources-nav"><a class="resource-brand" href="/" aria-label="Volver al plano"><img class="resource-logo" src="/brand/logo-naranjal.jpg" alt="Mercado Mayorista Naranjal · PROMASA" width="35" height="35" /><span>NARANJAL<small>MERCADO MAYORISTA</small></span></a><nav aria-label="Navegación principal"><a href="/">Plano del mercado</a><a class="nav-active" href="/recursos">Documentos comerciales</a></nav><a href="/" class="back-map">‹ <span>Volver al plano</span></a></header>
-  <section class="resources-hero"><div class="hero-map-lines" aria-hidden="true"></div><div class="hero-copy"><p><span></span> CENTRO DE INFORMACIÓN COMERCIAL</p><h1>Todo lo necesario<br />para dar el siguiente paso.</h1><div class="hero-bottom"><span>Información clara para conocer, separar y adquirir tu espacio en el Mercado Mayorista Naranjal.</span><a href="#documentos">Explorar documentos <b>↓</b></a></div></div><div class="hero-index" aria-hidden="true"><strong>04</strong><span>DOCUMENTOS<br />OFICIALES</span><i>CARPETA COMERCIAL<br />PROMMASA · NARANJAL</i></div></section>
+  <section class="resources-hero"><div class="hero-map-lines" aria-hidden="true"></div><div class="hero-copy"><p><span></span> CENTRO DE INFORMACIÓN COMERCIAL</p><h1>Todo lo necesario<br />para dar el siguiente paso.</h1><div class="hero-bottom"><span>Información clara para conocer, separar y adquirir tu espacio en el Mercado Mayorista Naranjal.</span><a href="#documentos">Explorar documentos <b>↓</b></a></div></div><div class="hero-index" aria-hidden="true"><strong>04</strong><span>DOCUMENTOS<br />OFICIALES</span><i>CARPETA COMERCIAL<br />PROMASA · NARANJAL</i></div></section>
   <section class="resources-section" id="documentos"><div class="section-heading"><div><p>CARPETA COMERCIAL</p><h2>Documentos para ti</h2></div><span>Todo lo que necesitas, en un solo lugar.</span></div>
     <div class="resource-filters" aria-label="Filtrar documentos"><button data-filter="todos" aria-pressed="true">Todos <i>04</i></button><button data-filter="informacion" aria-pressed="false">Información</button><button data-filter="separacion" aria-pressed="false">Separación</button><button data-filter="pagos" aria-pressed="false">Pagos</button></div>
     <div class="resources-grid" aria-label="Documentos comerciales">
@@ -22,14 +22,14 @@ const recursos = [
           {r.estilo==='triptych'&&<div class="art-triptych"><i></i><i></i><i></i></div>}
           {r.estilo==='prices'&&<div class="art-lines"><i></i><i></i><i></i><i></i><i></i></div>}
           {r.estilo==='certificate'&&<div class="art-certificate"><i>✓</i><span></span><span></span><span></span></div>}
-          {r.estilo==='accounts'&&<div class="art-bank"><i>↗</i><b>CAJA<br/>PIURA</b><span>CUENTAS PROMMASA</span></div>}
-          <span class="art-wordmark">PROMMASA <i>·</i> NARANJAL</span>
+          {r.estilo==='accounts'&&<div class="art-bank"><i>↗</i><b>CAJA<br/>PIURA</b><span>CUENTAS PROMASA</span></div>}
+          <span class="art-wordmark">PROMASA <i>·</i> NARANJAL</span>
         </div>
         <div class="resource-info"><div class="resource-meta"><span>{r.grupo}</span><span>{r.tipo}</span></div><h3>{r.titulo}</h3><p>{r.detalle}</p><div class="resource-actions"><a class="open-resource" href={r.archivo} target="_blank" rel="noopener">{r.accion}<span aria-hidden="true">↗</span></a><a class="download-resource" href={r.archivo} download aria-label={`Descargar ${r.titulo}`} title="Descargar documento"><span aria-hidden="true">↓</span></a></div></div>
       </article>)}
     </div><p class="no-resources" hidden>No hay documentos en esta categoría.</p>
   </section>
-  <footer class="resources-footer"><a class="footer-brand" href="/"><img class="resource-logo" src="/brand/logo-naranjal.jpg" alt="" width="20" height="20" /> <span>Mercado Mayorista Naranjal</span></a><span>Información comercial de Prommasa</span><a href="/">Ver plano del mercado ↗</a></footer>
+  <footer class="resources-footer"><a class="footer-brand" href="/"><img class="resource-logo" src="/brand/logo-naranjal.jpg" alt="" width="20" height="20" /> <span>Mercado Mayorista Naranjal</span></a><span>Información comercial de PROMASA</span><a href="/">Ver plano del mercado ↗</a></footer>
 </main>
 <script>
   document.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach(button=>button.addEventListener('click',()=>{
