@@ -17,3 +17,7 @@ playwright-report/
 /promarsa/*.pdf
 /live-*.png
 /shot-*.png
+
+# Fuente y capturas locales con datos personales de compradores.
+/TABLA DE MERCADO 20_10 - Tabla Mercado.pdf
+/docs/mercado/pagina-*.png

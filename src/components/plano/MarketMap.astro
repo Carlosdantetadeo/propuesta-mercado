@@ -1,0 +1,35 @@
+---
+import '../../styles/market-map.css';
+---
+<main class="market-map" id="market-app">
+  <header class="market-header"><a href="/" class="market-brand"><span class="market-monogram">N</span><span>NARANJAL<small>PLANO DEL MERCADO</small></span></a><div class="market-counts"><span><i class="dot free"></i><b id="count-free">—</b> disponibles</span><span><i class="dot occupied"></i><b id="count-occupied">—</b> ocupados</span><span class="optional-count"><b id="count-total">956</b> puestos</span></div><span id="map-connection" role="status">Cargando datos…</span></header>
+  <div class="market-toolbar">
+    <label class="map-search"><span>⌕</span><input id="map-search" type="search" placeholder="Buscar puesto: A-1, V-21…" aria-label="Buscar puesto por código" /><button id="search-go" aria-label="Buscar puesto">↵</button></label>
+    <select id="map-sector" aria-label="Ir a un sector"><option value="">Todos los sectores</option></select>
+    <div class="status-filters" aria-label="Filtrar disponibilidad"><button data-state="" aria-pressed="true">Todos</button><button data-state="disponible" aria-pressed="false">Disponibles</button><button data-state="ocupado" aria-pressed="false">Ocupados</button></div>
+    <a class="cards-toggle" href="/recursos/">Documentos comerciales ↗</a>
+    <button class="map-reset" id="reset-map">Ver todo ↗</button>
+  </div>
+  <div id="map-message" role="status" hidden></div>
+  <section class="market-canvas" aria-label="Plano interactivo con disponibilidad de puestos">
+    <svg id="market-svg" viewBox="0 0 1888 778" tabindex="0" role="group" aria-label="Plano del mercado. Verde disponible, rojo ocupado. Usa la rueda para ampliar y arrastra para moverte.">
+      <defs><pattern id="market-blocked" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="#334155"/><rect width="2" height="5" fill="#94a3b8"/></pattern></defs>
+      <image class="market-base" href="/promarsa/plano-original.webp" x="0" y="0" width="1888" height="778" preserveAspectRatio="none" />
+      <g id="market-boundaries"></g><g id="market-stalls"></g><g id="market-labels"></g>
+    </svg>
+    <div class="map-guide">SECTORES Y DISPONIBILIDAD<span>Acerca el plano y toca un puesto</span></div>
+    <div class="map-zoom"><button id="market-plus" aria-label="Acercar">+</button><button id="market-minus" aria-label="Alejar">−</button><button id="market-fit" aria-label="Ajustar plano">⛶</button></div>
+    <div class="map-legend"><span><i class="dot free"></i>Disponible</span><span><i class="dot occupied"></i>Ocupado / vendido</span><span><i class="dot reserved"></i>Separado</span><span><i class="dot blocked"></i>Bloqueado</span></div>
+    <section id="map-detail" class="map-detail" aria-label="Detalle del puesto" hidden><button id="close-map-detail" aria-label="Cerrar detalle">×</button><div><small id="detail-rubro"></small><h1 id="detail-code"></h1></div><span id="detail-status"></span><div class="detail-price"><small>PRECIO · IGV INCLUIDO</small><strong id="detail-price"></strong></div></section>
+    <div id="map-loading" class="map-loading">Cargando disponibilidad de los puestos…</div>
+  </section>
+  <footer class="market-footer"><span>Arrastra para recorrer · Rueda o dos dedos para ampliar</span><span id="visible-map-count">956 puestos en el plano</span><a href="/promarsa/plano-original.pdf" target="_blank" rel="noopener">Plano original ↗</a></footer>
+</main>
+<script>
+  import { startMarketMap } from '../../lib/plano/market-map';
+  startMarketMap().catch(error=>{
+    const message=document.getElementById('map-message')!;
+    message.hidden=false;message.textContent=error instanceof Error?error.message:'No se pudo cargar la disponibilidad.';
+    document.getElementById('map-loading')!.hidden=true;
+  });
+</script>

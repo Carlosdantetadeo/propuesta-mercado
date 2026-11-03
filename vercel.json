@@ -3,5 +3,11 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "buildCommand": "npm run build",
-  "outputDirectory": "dist"
+  "outputDirectory": "dist",
+  "redirects": [
+    { "source": "/directorio", "destination": "/", "permanent": true },
+    { "source": "/operaciones", "destination": "/", "permanent": true },
+    { "source": "/directorio.html", "destination": "/", "permanent": true },
+    { "source": "/operaciones.html", "destination": "/", "permanent": true }
+  ]
 }

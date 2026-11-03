@@ -8,7 +8,7 @@ import { acciones, conteo, estados, labels, symbols, type Accion, type Asignacio
 const $=<T extends Element=HTMLElement>(id:string)=>document.getElementById(id)! as unknown as T;
 const esc=(value:unknown)=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
 const normalize=(v:string)=>v.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
-const price=(n:number|null)=>n===null?'Por confirmar':new Intl.NumberFormat('es-PE',{style:'currency',currency:'PEN',maximumFractionDigits:0}).format(n);
+const price=(n:number|null)=>n===null?'Por confirmar':new Intl.NumberFormat('es-PE',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n);
 const icon=(s:Sector)=>({pescado:'≈',carne:'◇',abarrotes:'▦',servicios:'✧',local:'▣'}[s.icono]??'▣');
 const rectBounds=(points:number[][]):Rect=>{const xs=points.map(p=>p[0]),ys=points.map(p=>p[1]);return{x:Math.min(...xs),y:Math.min(...ys),w:Math.max(...xs)-Math.min(...xs),h:Math.max(...ys)-Math.min(...ys)}};
 const actionText:Record<Accion,string>={separar:'Separar',liberar:'Liberar',vender:'Marcar vendido',bloquear:'Bloquear',desbloquear:'Desbloquear'};
@@ -176,7 +176,7 @@ export async function startApp(){
     listNodes.forEach((node,id)=>{node.classList.toggle('multi',selected.has(id));node.setAttribute('aria-pressed',String(selected.has(id)));});
   }
   function configureRole(){
-    const admin=provider.role==='admin';$('admin-tools').hidden=!admin;$('admin-link').hidden=!admin;$('logout').hidden=provider.demo;$('demo-banner').hidden=!provider.demo;
+    const admin=provider.role==='admin';$('admin-tools').hidden=!admin;$('admin-link').hidden=!admin;$('logout').hidden=provider.demo||provider.publicRead;$('demo-banner').hidden=!provider.demo;
     if(!admin){multi=false;selected.clear();$('app').classList.remove('multi-enabled');$('toggle-multi').setAttribute('aria-pressed','false');$('audit-panel').hidden=true;$('audit-list').replaceChildren();updateSelection();}
     $('avatar').textContent=admin?'A':provider.role==='asesor'?'AS':'L';renderDetail();
     if(location.pathname.startsWith('/admin')&&!admin)toast('Solo el administrador puede acceder a las operaciones masivas.');
@@ -221,7 +221,7 @@ export async function startApp(){
     if(selectedId===p.id)renderDetail();levelOfDetail();announce(`${p.codigo} cambió a ${labels[p.estado]}.`);
   };
   function connection(state:Connection,message?:string){
-    const ready=state==='ready';$('connection-label').innerHTML=`<i></i>${ready?(provider.demo?'Vista demo':'En vivo'):state==='login'?'Acceso requerido':'Reconectando'}`;
+    const ready=state==='ready';$('connection-label').innerHTML=`<i></i>${ready?(provider.demo?'Vista demo':provider.publicRead?'Actualizado':'En vivo'):state==='login'?'Acceso requerido':'Reconectando'}`;
     $('connection-banner').hidden=ready||state==='login';$('connection-banner').textContent=message??'Reconectando… Las acciones se habilitarán al sincronizar.';
     if(state==='login'){$<HTMLDialogElement>('login-dialog').showModal();$('loading-map').hidden=true;$('app').setAttribute('aria-busy','false');}
     renderDetail();

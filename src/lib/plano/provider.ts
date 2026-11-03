@@ -7,6 +7,7 @@ export class Provider {
   demo = !supabase;
   role: Rol = 'lector';
   userId = '';
+  publicRead = false;
   ready = false;
   audit: { codigo: string; accion: string; motivo: string; fecha: string }[] = [];
   private data = structuredClone(demoData) as Snapshot;
@@ -36,7 +37,15 @@ export class Provider {
     } else {
       const {data,error} = await supabase!.auth.getSession();
       if(error) throw error;
-      if(!data.session) { this.setConnection('login'); return; }
+      if(!data.session) {
+        this.publicRead = true;
+        await this.sync();
+        window.setInterval(() => { if(navigator.onLine && !document.hidden) void this.sync(); }, 30000);
+        window.addEventListener('online', () => void this.sync());
+        window.addEventListener('offline', () => this.setConnection('reconnecting','Sin conexión. Mostrando la última información recibida.'));
+        document.addEventListener('visibilitychange', () => { if(!document.hidden && navigator.onLine) void this.sync(); });
+        return;
+      }
       this.userId=data.session.user.id;
       const {data:profile,error:profileError}=await supabase!.from('perfiles').select('rol').eq('id',this.userId).single();
       if(profileError || !profile) throw new Error('Tu cuenta no tiene un rol asignado. Contacta al administrador.');
@@ -75,8 +84,15 @@ export class Provider {
   async sync() {
     if(this.demo) return;
     if(this.syncing) { this.repeat=true; return; }
-    this.syncing=true; this.pending=[]; this.setConnection('reconnecting');
+    this.syncing=true; this.pending=[]; if(!this.publicRead || !this.ready) this.setConnection('reconnecting');
     try {
+      if(this.publicRead) {
+        const {data,error}=await supabase!.rpc('consultar_plano_publico');
+        if(error) throw new Error(error.message);
+        this.cb.snapshot(data as Snapshot);
+        this.setConnection('ready');
+        return;
+      }
       const {data:sectores,error} = await supabase!.from('sectores').select('*').order('orden');
       if(error) throw error;
       const puestos: Puesto[]=[];

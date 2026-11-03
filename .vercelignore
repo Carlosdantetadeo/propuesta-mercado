@@ -1,0 +1,14 @@
+docs/
+supabase/
+scripts/
+tests/
+test-results/
+playwright-report/
+promarsa/
+/*.pdf
+/*.pptx
+/*.png
+.env*
+.claude/
+.agents/
+.codex/
