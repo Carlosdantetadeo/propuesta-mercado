@@ -5,11 +5,11 @@ interface Props {
   className?: string;
 }
 const { size = 'md', href = '/', className = '' } = Astro.props;
-// Full brand lockup (roof + "mercado mayorista Naranjal PROMASA"), rendered at 3x.
-// Intrinsic PNG size: 1218 x 294 (ratio ~4.14:1).
+// Full brand lockup: roof icon cropped from the real logo photo + redrawn
+// wordmark (fixes PROMMASA -> PROMASA). Intrinsic PNG size: 1224 x 295.
 const heights = { md: 46, sm: 30 };
 const height = heights[size];
-const width = Math.round((height * 1218) / 294);
+const width = Math.round((height * 1224) / 295);
 ---
 <a
   class:list={['brand-logo', `brand-logo--${size}`, className]}

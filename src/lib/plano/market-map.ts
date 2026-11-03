@@ -21,7 +21,7 @@ const roleLabel={admin:'Administrador',asesor:'Asesor',lector:'Lector'} as const
 export async function startMarketMap(opts?:{admin?:boolean}){
   const admin=!!opts?.admin;
   const svg=$<SVGSVGElement>('market-svg'),camera=new Camera(svg),provider=new Provider();
-  let puestos:Puesto[]=[],sectores=new Map<string,Sector>(),byCode=new Map<string,Puesto>(),selected='',state='',initialized=false;
+  let puestos:Puesto[]=[],sectores=new Map<string,Sector>(),selected='',state='',initialized=false;
   const nodes=new Map<string,SVGGElement>();
   const commercial={x:190,y:53,w:1640,h:862};
   const fitAll=()=>camera.fit(commercial);
@@ -91,7 +91,7 @@ export async function startMarketMap(opts?:{admin?:boolean}){
     if(zoom){const r=geometry[p.codigo];if(r)camera.fit({x:r.x-83,y:r.y-89,w:r.w+166,h:r.h+178});}
   }
   function render(data:Snapshot){
-    puestos=data.puestos;sectores=new Map(data.sectores.map(s=>[s.id,s]));byCode=new Map(puestos.map(p=>[p.codigo,p]));
+    puestos=data.puestos;sectores=new Map(data.sectores.map(s=>[s.id,s]));
     const selector=$<HTMLSelectElement>('map-sector'),previous=selector.value;
     selector.innerHTML='<option value="">Todos los sectores</option>'+data.sectores.map(s=>`<option value="${esc(s.id)}">${esc(shortName(s.nombre))}</option>`).join('');selector.value=previous;
     $('count-free').textContent=String(puestos.filter(p=>p.estado==='disponible').length);
@@ -106,24 +106,8 @@ export async function startMarketMap(opts?:{admin?:boolean}){
       n.innerHTML=`<title>${esc(p.codigo)} · ${esc(sectores.get(p.sector_id)?.nombre)} · ${esc(stateLabel[p.estado])}</title><rect x="${r.x+.35}" y="${r.y+.35}" width="${r.w-.7}" height="${r.h-.7}" rx=".45"/><text x="${r.x+r.w/2}" y="${r.y+r.h/2}" font-size="${Math.min(5,r.w/(text.length*.65))}">${esc(text)}</text>`;
       nodes.set(p.id,n);$('market-stalls').append(n);
     }
-    type Group={name:string;codes:string[];rect:Rect};const groups:Group[]=[];
-    $('market-boundaries').innerHTML=layout.blocks.map(b=>`<rect class="map-sector-boundary" x="${b.x-1}" y="${b.y-1}" width="${b.w+2}" height="${b.h+2}" rx="1"/>`).join('');
-    for(const b of layout.blocks.filter(b=>b.label)){
-      const names=[...new Set(b.codes.map(c=>sectores.get(byCode.get(c)?.sector_id??'')?.nombre).filter(Boolean))] as string[];
-      const name=names.map(shortName).join(' / '),r={x:b.x,y:b.y,w:b.w,h:b.h};
-      const previous=groups.at(-1);
-      if(previous&&previous.name===name&&Math.abs(previous.rect.y-r.y)<1&&r.x-previous.rect.x-previous.rect.w<35){previous.rect=bounds([previous.rect,r]);previous.codes.push(...b.codes);}
-      else groups.push({name,codes:[...b.codes],rect:r});
-    }
-    $('market-labels').innerHTML=groups.map((g,i)=>{
-      const r=g.rect,font=Math.min(7.3,Math.max(3.4,r.w/(g.name.length*.57))),y=r.y-11;
-      return `<g class="map-sector-label" data-group="${i}" role="button" tabindex="0" aria-label="Acercar sector ${esc(g.name)}"><rect x="${r.x-2}" y="${y}" width="${r.w+4}" height="9" rx="1.4"/><text x="${r.x+r.w/2}" y="${y+4.7}" font-size="${font}" textLength="${Math.min(r.w-2,g.name.length*font*.58)}" lengthAdjust="spacingAndGlyphs">${esc(g.name)}</text></g>`;
-    }).join('');
-    for(const node of $('market-labels').querySelectorAll<SVGGElement>('[data-group]')){
-      const group=groups[Number(node.dataset.group)];
-      const zoom=()=>{const rects=group.codes.map(c=>geometry[c]).filter(Boolean);if(rects.length)camera.fit(bounds(rects));};
-      node.addEventListener('click',()=>{if(!camera.suppressClick)zoom();});node.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();zoom();}});
-    }
+    // La imagen de fondo ya trae los rótulos de sector impresos; no se dibujan
+    // rótulos propios encima (duplicaban el texto y ensuciaban la vista).
     if(selected)detail(selected);filters();lod();
     if(!initialized){camera.fit(commercial,false);initialized=true;}
     if(nodes.size!==puestos.length)message(`${puestos.length-nodes.size} puestos pendientes de ubicar.`);
