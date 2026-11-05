@@ -37,16 +37,15 @@ const cuotaMensual=(cat:string,precio:number):number|null=>{
 function financeHTML(p:Puesto):string{
   if(p.precio===null) return '';
   const t=tipoDePuesto(p.codigo), cuota=cuotaMensual(t.cat,p.precio);
-  const primer20=p.precio*0.2-1000, segundo20=p.precio*0.2, saldo60=p.precio*0.6;
+  const cuota20=p.precio*0.2, saldo60=p.precio*0.6, resto1=cuota20-1000;
   const row=(label:string,val:string,note='')=>`<div class="fin-row"><span>${label}${note?` <i>${note}</i>`:''}</span><b>${val}</b></div>`;
   return `<div class="detail-finance">
     <div class="fin-title">Plan de pagos</div>
-    ${row('Separación',money(1000),'se descuenta del 1er 20%')}
-    ${row('Completar 1er 20%',money(primer20),'10 días desde la separación')}
-    ${row('2do 20%',money(segundo20),'dentro de 6 meses')}
-    ${row('Saldo 60% financiado',money(saldo60),'60 cuotas desde ene 2028')}
+    ${row('1er 20%',money(cuota20),`separación ${money(1000)} + ${money(resto1)} en 10 días`)}
+    ${row('2do 20%',money(cuota20),'dentro de 6 meses')}
+    ${row('60% financiado',money(saldo60),'60 cuotas desde ene 2028')}
     ${row('Cuota mensual (60 meses)',cuota!==null?`${money(cuota)}`:'Pendiente de confirmar')}
-    <p class="fin-note">Precios con IGV incluido. Valores de referencia; tasa y cargos sujetos a confirmación.</p>
+    <p class="fin-note">1er 20% + 2do 20% + 60% = ${money(p.precio)} (precio total, IGV incluido). La separación de ${money(1000)} es parte del 1er 20%. Valores de referencia; tasa y cargos sujetos a confirmación.</p>
   </div>`;
 }
 const needsMotivo=new Set<Accion>(['bloquear','desbloquear','vender']);
