@@ -15,6 +15,41 @@ const bounds=(rects:Rect[]):Rect=>{
 };
 const shortName=(s:string)=>({'PLASTICOS Y LIMPIEZA':'PLÁSTICOS Y LIMPIEZA','LECHE, HUEVOS QUESOS Y':'LECHE / HUEVOS / QUESOS','PRODUCTOS DE LA SIERRA':'PRODUCTOS DE LA SIERRA','PRODUCTOS NATURALES':'P. NATURALES','TIENDA DE CONVENIENCIA':'CONVENIENCIA','PAPAS Y TUBERCULOS':'PAPAS Y TUBÉRCULOS','ESPECERIA / MOLIDOS':'ESPECIAS / MOLIDOS','JOLLERIA':'JOYERÍA'}[s]??s);
 const actionLabel:Record<Accion,string>={separar:'Separar',liberar:'Liberar',vender:'Vender',bloquear:'Bloquear',desbloquear:'Desbloquear'};
+// Tarifario comercial PROMMASA (Nov 2026). Todo en USD con IGV incluido.
+type Tipo={cat:string;area:number;dim:string};
+const tipoDePuesto=(codigo:string):Tipo=>{
+  const pre=codigo.split('-')[0];
+  if(pre==='C') return {cat:'Comida',area:10,dim:'2.5 × 4 m'};
+  if(pre==='S') return {cat:'Servicios',area:9,dim:'2 × 4.5 m'};
+  return {cat:'Alimentos y varios',area:9,dim:'3 × 3 m'};
+};
+const ubicacionPuesto=(cat:string,precio:number):string=>({
+  'Alimentos y varios':{71000:'Esquina',66000:'Centro'},
+  'Comida':{82000:'Isla',77000:'Esquina',71000:'Centro'},
+  'Servicios':{88000:'Entrada',82000:'Centro'},
+} as Record<string,Record<number,string>>)[cat]?.[precio]??'';
+// Cuota comercial mensual confirmada solo para "Alimentos y varios"; el resto queda pendiente.
+const cuotaMensual=(cat:string,precio:number):number|null=>{
+  if(cat==='Alimentos y varios'&&precio===71000) return 1450;
+  if(cat==='Alimentos y varios'&&precio===66000) return 1350;
+  return null;
+};
+function financeHTML(p:Puesto):string{
+  if(p.precio===null) return '';
+  const t=tipoDePuesto(p.codigo), ubic=ubicacionPuesto(t.cat,p.precio), cuota=cuotaMensual(t.cat,p.precio);
+  const primer20=p.precio*0.2-1000, segundo20=p.precio*0.2, saldo60=p.precio*0.6;
+  const row=(label:string,val:string,note='')=>`<div class="fin-row"><span>${label}${note?` <i>${note}</i>`:''}</span><b>${val}</b></div>`;
+  return `<div class="detail-finance">
+    <div class="fin-tipo">${esc(t.cat)} · ${t.area} m² (${esc(t.dim)})${ubic?` · ${esc(ubic)}`:''}</div>
+    <div class="fin-title">Plan de pagos</div>
+    ${row('Separación',money(1000),'se descuenta del 1er 20%')}
+    ${row('Completar 1er 20%',money(primer20),'10 días desde la separación')}
+    ${row('2do 20%',money(segundo20),'dentro de 6 meses')}
+    ${row('Saldo 60% financiado',money(saldo60),'60 cuotas desde ene 2028')}
+    ${row('Cuota mensual (60 meses)',cuota!==null?`${money(cuota)}`:'Pendiente de confirmar')}
+    <p class="fin-note">Precios con IGV incluido. Valores de referencia; tasa y cargos sujetos a confirmación.</p>
+  </div>`;
+}
 const needsMotivo=new Set<Accion>(['bloquear','desbloquear','vender']);
 const roleLabel={admin:'Administrador',asesor:'Asesor',lector:'Lector'} as const;
 
@@ -87,6 +122,7 @@ export async function startMarketMap(opts?:{admin?:boolean}){
     selected=id;nodes.forEach((n,key)=>n.classList.toggle('selected',key===id));
     $('detail-code').textContent=p.codigo;$('detail-rubro').textContent=sectores.get(p.sector_id)?.nombre??'';
     $('detail-status').textContent=stateLabel[p.estado];$('detail-price').textContent=money(p.precio);$('map-detail').hidden=false;
+    $('detail-finance').innerHTML=financeHTML(p);
     if(canManage())renderActions(p);
     if(zoom){const r=geometry[p.codigo];if(r)camera.fit({x:r.x-83,y:r.y-89,w:r.w+166,h:r.h+178});}
   }
