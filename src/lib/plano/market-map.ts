@@ -153,7 +153,8 @@ export async function startMarketMap(opts?:{admin?:boolean}){
     if(!initialized){camera.fit(commercial,false);initialized=true;}
     if(nodes.size!==puestos.length)message(`${puestos.length-nodes.size} puestos pendientes de ubicar.`);
   }
-  svg.addEventListener('click',e=>{if(camera.suppressClick)return;const n=(e.target as Element).closest<SVGGElement>('[data-id]');if(n)detail(n.dataset.id!);});
+  function closeDetail(){selected='';$('map-detail').hidden=true;nodes.forEach(n=>n.classList.remove('selected'));message();}
+  svg.addEventListener('click',e=>{if(camera.suppressClick)return;const n=(e.target as Element).closest<SVGGElement>('[data-id]');if(n)detail(n.dataset.id!);else if(!$('map-detail').hidden)closeDetail();});
   svg.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){const n=(e.target as Element).closest<SVGGElement>('[data-id]');if(n){e.preventDefault();detail(n.dataset.id!);}}});
   function search(){const q=normal($<HTMLInputElement>('map-search').value);if(!q)return;const exact=puestos.find(p=>normal(p.codigo)===q||p.codigo.split('-')[1]===q);if(exact){message();detail(exact.id,true);return;}const found=puestos.filter(matches).map(p=>geometry[p.codigo]).filter(Boolean);if(found.length){message();camera.fit(bounds(found));}else message('No se encontró ese puesto. Prueba con su código o sector.');}
   $('search-go').addEventListener('click',search);$('map-search').addEventListener('input',()=>{message();filters();});$('map-search').addEventListener('keydown',e=>{if((e as KeyboardEvent).key==='Enter')search();});
@@ -161,7 +162,7 @@ export async function startMarketMap(opts?:{admin?:boolean}){
   document.querySelectorAll<HTMLButtonElement>('[data-state]').forEach(b=>b.addEventListener('click',()=>{state=b.dataset.state!;document.querySelectorAll('[data-state]').forEach(n=>n.setAttribute('aria-pressed',String(n===b)));filters();}));
   $('market-plus').addEventListener('click',()=>camera.zoom(.65));$('market-minus').addEventListener('click',()=>camera.zoom(1.5));$('market-fit').addEventListener('click',fitAll);
   $('reset-map').addEventListener('click',()=>{$<HTMLInputElement>('map-search').value='';$<HTMLSelectElement>('map-sector').value='';state='';selected='';document.querySelectorAll<HTMLElement>('[data-state]').forEach(n=>n.setAttribute('aria-pressed',String(n.dataset.state==='')));message();filters();camera.fit({x:127,y:38,w:2187,h:903});});
-  $('close-map-detail').addEventListener('click',()=>{selected='';$('map-detail').hidden=true;nodes.forEach(n=>n.classList.remove('selected'));});
+  $('close-map-detail').addEventListener('click',closeDetail);
   window.addEventListener('keydown',e=>{if(e.key==='Escape')$('close-map-detail').click();});
   camera.fit(commercial,false);
   function refreshAccountUI(){
