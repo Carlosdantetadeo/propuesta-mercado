@@ -36,11 +36,10 @@ const cuotaMensual=(cat:string,precio:number):number|null=>{
 };
 function financeHTML(p:Puesto):string{
   if(p.precio===null) return '';
-  const t=tipoDePuesto(p.codigo), ubic=ubicacionPuesto(t.cat,p.precio), cuota=cuotaMensual(t.cat,p.precio);
+  const t=tipoDePuesto(p.codigo), cuota=cuotaMensual(t.cat,p.precio);
   const primer20=p.precio*0.2-1000, segundo20=p.precio*0.2, saldo60=p.precio*0.6;
   const row=(label:string,val:string,note='')=>`<div class="fin-row"><span>${label}${note?` <i>${note}</i>`:''}</span><b>${val}</b></div>`;
   return `<div class="detail-finance">
-    <div class="fin-tipo">${esc(t.cat)} · ${t.area} m² (${esc(t.dim)})${ubic?` · ${esc(ubic)}`:''}</div>
     <div class="fin-title">Plan de pagos</div>
     ${row('Separación',money(1000),'se descuenta del 1er 20%')}
     ${row('Completar 1er 20%',money(primer20),'10 días desde la separación')}
@@ -120,8 +119,15 @@ export async function startMarketMap(opts?:{admin?:boolean}){
       return;
     }
     selected=id;nodes.forEach((n,key)=>n.classList.toggle('selected',key===id));
-    $('detail-code').textContent=p.codigo;$('detail-rubro').textContent=sectores.get(p.sector_id)?.nombre??'';
-    $('detail-status').textContent=stateLabel[p.estado];$('detail-price').textContent=money(p.precio);$('map-detail').hidden=false;
+    const t=tipoDePuesto(p.codigo), ubic=p.precio!==null?ubicacionPuesto(t.cat,p.precio):'';
+    $('detail-code').textContent=p.codigo;
+    $('detail-rubro').textContent=sectores.get(p.sector_id)?.nombre??'';
+    $('detail-tipo').textContent=`${t.cat} · ${t.area} m² (${t.dim})`;
+    const statusEl=$('detail-status');statusEl.textContent=stateLabel[p.estado];statusEl.className=`detail-badge estado-${p.estado}`;
+    const ubicEl=$('detail-ubic');
+    if(ubic){ubicEl.textContent=ubic;ubicEl.hidden=false;ubicEl.classList.toggle('premium',ubic==='Esquina'||ubic==='Isla'||ubic==='Entrada');}
+    else ubicEl.hidden=true;
+    $('detail-price').textContent=money(p.precio);$('map-detail').hidden=false;
     $('detail-finance').innerHTML=financeHTML(p);
     if(canManage())renderActions(p);
     if(zoom){const r=geometry[p.codigo];if(r)camera.fit({x:r.x-83,y:r.y-89,w:r.w+166,h:r.h+178});}

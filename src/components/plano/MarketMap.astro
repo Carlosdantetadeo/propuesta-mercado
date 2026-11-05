@@ -31,8 +31,17 @@ const { admin = false } = Astro.props;
     <div class="map-legend"><span><i class="dot free"></i>Disponible</span><span><i class="dot occupied"></i>Ocupado / vendido</span><span><i class="dot reserved"></i>Separado</span><span><i class="dot blocked"></i>Bloqueado</span></div>
     <section id="map-detail" class="map-detail" aria-label="Detalle del puesto" hidden>
       <button id="close-map-detail" aria-label="Cerrar detalle">×</button>
-      <div><small id="detail-rubro"></small><h1 id="detail-code"></h1></div>
-      <span id="detail-status"></span>
+      <header class="detail-head">
+        <div class="detail-id">
+          <small id="detail-rubro"></small>
+          <h1 id="detail-code"></h1>
+          <p id="detail-tipo" class="detail-tipo"></p>
+        </div>
+        <div class="detail-badges">
+          <span id="detail-ubic" class="detail-badge ubic" hidden></span>
+          <span id="detail-status" class="detail-badge"></span>
+        </div>
+      </header>
       <div class="detail-price"><small>PRECIO · IGV INCLUIDO</small><strong id="detail-price"></strong></div>
       <div id="detail-finance"></div>
       {admin && <div class="detail-actions" id="detail-actions"></div>}
