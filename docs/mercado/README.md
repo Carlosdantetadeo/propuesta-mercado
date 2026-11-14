@@ -60,3 +60,34 @@ El usuario entregó `plano_naranjal_puestos.zip`: una digitalización (OCR + val
 - El grupo "PATIO DE COMIDAS" ahora se arma automáticamente por `bloque` del plano OCR (un solo bloque de 42 puestos); se eliminó el rectángulo de etiqueta manual que existía en `market-map.ts` para ese caso especial.
 - Archivos fuente de esta digitalización archivados en `plano-ocr/` (README propio, `puestos.csv`, `sectores.json` y la imagen de validación con bordes rojo/naranja por confianza). El `sectores.json` de esa carpeta **no se usó** para sector/rubro — esos ya vienen verificados de la tabla de ventas; el plano OCR marca 140 puestos con "confianza de sector baja" que no afectan geometría pero sí advierten sobre su propio etiquetado de rubro.
 - Pendiente real restante: ninguno de los 1020 puestos queda ya sin geometría. Los 198 con numeración en disputa entre fuentes podrían revisarse a futuro contra el plano físico si se quiere subir su confianza, pero no es bloqueante — ya se muestran correctamente en el mapa con su posición original verificada.
+
+## Actualización 2026-11-13
+
+**Nota sobre el proyecto Supabase (2026-11-13)**: se verificó que `zdsmsopbabkhsgyoimwn` (sugerido inicialmente) está vacío — no tiene las tablas `puestos`/`sectores` — por lo que NO es el proyecto real. El proyecto correcto es **`lhxcreidqswmbkhsebly`**, como indican las entradas anteriores de este documento; el usuario confirmó en el Table Editor que ahí están `puestos` y `sectores` con 1020 filas. El SQL de esta actualización se ejecuta en `lhxcreidqswmbkhsebly`.
+
+La fuente `TABLA DE MERCADO 1028 - SUPER OFICIAL PROMMASA.xlsx` reemplaza la base de datos como catálogo. El cruce se hizo por **número de puesto**, no por código completo, porque 317 puestos cambian de prefijo/zona entre esta fuente y la del 03/11.
+
+- **1028 puestos** (antes 1020): **8 nuevos** (`C-1021`–`C-1028`, PATIO DE COMIDAS), ningún puesto eliminado.
+- **317 renombrados**: mismo número físico, cambia el prefijo de zona (ej. `V-51` → `A-51`).
+- **453 actualizados**: cambia rubro, precio y/o estado, mismo código.
+- **250 sin cambios**.
+- Dentro de los actualizados, **177 pasan de disponible a vendido** y **8 pasan de vendido a disponible** (`A-2`, `A-75`, `A-186`, `A-329`, `A-357`, `A-694`, `A-696`, `A-725`) — confirmado por el usuario como ventas canceladas, no un error de la fuente.
+- **Precio**: cuando la fuente trae un "precio actualizado" además del precio base, se usa el actualizado (88 filas) — decisión del usuario.
+- **Sectores**: la fuente nueva junta en un solo rubro tres pares que en la base siguen separados — `YUCA` / `OLLUCO`, `JOLLERIA` / `REGALO`, y `LECHE, HUEVOS QUESOS Y` / `EMBUTIDOS`. Por decisión del usuario se mantienen **separados**: para cualquier puesto cuyo rubro nuevo caiga en uno de esos tres pares, `sector_id` no se toca (se deja el que ya tenga en producción); solo se actualizan precio/área/estado para esas filas.
+- Mismo criterio de estado que las actualizaciones previas: `vendido` si la fuente marca VENDIDO en cualquiera de sus dos columnas de status (la fuente trae dos bloques STATUS/NOMBRES/APELLIDOS por fila, no siempre coincidentes — ver más abajo). No se importan nombres ni apellidos de compradores.
+- **Conflicto de compradores en la fuente (no afecta este import)**: en 272 de 1028 filas los dos bloques STATUS/NOMBRES de la fuente marcan "VENDIDO" pero con un comprador distinto cada uno — mismo puesto, dos nombres diferentes. Es un problema de gestión interna de la tabla, no de este catálogo (aquí solo se usa el booleano vendido/disponible); queda pendiente de resolver por quien administra las ventas, con acceso solo de administrador.
+
+**⚠️ Corrección 2026-11-14 — el import de arriba se ejecutó con un criterio de "vendido" equivocado.** Se aplicó `vendido = (columna H = 'VENDIDO') OR (columna M = 'VENDIDO')`, dando 794 vendido / 234 disponible. Tras revisar con el cliente (hubo idas y vueltas: primero se dijo que H era la real, luego se mencionó la columna N por error — esa es NOMBRES, no STATUS —, y finalmente se confirmó): **la columna M es el registro real de ventas; la columna H debe ignorarse por completo**. El criterio correcto es `vendido = columna M = 'VENDIDO'`, que da **605 vendido / 423 disponible**. Ver `20261114_correccion_estado_vendido.sql` más abajo — revierte exactamente los 189 puestos que quedaron en `vendido` solo porque la columna H lo decía, sin tocar precio/área/sector (esos se calcularon bien, el bug era únicamente en `estado`).
+
+### Archivos
+
+- `../../scripts/prepare-market-update-1028.py`: genera el UPDATE/INSERT guardado, con la misma regla que `prepare-market-update.py` — **omite cualquier puesto actualmente `separado` o `bloqueado`** en producción, para no pisar reservas o bloqueos hechos desde la app.
+- `../../supabase/imports/20261113_actualizacion_inventario_1028.sql`: salida de lo anterior. **Ya ejecutado por el usuario el 2026-11-14** en el proyecto Supabase `lhxcreidqswmbkhsebly` (confirmado: 0 filas omitidas, 1028 puestos en total) — pero con el criterio de `estado` equivocado, ver corrección abajo.
+- `puestos-extraidos.csv`: actualizado a las 1028 filas de esta fuente (sigue sin nombres ni apellidos de compradores); es la nueva base para el próximo diff.
+- `../../scripts/fix-vendido-column-m.py`: genera la corrección final del 2026-11-14 (189 puestos, solo columna `estado`), usando la columna M como autoritativa. Reemplaza una versión anterior del mismo día que asumía lo contrario (columna H); esa versión nunca se ejecutó ni se subió al repositorio.
+- `../../supabase/imports/20261114_correccion_estado_vendido.sql`: salida de lo anterior. **No ejecutado desde aquí** — pendiente de correr en `lhxcreidqswmbkhsebly` por quien tenga acceso.
+
+### Pendiente
+
+- Geometría de los 8 puestos nuevos (`C-1021`–`C-1028`): no tienen posición trazada en el plano todavía.
+- El conflicto de 272 compradores duplicados en la tabla fuente, para cuando se construya la vista de administrador con el detalle de comprador/pago.
