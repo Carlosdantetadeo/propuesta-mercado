@@ -1,6 +1,6 @@
 ﻿import type { Rect } from './types';
 export class Camera {
-  view:Rect={x:0,y:0,w:1888,h:778};
+  view:Rect={x:0,y:0,w:3370,h:1871};
   private raf=0;
   private pointers=new Map<number,{x:number;y:number}>();
   private last:{x:number;y:number;time:number}|null=null;
@@ -63,7 +63,7 @@ export class Camera {
   }
   private distance(){const [a,b]=[...this.pointers.values()];return Math.max(1,Math.hypot(a.x-b.x,a.y-b.y));}
   private draw(){
-    this.view.x=Math.max(-1888,Math.min(1888,this.view.x));this.view.y=Math.max(-778,Math.min(778,this.view.y));
+    this.view.x=Math.max(-1600,Math.min(3370,this.view.x));this.view.y=Math.max(-1200,Math.min(1871,this.view.y));
     this.svg.setAttribute('viewBox',`${this.view.x} ${this.view.y} ${this.view.w} ${this.view.h}`);this.onFrame();
   }
   fit(r:Rect, animate=true) {
@@ -83,7 +83,7 @@ export class Camera {
     };this.raf=requestAnimationFrame(frame);
   }
   zoom(factor:number,cx?:number,cy?:number,animate=true){
-    const w=Math.max(35,Math.min(3000,this.view.w*factor)),scale=w/this.view.w;
+    const w=Math.max(45,Math.min(3600,this.view.w*factor)),scale=w/this.view.w;
     const box=this.svg.getBoundingClientRect();
     const point=this.svg.createSVGPoint();point.x=cx??box.x+box.width/2;point.y=cy??box.y+box.height/2;
     const world=point.matrixTransform(this.svg.getScreenCTM()!.inverse());

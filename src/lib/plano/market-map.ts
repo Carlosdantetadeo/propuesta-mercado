@@ -56,7 +56,7 @@ export async function startMarketMap(opts?:{admin?:boolean}){
   const svg=$<SVGSVGElement>('market-svg'),camera=new Camera(svg),provider=new Provider();
   let puestos:Puesto[]=[],sectores=new Map<string,Sector>(),selected='',state='',initialized=false;
   const nodes=new Map<string,SVGGElement>();
-  const commercial={x:190,y:53,w:1640,h:862};
+  const commercial={x:160,y:230,w:2680,h:1180};
   const fitAll=()=>camera.fit(commercial);
   function message(text=''){ $('map-message').textContent=text;$('map-message').hidden=!text; }
   function matches(p:Puesto){
@@ -114,7 +114,7 @@ export async function startMarketMap(opts?:{admin?:boolean}){
       selected='';nodes.forEach(n=>n.classList.remove('selected'));
       $('map-detail').hidden=true;
       for(const field of ['detail-code','detail-rubro','detail-status','detail-price'])$(field).textContent='';
-      if(zoom){const r=geometry[p.codigo];if(r)camera.fit({x:r.x-83,y:r.y-89,w:r.w+166,h:r.h+178});message('Este puesto no está disponible.');}
+      if(zoom){const r=geometry[p.codigo];if(r)camera.fit({x:r.x-110,y:r.y-110,w:r.w+220,h:r.h+220});message('Este puesto no está disponible.');}
       return;
     }
     selected=id;nodes.forEach((n,key)=>n.classList.toggle('selected',key===id));
@@ -129,7 +129,7 @@ export async function startMarketMap(opts?:{admin?:boolean}){
     $('detail-price').textContent=money(p.precio);$('map-detail').hidden=false;
     $('detail-finance').innerHTML=financeHTML(p);
     if(canManage())renderActions(p);
-    if(zoom){const r=geometry[p.codigo];if(r)camera.fit({x:r.x-83,y:r.y-89,w:r.w+166,h:r.h+178});}
+    if(zoom){const r=geometry[p.codigo];if(r)camera.fit({x:r.x-110,y:r.y-110,w:r.w+220,h:r.h+220});}
   }
   function render(data:Snapshot){
     puestos=data.puestos;sectores=new Map(data.sectores.map(s=>[s.id,s]));
@@ -161,7 +161,7 @@ export async function startMarketMap(opts?:{admin?:boolean}){
   $('map-sector').addEventListener('change',()=>{filters();const found=puestos.filter(matches).map(p=>geometry[p.codigo]).filter(Boolean);if(found.length)camera.fit(bounds(found));});
   document.querySelectorAll<HTMLButtonElement>('[data-state]').forEach(b=>b.addEventListener('click',()=>{state=b.dataset.state!;document.querySelectorAll('[data-state]').forEach(n=>n.setAttribute('aria-pressed',String(n===b)));filters();}));
   $('market-plus').addEventListener('click',()=>camera.zoom(.65));$('market-minus').addEventListener('click',()=>camera.zoom(1.5));$('market-fit').addEventListener('click',fitAll);
-  $('reset-map').addEventListener('click',()=>{$<HTMLInputElement>('map-search').value='';$<HTMLSelectElement>('map-sector').value='';state='';selected='';document.querySelectorAll<HTMLElement>('[data-state]').forEach(n=>n.setAttribute('aria-pressed',String(n.dataset.state==='')));message();filters();camera.fit({x:127,y:38,w:2187,h:903});});
+  $('reset-map').addEventListener('click',()=>{$<HTMLInputElement>('map-search').value='';$<HTMLSelectElement>('map-sector').value='';state='';selected='';document.querySelectorAll<HTMLElement>('[data-state]').forEach(n=>n.setAttribute('aria-pressed',String(n.dataset.state==='')));message();filters();camera.fit({x:90,y:120,w:3150,h:1360});});
   $('close-map-detail').addEventListener('click',closeDetail);
   window.addEventListener('keydown',e=>{if(e.key==='Escape')$('close-map-detail').click();});
   camera.fit(commercial,false);
