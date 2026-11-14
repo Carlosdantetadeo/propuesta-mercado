@@ -85,7 +85,26 @@ La fuente `TABLA DE MERCADO 1028 - SUPER OFICIAL PROMMASA.xlsx` reemplaza la bas
 - `../../supabase/imports/20261113_actualizacion_inventario_1028.sql`: salida de lo anterior. **Ya ejecutado por el usuario el 2026-11-14** en el proyecto Supabase `lhxcreidqswmbkhsebly` (confirmado: 0 filas omitidas, 1028 puestos en total) — pero con el criterio de `estado` equivocado, ver corrección abajo.
 - `puestos-extraidos.csv`: actualizado a las 1028 filas de esta fuente (sigue sin nombres ni apellidos de compradores); es la nueva base para el próximo diff.
 - `../../scripts/fix-vendido-column-m.py`: genera la corrección final del 2026-11-14 (189 puestos, solo columna `estado`), usando la columna M como autoritativa. Reemplaza una versión anterior del mismo día que asumía lo contrario (columna H); esa versión nunca se ejecutó ni se subió al repositorio.
-- `../../supabase/imports/20261114_correccion_estado_vendido.sql`: salida de lo anterior. **No ejecutado desde aquí** — pendiente de correr en `lhxcreidqswmbkhsebly` por quien tenga acceso.
+- `../../supabase/imports/20261114_correccion_estado_vendido.sql`: salida de lo anterior. **Ya ejecutado por el usuario el 2026-11-14** en `lhxcreidqswmbkhsebly` (confirmado: 605 vendido / 423 disponible).
+
+## Actualización 2026-11-14 (v2) — fuente "ACTUALIZADOok"
+
+El usuario subió `TABLA DE MERCADO 1028 - SUPER OFICIAL PROMMASA ACTUALIZADOok.xlsx`, una versión más limpia de la fuente: **una sola columna STATUS** (ya no hay dos bloques STATUS/NOMBRES duplicados — se acabó la ambigüedad de la corrección anterior). Da **607 vendido / 421 disponible** — coincide con lo que el usuario había reportado desde el principio.
+
+Diff contra la base anterior (605/423, tras la corrección de columna M):
+
+- **10 renombrados**: `V-291`–`V-300` → `A-291`–`A-300` (mismo rubro JUGUERIA, solo cambia el prefijo de zona).
+- **2 puestos pasan a vendido**: `V-121` y `A-706`.
+- **74 correcciones de precio**, sobre todo en `A-877`–`A-910` (VERDURAS) y `S-911`–`S-956` (zona de servicios).
+- 0 cambios de rubro.
+
+### Archivos
+
+- `../../scripts/prepare-market-update-1114.py`: genera el UPDATE guardado para estos 86 cambios (10+2+74), misma regla de **omitir `separado`/`bloqueado`**.
+- `../../supabase/imports/20261114_actualizacion_1028_v2.sql`: salida de lo anterior. **No ejecutado desde aquí** — pendiente de correr en `lhxcreidqswmbkhsebly`.
+- `../../src/data/plano-geometria.json`: re-indexadas las 10 claves de geometría `V-291..300` → `A-291..300` (misma posición física), para que no vuelvan a aparecer en gris en el mapa como pasó con el lote de 317 el 2026-11-13.
+- `puestos-extraidos.csv`: actualizado a esta fuente (607/421); nueva base para el próximo diff.
+- `../../Plano Mercado Naranjal - puestos 2026-11-14 v2.pdf`: plano imprimible (posiciones aproximadas desde el DXF 11/11, color por disponible/ocupado, sin nombres de compradores).
 
 ### Pendiente
 
