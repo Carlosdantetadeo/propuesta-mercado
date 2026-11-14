@@ -67,7 +67,11 @@ export class Camera {
     this.svg.setAttribute('viewBox',`${this.view.x} ${this.view.y} ${this.view.w} ${this.view.h}`);this.onFrame();
   }
   fit(r:Rect, animate=true) {
-    const ratio=this.svg.clientWidth/Math.max(1,this.svg.clientHeight);
+    const cw=this.svg.clientWidth,ch=this.svg.clientHeight;
+    // Antes del primer layout el SVG mide 0; encuadrar ahí produce un viewBox con Infinity
+    // que colapsa el mapa. Difiere hasta que el canvas tenga tamaño real.
+    if(cw<=0||ch<=0){requestAnimationFrame(()=>this.fit(r,false));return;}
+    const ratio=cw/ch;
     let w=r.w*1.24,h=r.h*1.24;
     if(w/h<ratio)w=h*ratio;else h=w/ratio;
     this.to({x:r.x+r.w/2-w/2,y:r.y+r.h/2-h/2,w,h},animate);
