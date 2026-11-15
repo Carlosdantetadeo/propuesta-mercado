@@ -64,7 +64,7 @@ export async function startMarketMap(opts?:{admin?:boolean}){
     return (!state||(state==='ocupado'?p.estado==='vendido'||p.estado==='bloqueado':p.estado===state))&&(!sector||p.sector_id===sector)&&(!q||normal(p.codigo).includes(q)||normal(sectores.get(p.sector_id)?.nombre??'').includes(q));
   }
   function filters(){let count=0;for(const p of puestos){const match=matches(p);if(match)count++;nodes.get(p.id)?.classList.toggle('dimmed',!match);}$('visible-map-count').textContent=`${count} de ${puestos.length} puestos`;$('map-detail').hidden=!selected;}
-  function lod(){const scale=Math.hypot(svg.getScreenCTM()?.a??1,svg.getScreenCTM()?.b??0);nodes.forEach((node)=>{const w=Number(node.dataset.width);node.classList.toggle('code-hidden',w*scale<23);});}
+  function lod(){const scale=Math.hypot(svg.getScreenCTM()?.a??1,svg.getScreenCTM()?.b??0);nodes.forEach((node)=>{const w=Number(node.dataset.width);node.classList.toggle('code-hidden',w*scale<23);});document.getElementById('map-rubros')?.classList.toggle('rubros-off',scale>=0.82);}
   camera.onFrame=lod;
   const canManage=()=>admin;
   function renderActions(p:Puesto){
