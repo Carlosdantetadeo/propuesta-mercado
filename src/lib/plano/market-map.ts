@@ -56,7 +56,7 @@ export async function startMarketMap(opts?:{admin?:boolean}){
   const svg=$<SVGSVGElement>('market-svg'),camera=new Camera(svg),provider=new Provider();
   let puestos:Puesto[]=[],sectores=new Map<string,Sector>(),selected='',state='',initialized=false;
   const nodes=new Map<string,SVGGElement>();
-  const commercial={x:160,y:230,w:2680,h:1180};
+  const commercial={x:40,y:150,w:3290,h:1350};
   const fitAll=()=>camera.fit(commercial);
   function message(text=''){ $('map-message').textContent=text;$('map-message').hidden=!text; }
   function matches(p:Puesto){
@@ -161,7 +161,7 @@ export async function startMarketMap(opts?:{admin?:boolean}){
   $('map-sector').addEventListener('change',()=>{filters();const found=puestos.filter(matches).map(p=>geometry[p.codigo]).filter(Boolean);if(found.length)camera.fit(bounds(found));});
   document.querySelectorAll<HTMLButtonElement>('[data-state]').forEach(b=>b.addEventListener('click',()=>{state=b.dataset.state!;document.querySelectorAll('[data-state]').forEach(n=>n.setAttribute('aria-pressed',String(n===b)));filters();}));
   $('market-plus').addEventListener('click',()=>camera.zoom(.65));$('market-minus').addEventListener('click',()=>camera.zoom(1.5));$('market-fit').addEventListener('click',fitAll);
-  $('reset-map').addEventListener('click',()=>{$<HTMLInputElement>('map-search').value='';$<HTMLSelectElement>('map-sector').value='';state='';selected='';document.querySelectorAll<HTMLElement>('[data-state]').forEach(n=>n.setAttribute('aria-pressed',String(n.dataset.state==='')));message();filters();camera.fit({x:90,y:120,w:3150,h:1360});});
+  $('reset-map').addEventListener('click',()=>{$<HTMLInputElement>('map-search').value='';$<HTMLSelectElement>('map-sector').value='';state='';selected='';document.querySelectorAll<HTMLElement>('[data-state]').forEach(n=>n.setAttribute('aria-pressed',String(n.dataset.state==='')));message();filters();camera.fit({x:20,y:120,w:3330,h:1400});});
   $('close-map-detail').addEventListener('click',closeDetail);
   window.addEventListener('keydown',e=>{if(e.key==='Escape')$('close-map-detail').click();});
   camera.fit(commercial,false);
