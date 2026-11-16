@@ -28,24 +28,24 @@ const ubicacionPuesto=(cat:string,precio:number):string=>({
   'Comida':{82000:'Isla',77000:'Esquina',71000:'Centro'},
   'Servicios':{88000:'Entrada',82000:'Centro'},
 } as Record<string,Record<number,string>>)[cat]?.[precio]??'';
-// Cuota comercial mensual confirmada solo para "Alimentos y varios"; el resto queda pendiente.
-const cuotaMensual=(cat:string,precio:number):number|null=>{
-  if(cat==='Alimentos y varios'&&precio===71000) return 1450;
-  if(cat==='Alimentos y varios'&&precio===66000) return 1350;
-  return null;
+// Oferta económica (oferta economica.txt): cuota mensual del 60% financiado a 60 meses.
+// Esquina (71000) = 1063, Centro (66000) = 989; el resto se estima proporcional.
+const cuotaMensual=(precio:number):number=>{
+  if(precio===71000) return 1063;
+  if(precio===66000) return 989;
+  return Math.round(precio*0.015);
 };
 function financeHTML(p:Puesto):string{
   if(p.precio===null) return '';
-  const t=tipoDePuesto(p.codigo), cuota=cuotaMensual(t.cat,p.precio);
-  const cuota20=p.precio*0.2, saldo60=p.precio*0.6, resto1=cuota20-1000;
+  const inicial=p.precio*0.4, saldo=p.precio*0.6, cuota=cuotaMensual(p.precio);
   const row=(label:string,val:string,note='')=>`<div class="fin-row"><span>${label}${note?` <i>${note}</i>`:''}</span><b>${val}</b></div>`;
   return `<div class="detail-finance">
-    <div class="fin-title">Plan de pagos</div>
-    ${row('1er 20%',money(cuota20),`incluye separación ${money(1000)}; resto ${money(resto1)} en 10 días`)}
-    ${row('2do 20%',money(cuota20),'dentro de 6 meses')}
-    ${row('60% financiado',money(saldo60),'60 cuotas desde ene 2028')}
-    ${row('Cuota mensual (60 meses)',cuota!==null?`${money(cuota)}`:'Pendiente de confirmar')}
-    <p class="fin-note">1er 20% + 2do 20% + 60% = ${money(p.precio)} (precio total, IGV incluido). La separación de ${money(1000)} es parte del 1er 20%, no un pago adicional. Valores de referencia; tasa y cargos sujetos a confirmación.</p>
+    <div class="fin-title">Oferta económica</div>
+    ${row('Precio total',money(p.precio),'IGV incluido')}
+    ${row('Inicial 40%',money(inicial),'contrato de compra de bien futuro')}
+    ${row('Saldo 60% financiado',money(saldo),'60 cuotas · inicio enero 2028')}
+    ${row('Cuota mensual (60 meses)',money(cuota),'incluye interés')}
+    <p class="fin-note">Inicial 40% + saldo 60% = ${money(p.precio)} (precio total, IGV incluido). Tasa de interés entre 15% y 20%. Valores de referencia sujetos a confirmación.</p>
   </div>`;
 }
 const needsMotivo=new Set<Accion>(['bloquear','desbloquear','vender']);
