@@ -114,6 +114,7 @@
       <div class="stat ok"><b id="s-ok">—</b><span>Disponibles</span></div>
     </div>
 
+    <p id="load-err" class="err" hidden style="margin:0 0 12px"></p>
     <div class="toolbar">
       <input id="q" type="search" placeholder="Buscar código, rubro u ocupante…" />
       <select id="sector"><option value="">Todos los rubros</option></select>
@@ -195,10 +196,19 @@
       sectores=new Map((secs||[]).map((s:any)=>[s.id,s.nombre]));
       const sel=$('sector') as HTMLSelectElement;
       sel.innerHTML='<option value="">Todos los rubros</option>'+[...sectores.entries()].map(([id,n])=>`<option value="${esc(id)}">${esc(n)}</option>`).join('');
-      puestos=[];
+      puestos=[]; $('load-err').hidden=true;
+      // Si la migración (columna 'ocupante') no está aplicada, reintenta sin esa columna
+      let cols='id,codigo,sector_id,estado,area,precio,version,ocupante';
       for(let off=0;;off+=1000){
-        const { data, error } = await supabase!.from('puestos').select('id,codigo,sector_id,estado,area,precio,version,ocupante').order('codigo').range(off,off+999);
-        if(error){ toast('Error al cargar: '+error.message); break; }
+        let { data, error } = await supabase!.from('puestos').select(cols).order('codigo').range(off,off+999);
+        if(error && /ocupante/.test(error.message)){
+          cols='id,codigo,sector_id,estado,area,precio,version';
+          $('load-err').innerHTML='⚠️ Falta aplicar la migración en Supabase (no existe la columma <b>ocupante</b>). Puedes ver los puestos, pero para registrar/ver datos de ocupantes corre <b>20261115_admin_ocupante.sql</b>.';
+          $('load-err').hidden=false;
+          const retry=await supabase!.from('puestos').select(cols).order('codigo').range(off,off+999);
+          data=retry.data; error=retry.error;
+        }
+        if(error){ $('load-err').textContent='Error al cargar los puestos: '+error.message; $('load-err').hidden=false; break; }
         puestos.push(...(data as any)); if(!data || data.length<1000) break;
       }
       render();
