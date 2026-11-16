@@ -1,5 +1,310 @@
-﻿---
-import PlanoApp from '../../components/plano/MarketMap.astro';
+---
+// Tablero de administración de puestos. Acceso solo para el rol 'admin'.
+// El plano público (/plano) sigue siendo solo lectura para todos.
 ---
 <!doctype html>
-<html lang="es"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" /><meta name="theme-color" content="#EE7326" /><meta name="robots" content="noindex" /><link rel="icon" type="image/png" href="/brand/favicon-32.png" /><title>Administración de puestos · PROMASA</title></head><body><PlanoApp admin /></body></html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#EE7326" />
+  <meta name="robots" content="noindex" />
+  <link rel="icon" type="image/png" href="/brand/favicon-32.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Oswald:wght@600&display=swap" rel="stylesheet" />
+  <title>Tablero de puestos · PROMASA</title>
+  <style>
+    *{box-sizing:border-box;margin:0}
+    :root{--ink:#17251d;--muted:#6a7670;--line:#e2e7df;--bg:#f3f5f0;--green:#1f9c50;--greenbg:#e7f6ec;--red:#d84b43;--redbg:#fbe9e8;--amber:#d98a1f;--amberbg:#fbf0dc;--brand:#EE7326;--blue:#2055A2}
+    body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:var(--bg)}
+    .wrap{max-width:1180px;margin:0 auto;padding:18px 20px 60px}
+    header.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+    .brand{font-family:'Oswald',sans-serif;font-weight:600;letter-spacing:.5px;font-size:20px;color:var(--brand);display:flex;align-items:center;gap:10px}
+    .brand small{display:block;font-family:'Inter';font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;font-weight:700}
+    .account{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+    .btn{font:inherit;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:9px;padding:9px 14px;font-weight:600;cursor:pointer;font-size:13px;transition:background .15s,border-color .15s}
+    .btn:hover{background:#f6f8f4}
+    .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+    .btn.primary:hover{background:#d4641b}
+    .btn.ghost{background:transparent}
+    .btn.sm{padding:6px 11px;font-size:12px;border-radius:7px}
+    .btn.green{color:#0e5e2d;border-color:#bfe4cc}.btn.green:hover{background:var(--greenbg)}
+    .btn.red{color:#9c2d27;border-color:#f0c9c6}.btn.red:hover{background:var(--redbg)}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+    /* stats */
+    .stats{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0}
+    .stat{flex:1;min-width:130px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+    .stat b{font-size:26px;font-weight:800;display:block;font-variant-numeric:tabular-nums}
+    .stat span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;font-weight:700}
+    .stat.ok b{color:var(--green)}.stat.occ b{color:var(--red)}
+    /* toolbar */
+    .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:6px 0 14px}
+    .toolbar input,.toolbar select{font:inherit;border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-size:13px;background:#fff}
+    .toolbar input{min-width:200px}
+    .seg{display:flex;background:#fff;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+    .seg button{border:0;background:transparent;padding:9px 13px;font:inherit;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer}
+    .seg button.on{background:var(--brand);color:#fff}
+    .count{margin-left:auto;font-size:12px;color:var(--muted)}
+    /* table */
+    .tablewrap{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+    th{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);background:#fafbf8;position:sticky;top:0}
+    tbody tr:hover{background:#fafbf8}
+    td.code{font-weight:700;font-variant-numeric:tabular-nums}
+    td.ocup{white-space:normal;color:var(--muted);max-width:260px}
+    .pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;border-radius:20px;padding:4px 10px}
+    .pill.disponible{background:var(--greenbg);color:#157a3a}
+    .pill.vendido{background:var(--redbg);color:#b23a33}
+    .pill.separado{background:var(--amberbg);color:#9a6414}
+    .pill.bloqueado{background:#eef1f4;color:#55606b}
+    .pill .dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+    .rowactions{display:flex;gap:7px;justify-content:flex-end}
+    td.actions{text-align:right}
+    .empty{padding:40px;text-align:center;color:var(--muted)}
+    .more{display:flex;justify-content:center;padding:14px}
+    /* login */
+    .login{min-height:100dvh;display:grid;place-items:center;padding:24px}
+    .card{width:min(380px,100%);background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px 26px;box-shadow:0 12px 40px #1b2a2216}
+    .card h1{font-size:19px;margin-bottom:4px}
+    .card p{font-size:13px;color:var(--muted);margin-bottom:18px}
+    .card label{display:block;font-size:12px;font-weight:600;margin:0 0 12px}
+    .card input{display:block;width:100%;margin-top:6px;font:inherit;border:1px solid var(--line);border-radius:9px;padding:11px 12px;font-size:14px}
+    .err{font-size:12px;color:#b23a33;background:var(--redbg);border:1px solid #f0c9c6;border-radius:8px;padding:9px 11px;margin:-4px 0 12px}
+    /* modal */
+    .modal-bg{position:fixed;inset:0;background:#101a1499;display:grid;place-items:center;padding:20px;z-index:50}
+    .modal{width:min(460px,100%);background:#fff;border-radius:16px;padding:24px;box-shadow:0 20px 60px #0b140f40}
+    .modal h2{font-size:17px;margin-bottom:3px}
+    .modal .sub{font-size:13px;color:var(--muted);margin-bottom:16px}
+    .modal label{display:block;font-size:12px;font-weight:600;margin-bottom:11px}
+    .modal input{display:block;width:100%;margin-top:5px;font:inherit;border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:14px}
+    .modal .req{color:var(--red)}
+    .modal .foot{display:flex;gap:10px;justify-content:flex-end;margin-top:8px}
+    .view-row{display:flex;justify-content:space-between;gap:16px;font-size:13px;padding:7px 0;border-bottom:1px dashed var(--line)}
+    .view-row span{color:var(--muted)}.view-row b{font-weight:600}
+    [hidden]{display:none!important}
+    .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#17251d;color:#fff;padding:11px 18px;border-radius:10px;font-size:13px;z-index:60;box-shadow:0 8px 30px #0b140f55}
+  </style>
+</head>
+<body>
+  <!-- LOGIN -->
+  <div id="login" class="login">
+    <form id="login-form" class="card">
+      <div class="brand" style="margin-bottom:14px">PROMASA <small>Tablero de puestos</small></div>
+      <h1>Acceso administrador</h1>
+      <p>Solo el administrador puede marcar ocupado/disponible y ver los datos. El plano público es solo lectura.</p>
+      <p id="login-err" class="err" hidden></p>
+      <label>Correo<input id="email" type="email" autocomplete="username" required /></label>
+      <label>Contraseña<input id="password" type="password" autocomplete="current-password" required /></label>
+      <button class="btn primary" type="submit" style="width:100%;margin-top:4px">Entrar</button>
+    </form>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dash" class="wrap" hidden>
+    <header class="top">
+      <div class="brand">PROMASA <small>Tablero de puestos · Administrador</small></div>
+      <div class="account"><span id="who"></span><a class="btn sm ghost" href="/plano">Ver plano</a><button id="logout" class="btn sm">Salir</button></div>
+    </header>
+
+    <div class="stats">
+      <div class="stat"><b id="s-total">—</b><span>Puestos</span></div>
+      <div class="stat occ"><b id="s-occ">—</b><span>Ocupados</span></div>
+      <div class="stat ok"><b id="s-ok">—</b><span>Disponibles</span></div>
+    </div>
+
+    <div class="toolbar">
+      <input id="q" type="search" placeholder="Buscar código, rubro u ocupante…" />
+      <select id="sector"><option value="">Todos los rubros</option></select>
+      <div class="seg" id="estado-seg">
+        <button data-e="" class="on">Todos</button>
+        <button data-e="disponible">Disponibles</button>
+        <button data-e="vendido">Ocupados</button>
+      </div>
+      <span class="count" id="count"></span>
+    </div>
+
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Código</th><th>Rubro</th><th>m²</th><th>Precio</th><th>Estado</th><th>Ocupante</th><th></th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div id="empty" class="empty" hidden>Sin resultados.</div>
+      <div class="more" id="more" hidden><button class="btn" id="more-btn">Mostrar más</button></div>
+    </div>
+  </div>
+
+  <!-- MODAL: ocupar con datos -->
+  <div id="modal-ocupar" class="modal-bg" hidden>
+    <form id="form-ocupar" class="modal">
+      <h2>Marcar ocupado</h2>
+      <p class="sub" id="ocupar-sub"></p>
+      <p id="ocupar-err" class="err" hidden></p>
+      <label>Nombre del ocupante <span class="req">*</span><input id="o-nombre" required maxlength="120" /></label>
+      <label>Documento (DNI/RUC)<input id="o-doc" maxlength="40" /></label>
+      <label>Teléfono<input id="o-tel" maxlength="40" /></label>
+      <label>Referencia / observación<input id="o-ref" maxlength="160" /></label>
+      <div class="foot"><button type="button" class="btn" id="ocupar-cancel">Cancelar</button><button type="submit" class="btn primary">Marcar ocupado</button></div>
+    </form>
+  </div>
+
+  <!-- MODAL: ver datos -->
+  <div id="modal-ver" class="modal-bg" hidden>
+    <div class="modal">
+      <h2>Datos del puesto</h2>
+      <p class="sub" id="ver-sub"></p>
+      <div id="ver-body"></div>
+      <div class="foot"><button type="button" class="btn" id="ver-close">Cerrar</button><button type="button" class="btn red" id="ver-liberar">Liberar puesto</button></div>
+    </div>
+  </div>
+
+  <script>
+    import { supabase } from '../../lib/supabase';
+    type Puesto = { id:string; codigo:string; sector_id:string; estado:string; area:number|null; precio:number|null; version:number; ocupante:any };
+    const $ = (id:string)=>document.getElementById(id)!;
+    const money=(n:number|null)=> n==null?'—':new Intl.NumberFormat('es-PE',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n);
+    const esc=(v:any)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
+    let puestos:Puesto[]=[]; let sectores=new Map<string,string>(); let shown=100;
+    let modalTarget:Puesto|null=null;
+
+    function toast(t:string){ const el=document.createElement('div'); el.className='toast'; el.textContent=t; document.body.appendChild(el); setTimeout(()=>el.remove(),2600); }
+
+    if(!supabase){ $('login-err').textContent='Falta configurar Supabase (variables de entorno).'; $('login-err').hidden=false; }
+
+    async function boot(){
+      const { data } = await supabase!.auth.getSession();
+      if(data.session){ await afterLogin(); } else { $('login').hidden=false; }
+    }
+    async function afterLogin(){
+      // verificar rol admin
+      const uid=(await supabase!.auth.getUser()).data.user?.id;
+      const { data:perfil } = await supabase!.from('perfiles').select('rol,nombre').eq('id',uid).single();
+      if(!perfil || perfil.rol!=='admin'){
+        await supabase!.auth.signOut();
+        $('login').hidden=false;
+        $('login-err').textContent='Tu cuenta no tiene rol de administrador.'; $('login-err').hidden=false;
+        return;
+      }
+      $('login').hidden=true; $('dash').hidden=false;
+      $('who').textContent=(perfil.nombre||'Administrador');
+      await loadData();
+    }
+    async function loadData(){
+      const { data:secs } = await supabase!.from('sectores').select('id,nombre').order('orden');
+      sectores=new Map((secs||[]).map((s:any)=>[s.id,s.nombre]));
+      const sel=$('sector') as HTMLSelectElement;
+      sel.innerHTML='<option value="">Todos los rubros</option>'+[...sectores.entries()].map(([id,n])=>`<option value="${esc(id)}">${esc(n)}</option>`).join('');
+      puestos=[];
+      for(let off=0;;off+=1000){
+        const { data, error } = await supabase!.from('puestos').select('id,codigo,sector_id,estado,area,precio,version,ocupante').order('codigo').range(off,off+999);
+        if(error){ toast('Error al cargar: '+error.message); break; }
+        puestos.push(...(data as any)); if(!data || data.length<1000) break;
+      }
+      render();
+    }
+    function filtered(){
+      const q=($('q') as HTMLInputElement).value.trim().toLowerCase();
+      const sec=($('sector') as HTMLSelectElement).value;
+      const est=document.querySelector('#estado-seg button.on')!.getAttribute('data-e')||'';
+      return puestos.filter(p=>{
+        if(sec && p.sector_id!==sec) return false;
+        if(est==='disponible' && p.estado!=='disponible') return false;
+        if(est==='vendido' && !(p.estado==='vendido'||p.estado==='bloqueado')) return false;
+        if(q){ const occ=p.ocupante?`${p.ocupante.nombre||''} ${p.ocupante.documento||''}`:''; const hay=`${p.codigo} ${sectores.get(p.sector_id)||''} ${occ}`.toLowerCase(); if(!hay.includes(q)) return false; }
+        return true;
+      });
+    }
+    function render(){
+      const occ=puestos.filter(p=>p.estado==='vendido'||p.estado==='bloqueado').length;
+      $('s-total').textContent=String(puestos.length); $('s-occ').textContent=String(occ); $('s-ok').textContent=String(puestos.length-occ);
+      const list=filtered();
+      $('count').textContent=`${list.length} de ${puestos.length}`;
+      const rows=$('rows'); const slice=list.slice(0,shown);
+      rows.innerHTML=slice.map(p=>{
+        const ocupadoLike=p.estado==='vendido'||p.estado==='bloqueado';
+        const estLabel=p.estado==='vendido'?'Ocupado':p.estado==='disponible'?'Disponible':p.estado==='separado'?'Separado':'Bloqueado';
+        const occ=p.ocupante?esc(p.ocupante.nombre||'')+(p.ocupante.documento?` · ${esc(p.ocupante.documento)}`:''):'';
+        const action = ocupadoLike
+          ? `<button class="btn sm" data-ver="${p.id}">Ver datos</button>`
+          : `<button class="btn sm green" data-ocupar="${p.id}">Marcar ocupado</button>`;
+        return `<tr>
+          <td class="code">${esc(p.codigo)}</td>
+          <td>${esc(sectores.get(p.sector_id)||'')}</td>
+          <td>${p.area??'—'}</td>
+          <td>${money(p.precio)}</td>
+          <td><span class="pill ${p.estado}"><i class="dot"></i>${estLabel}</span></td>
+          <td class="ocup">${occ||'—'}</td>
+          <td class="actions"><div class="rowactions">${action}</div></td>
+        </tr>`;
+      }).join('');
+      $('empty').hidden=list.length>0;
+      ($('more') as HTMLElement).hidden=list.length<=shown;
+    }
+
+    // interacciones
+    $('q').addEventListener('input',()=>{shown=100;render();});
+    $('sector').addEventListener('change',()=>{shown=100;render();});
+    $('estado-seg').addEventListener('click',e=>{const b=(e.target as HTMLElement).closest('button');if(!b)return;document.querySelectorAll('#estado-seg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');shown=100;render();});
+    $('more-btn').addEventListener('click',()=>{shown+=200;render();});
+    $('rows').addEventListener('click',e=>{
+      const t=e.target as HTMLElement;
+      const idO=t.closest('[data-ocupar]')?.getAttribute('data-ocupar');
+      const idV=t.closest('[data-ver]')?.getAttribute('data-ver');
+      if(idO) openOcupar(puestos.find(p=>p.id===idO)!);
+      if(idV) openVer(puestos.find(p=>p.id===idV)!);
+    });
+
+    function openOcupar(p:Puesto){
+      modalTarget=p;
+      $('ocupar-sub').textContent=`${p.codigo} · ${sectores.get(p.sector_id)||''} · ${money(p.precio)}`;
+      (['o-nombre','o-doc','o-tel','o-ref'] as const).forEach(id=>($(id) as HTMLInputElement).value='');
+      $('ocupar-err').hidden=true;
+      ($('modal-ocupar') as HTMLElement).hidden=false; ($('o-nombre') as HTMLInputElement).focus();
+    }
+    $('ocupar-cancel').addEventListener('click',()=>($('modal-ocupar') as HTMLElement).hidden=true);
+    $('form-ocupar').addEventListener('submit',async e=>{
+      e.preventDefault(); if(!modalTarget) return;
+      const ocupante={ nombre:($('o-nombre') as HTMLInputElement).value.trim(), documento:($('o-doc') as HTMLInputElement).value.trim(), telefono:($('o-tel') as HTMLInputElement).value.trim(), referencia:($('o-ref') as HTMLInputElement).value.trim(), fecha:new Date().toISOString() };
+      if(!ocupante.nombre){ $('ocupar-err').textContent='El nombre es obligatorio.'; $('ocupar-err').hidden=false; return; }
+      const btn=($('form-ocupar').querySelector('button[type=submit]') as HTMLButtonElement); btn.disabled=true;
+      const { data, error } = await supabase!.rpc('admin_ocupar',{ p_id:modalTarget.id, p_version:modalTarget.version, p_ocupante:ocupante });
+      btn.disabled=false;
+      if(error){ $('ocupar-err').textContent=error.message; $('ocupar-err').hidden=false; return; }
+      const up=data as any; const i=puestos.findIndex(p=>p.id===up.id); if(i>=0) puestos[i]={...puestos[i],...up};
+      ($('modal-ocupar') as HTMLElement).hidden=true; render(); toast(`${up.codigo} marcado como ocupado`);
+    });
+
+    function openVer(p:Puesto){
+      modalTarget=p; const o=p.ocupante||{};
+      $('ver-sub').textContent=`${p.codigo} · ${sectores.get(p.sector_id)||''} · ${money(p.precio)}`;
+      const rows=[['Nombre',o.nombre],['Documento',o.documento],['Teléfono',o.telefono],['Referencia',o.referencia],['Registrado',o.fecha?new Date(o.fecha).toLocaleDateString('es-PE'):'']];
+      $('ver-body').innerHTML=rows.filter(r=>r[1]).map(r=>`<div class="view-row"><span>${r[0]}</span><b>${esc(r[1])}</b></div>`).join('')||'<p class="sub">Sin datos de ocupante registrados.</p>';
+      ($('modal-ver') as HTMLElement).hidden=false;
+    }
+    $('ver-close').addEventListener('click',()=>($('modal-ver') as HTMLElement).hidden=true);
+    $('ver-liberar').addEventListener('click',async()=>{
+      if(!modalTarget) return;
+      if(!confirm(`¿Liberar el puesto ${modalTarget.codigo}? Se borrarán los datos del ocupante.`)) return;
+      const { data, error } = await supabase!.rpc('admin_liberar',{ p_id:modalTarget.id, p_version:modalTarget.version });
+      if(error){ toast('Error: '+error.message); return; }
+      const up=data as any; const i=puestos.findIndex(p=>p.id===up.id); if(i>=0) puestos[i]={...puestos[i],...up,ocupante:null};
+      ($('modal-ver') as HTMLElement).hidden=true; render(); toast(`${up.codigo} liberado`);
+    });
+
+    // login
+    $('login-form').addEventListener('submit',async e=>{
+      e.preventDefault();
+      const email=($('email') as HTMLInputElement).value.trim(); const password=($('password') as HTMLInputElement).value;
+      const btn=($('login-form').querySelector('button[type=submit]') as HTMLButtonElement); btn.disabled=true; $('login-err').hidden=true;
+      const { error } = await supabase!.auth.signInWithPassword({ email, password });
+      btn.disabled=false;
+      if(error){ $('login-err').textContent='No se pudo iniciar sesión. Revisa correo y contraseña.'; $('login-err').hidden=false; return; }
+      await afterLogin();
+    });
+    $('logout').addEventListener('click',async()=>{ await supabase!.auth.signOut(); location.reload(); });
+
+    if(supabase) boot();
+  </script>
+</body>
+</html>
