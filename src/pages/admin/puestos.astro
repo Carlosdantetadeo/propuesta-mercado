@@ -281,7 +281,9 @@
       const { data, error } = await supabase!.rpc('admin_ocupar',{ p_id:modalTarget.id, p_version:modalTarget.version, p_ocupante:ocupante });
       btn.disabled=false;
       if(error){ $('ocupar-err').textContent=error.message; $('ocupar-err').hidden=false; return; }
-      const up=data as any; const i=puestos.findIndex(p=>p.id===up.id); if(i>=0) puestos[i]={...puestos[i],...up};
+      const up=Array.isArray(data)?data[0]:data;
+      if(!up){ $('ocupar-err').textContent='No se pudo ocupar (verifica que seas administrador, el nombre, o recarga la página).'; $('ocupar-err').hidden=false; return; }
+      const i=puestos.findIndex(p=>p.id===up.id); if(i>=0) puestos[i]={...puestos[i],...up};
       ($('modal-ocupar') as HTMLElement).hidden=true; render(); toast(`${up.codigo} marcado como ocupado`);
     });
 
@@ -298,7 +300,9 @@
       if(!confirm(`¿Liberar el puesto ${modalTarget.codigo}? Se borrarán los datos del ocupante.`)) return;
       const { data, error } = await supabase!.rpc('admin_liberar',{ p_id:modalTarget.id, p_version:modalTarget.version });
       if(error){ toast('Error: '+error.message); return; }
-      const up=data as any; const i=puestos.findIndex(p=>p.id===up.id); if(i>=0) puestos[i]={...puestos[i],...up,ocupante:null};
+      const up=Array.isArray(data)?data[0]:data;
+      if(!up){ toast('No se pudo liberar (recarga la página e intenta de nuevo).'); return; }
+      const i=puestos.findIndex(p=>p.id===up.id); if(i>=0) puestos[i]={...puestos[i],...up,ocupante:null};
       ($('modal-ver') as HTMLElement).hidden=true; render(); toast(`${up.codigo} liberado`);
     });
 
