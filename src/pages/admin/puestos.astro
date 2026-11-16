@@ -140,6 +140,7 @@
     <div class="stats">
       <div class="stat"><b id="s-total">—</b><span>Puestos</span></div>
       <div class="stat occ"><b id="s-occ">—</b><span>Ocupados</span></div>
+      <div class="stat"><b id="s-sep">—</b><span>Separados</span></div>
       <div class="stat ok"><b id="s-ok">—</b><span>Disponibles</span></div>
     </div>
     <div class="ratiowrap"><div class="ratio"><i id="ratio-fill" style="width:0%"></i></div><span class="ratio-pct" id="ratio-pct">—</span></div>
@@ -257,7 +258,9 @@
     }
     function render(){
       const occ=puestos.filter(p=>p.estado==='vendido'||p.estado==='bloqueado').length;
-      $('s-total').textContent=String(puestos.length); $('s-occ').textContent=String(occ); $('s-ok').textContent=String(puestos.length-occ);
+      const sep=puestos.filter(p=>p.estado==='separado').length;
+      const ok=puestos.filter(p=>p.estado==='disponible').length;
+      $('s-total').textContent=String(puestos.length); $('s-occ').textContent=String(occ); $('s-sep').textContent=String(sep); $('s-ok').textContent=String(ok);
       const pct=puestos.length?Math.round(occ/puestos.length*100):0;
       ($('ratio-fill') as HTMLElement).style.width=pct+'%';
       $('ratio-pct').textContent=pct+'% ocupado';
