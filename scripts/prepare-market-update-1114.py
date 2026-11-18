@@ -62,28 +62,39 @@ assert len(renamed) == 10 and len(status_flip) == 2 and len(price_changed) == 74
 quote = lambda s: "'" + s.replace("'", "''") + "'"
 sha = hashlib.sha256(NEW_XLSX.read_bytes()).hexdigest()
 
+# A single DO block, not a transaction of separate statements sharing a temp
+# table: some SQL runners don't keep one session across ';'-separated
+# statements, which drops an "on commit drop" temp table before it's read
+# (42P01). One statement needs no cross-statement session state and still
+# rolls back atomically on `raise exception`.
 sql = [
     f'-- Sync to "{NEW_XLSX.name}" (2026-11-14). SHA256: {sha}',
     '-- Single-STATUS-column source (no more H/M ambiguity): 607 vendido / 421 disponible overall.',
     f'-- {len(renamed)} renamed (zone prefix only, same rubro), {len(status_flip)} flip to vendido, {len(price_changed)} price corrections.',
     '-- Skips rows currently separado/bloqueado: those are live app transactions.',
     '-- Review before running. Not applied from this machine (no production credentials here).',
-    'begin;',
-    'lock table public.puestos in share row exclusive mode;',
-    'create temporary table _omitidos(codigo text, estado text) on commit drop;',
+    'do $$',
+    'declare',
+    '  v_total integer;',
+    "  v_omitidos text[] := '{}';",
+    'begin',
+    '  lock table public.puestos in share row exclusive mode;',
+    '',
 ]
 
 touched_old_codes = set()
 
 def omit_and_update(old_codigo, set_parts):
     sql.append(
-        f"insert into _omitidos select {quote(old_codigo)}, estado from public.puestos "
-        f"where codigo={quote(old_codigo)} and estado in ('separado','bloqueado');"
+        f"  if exists (select 1 from public.puestos where codigo={quote(old_codigo)} and estado in ('separado','bloqueado')) then"
     )
+    sql.append(f"    v_omitidos := array_append(v_omitidos, {quote(old_codigo)});")
+    sql.append('  else')
     sql.append(
-        f"update public.puestos set {', '.join(set_parts)}, version=version+1, actualizado_en=now() "
-        f"where codigo={quote(old_codigo)} and estado not in ('separado','bloqueado');"
+        f"    update public.puestos set {', '.join(set_parts)}, version=version+1, actualizado_en=now() "
+        f"where codigo={quote(old_codigo)};"
     )
+    sql.append('  end if;')
 
 for old_codigo, new_codigo in renamed.items():
     parts = [f"codigo={quote(new_codigo)}"]
@@ -109,15 +120,14 @@ for codigo, precio in price_changed.items():
     omit_and_update(codigo, [f"precio={precio}"])
     touched_old_codes.add(codigo)
 
+sql.append('')
+sql.append('  select count(*) into v_total from public.puestos;')
+sql.append("  if v_total <> 1028 then raise exception 'Conteo final inesperado: %', v_total; end if;")
 sql.append(
-    "do $$ declare v_omitidos integer; begin "
-    "select count(*) into v_omitidos from _omitidos; "
-    "raise notice '% filas no tocadas por estar separado/bloqueado (revisar a mano)', v_omitidos; "
-    "if (select count(*) from public.puestos) <> 1028 then raise exception 'Conteo final inesperado'; end if; "
-    "end $$;"
+    "  raise notice '% filas no tocadas por estar separado/bloqueado (revisar a mano): %', "
+    "coalesce(array_length(v_omitidos,1),0), v_omitidos;"
 )
-sql.append('select codigo, estado from _omitidos;')
-sql.append('commit;')
+sql.append('end $$;')
 
 OUT_SQL.write_text('\n'.join(sql) + '\n', encoding='utf-8')
 print(f'SQL escrito en {OUT_SQL} ({len(touched_old_codes)} filas tocadas: '

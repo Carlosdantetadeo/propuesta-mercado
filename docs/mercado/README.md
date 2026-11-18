@@ -110,3 +110,30 @@ Diff contra la base anterior (605/423, tras la corrección de columna M):
 
 - Geometría de los 8 puestos nuevos (`C-1021`–`C-1028`): no tienen posición trazada en el plano todavía.
 - El conflicto de 272 compradores duplicados en la tabla fuente, para cuando se construya la vista de administrador con el detalle de comprador/pago.
+
+## Actualización 2026-11-17
+
+El usuario entregó `TABLA_DE_MERCADO_1028-17-11.md`, una exportación markdown de la misma fuente de una sola columna STATUS. Mismos 1028 puestos, mismos 50 rubros (0 renombres de rubro). Da **686 vendido / 342 disponible**.
+
+Diff contra la base anterior (683/345, tras la actualización de servicios del 2026-11-15):
+
+- **43 renombrados**: mismo número físico, solo cambia el prefijo de zona (ej. `V-41` → `A-41`); mismo rubro en los 43 casos.
+- **3 puestos pasan a vendido**: `A-91`, `V-208`, `V-247`.
+- **0 cambios de rubro, 0 cambios de precio**.
+
+### Archivos
+
+- `../../scripts/prepare-market-update-1117.py`: genera el UPDATE guardado para estos 46 cambios (43+3), misma regla de **omitir `separado`/`bloqueado`**.
+- `../../supabase/imports/20261117_actualizacion_1028.sql`: salida de lo anterior. **No ejecutado desde aquí** — pendiente de correr en `lhxcreidqswmbkhsebly`.
+- `../../src/data/plano-geometria.json`: re-indexadas las 43 claves de geometría afectadas por el cambio de prefijo (misma posición física), para que no aparezcan en gris en el mapa mientras no se ejecute el SQL.
+- `puestos-extraidos.csv`: actualizado a esta fuente (686/342); nueva base para el próximo diff.
+
+### Pendiente
+
+- Ejecutar `20261117_actualizacion_1028.sql` en Supabase. Hasta entonces, el plano visual (que lee la geometría de este repo en tiempo de build) y la base de datos (que aún tiene los códigos/estado anteriores) quedarán desincronizados para esos 46 puestos.
+
+### Corrección 2026-11-17 — los SQL pendientes fallaban con `relation "_omitidos" does not exist`
+
+Al intentar ejecutar `20261115_servicios_vendidos.sql` el runner usado devolvió `ERROR: 42P01: relation "_omitidos" does not exist`. Causa: ese archivo (y los otros dos todavía pendientes, `20261114_actualizacion_1028_v2.sql` y `20261117_actualizacion_1028.sql`) usaban `begin; ... create temporary table _omitidos(...) on commit drop; ...` repartido en muchos statements separados por `;`. Esto asume que el cliente mantiene una sola sesión/transacción para todo el script; si el runner autocommitea cada statement por separado (o los manda por conexiones distintas de un pool), el `on commit drop` borra la tabla temporal apenas se crea, antes del primer `insert`.
+
+Los tres archivos se reescribieron como un único bloque `do $$ ... end $$;` (un solo statement): cada fila a tocar usa `if exists (...) then <se registra como omitida> else <update> end if;` dentro del mismo bloque, con el conteo final (`<> 1028` → `raise exception`) y el aviso de omitidos (`raise notice`) al cierre. Al ser un solo statement, no depende de que el runner preserve sesión entre statements, y conserva la misma atomicidad (si `raise exception` dispara, Postgres revierte todo el bloque). `../../scripts/prepare-market-update-1114.py` se actualizó para emitir este formato en futuros usos; `20261114_actualizacion_1028_v2.sql` y `20261117_actualizacion_1028.sql` se reescribieron mecánicamente a partir del SQL ya generado (mismos cambios exactos, sin recalcular el diff) porque la base CSV ya había avanzado más allá de su punto de partida original.
