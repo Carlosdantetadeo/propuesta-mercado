@@ -14,7 +14,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Oswald:wght@600&display=swap" rel="stylesheet" />
   <title>Tablero de puestos · PROMASA</title>
-  <style>
+  <style is:global>
+    /* Global, not scoped: table rows/pills/buttons are injected at runtime via
+       innerHTML (render() below), and Astro's scoped-style attribute never
+       reaches elements created that way -- a scoped block would silently fail
+       to style any of the dynamic table content (bug found 2026-11-18). */
     *{box-sizing:border-box;margin:0}
     :root{--ink:#162019;--muted:#6b7772;--faint:#95a09a;--line:#e5eae2;--line2:#eef2eb;--bg:#eef1ec;--surface:#fff;--green:#1f9c50;--greenbg:#e7f6ec;--green-ink:#14713a;--red:#dc4b43;--redbg:#fbe9e8;--red-ink:#b0332c;--amber:#d98a1f;--amberbg:#fbf0dc;--brand:#EE7326;--brand-d:#d4641b;--blue:#2055A2;--r:12px;--shadow:0 1px 2px #16201908,0 8px 28px #16201910}
     html,body{height:100%}
@@ -38,6 +42,12 @@
     .btn.green{color:var(--green-ink);border-color:#c3e6ce;background:#f3fbf5}.btn.green:hover{background:var(--greenbg);border-color:#a9dcb9}
     .btn.red{color:var(--red-ink);border-color:#f1cdca;background:#fdf4f3}.btn.red:hover{background:var(--redbg);border-color:#ebbab6}
     .btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+    /* Row actions in the table: solid fill so they read as buttons, not plain text. */
+    .rowactions .btn{font-weight:700}
+    .rowactions .btn.green{color:#fff;background:var(--green);border-color:var(--green)}
+    .rowactions .btn.green:hover{background:var(--green-ink);border-color:var(--green-ink)}
+    .rowactions .btn.blue{color:#fff;background:var(--blue);border-color:var(--blue)}
+    .rowactions .btn.blue:hover{background:#163f7a;border-color:#163f7a}
     /* stats */
     .stats{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 10px}
     .stat{flex:1;min-width:150px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:15px 18px;box-shadow:var(--shadow);position:relative;overflow:hidden}
@@ -155,6 +165,7 @@
         <button data-e="vendido">Ocupados</button>
       </div>
       <span class="count" id="count"></span>
+      <button class="btn sm" id="download-csv">Descargar CSV ↓</button>
     </div>
 
     <div class="tablewrap">
@@ -228,15 +239,21 @@
       const sel=$('sector') as HTMLSelectElement;
       sel.innerHTML='<option value="">Todos los rubros</option>'+[...sectores.entries()].map(([id,n])=>`<option value="${esc(id)}">${esc(n)}</option>`).join('');
       puestos=[]; $('load-err').hidden=true;
-      // Si la migración (columna 'ocupante') no está aplicada, reintenta sin esa columna
-      let cols='id,codigo,sector_id,estado,area,precio,version,ocupante';
+      // puestos_admin() is a security-definer RPC: it's the only path that can read
+      // 'ocupante' (column-level SELECT is revoked for direct table queries, even
+      // for admins -- see 202611180001_ocupante_solo_admin.sql). If that migration
+      // isn't applied yet, the RPC won't exist and we fall back to a plain select
+      // without ocupante so the dashboard still works for status/price management.
+      let usingFallback=false;
       for(let off=0;;off+=1000){
-        let { data, error } = await supabase!.from('puestos').select(cols).order('codigo').range(off,off+999);
-        if(error && /ocupante/.test(error.message)){
-          cols='id,codigo,sector_id,estado,area,precio,version';
-          $('load-err').innerHTML='⚠️ Falta aplicar la migración en Supabase (no existe la columma <b>ocupante</b>). Puedes ver los puestos, pero para registrar/ver datos de ocupantes corre <b>20261115_admin_ocupante.sql</b>.';
+        let { data, error } = usingFallback
+          ? await supabase!.from('puestos').select('id,codigo,sector_id,estado,area,precio,version').order('codigo').range(off,off+999)
+          : await supabase!.rpc('puestos_admin').range(off,off+999);
+        if(error && /puestos_admin/.test(error.message)){
+          usingFallback=true;
+          $('load-err').innerHTML='⚠️ Falta aplicar la migración en Supabase (no existe la función <b>puestos_admin</b>). Puedes ver y cambiar el estado de los puestos, pero no se mostrarán datos de ocupantes hasta correr <b>202611180001_ocupante_solo_admin.sql</b>.';
           $('load-err').hidden=false;
-          const retry=await supabase!.from('puestos').select(cols).order('codigo').range(off,off+999);
+          const retry=await supabase!.from('puestos').select('id,codigo,sector_id,estado,area,precio,version').order('codigo').range(off,off+999);
           data=retry.data; error=retry.error;
         }
         if(error){ $('load-err').textContent='Error al cargar los puestos: '+error.message; $('load-err').hidden=false; break; }
@@ -273,7 +290,7 @@
         const occ=p.ocupante&&p.ocupante.nombre
           ? `${esc(p.ocupante.nombre)}${p.ocupante.documento?` <small>· ${esc(p.ocupante.documento)}</small>`:''}`:'';
         const action = ocupadoLike
-          ? `<button class="btn sm" data-ver="${p.id}">Ver / Liberar</button>`
+          ? `<button class="btn sm blue" data-ver="${p.id}">Ver detalles</button>`
           : `<button class="btn sm green" data-ocupar="${p.id}">Marcar ocupado</button>`;
         return `<tr>
           <td class="code">${esc(p.codigo)}</td>
@@ -288,6 +305,24 @@
       $('empty').hidden=list.length>0;
       ($('more') as HTMLElement).hidden=list.length<=shown;
     }
+
+    function downloadCsv(){
+      const estLabel=(e:string)=>e==='vendido'?'Ocupado':e==='disponible'?'Disponible':e==='separado'?'Separado':'Bloqueado';
+      const cell=(v:any)=>{ const s=String(v??''); return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; };
+      const header=['Código','Rubro','m²','Precio','Estado','Ocupante','Documento','Teléfono','Referencia'];
+      const rows=filtered().map(p=>{
+        const o=p.ocupante||{};
+        return [p.codigo,sectores.get(p.sector_id)||'',p.area??'',p.precio??'',estLabel(p.estado),o.nombre||'',o.documento||'',o.telefono||'',o.referencia||''];
+      });
+      const csv='﻿'+[header,...rows].map(r=>r.map(cell).join(',')).join('\r\n');
+      const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url; a.download=`puestos-${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    }
+    $('download-csv').addEventListener('click',downloadCsv);
 
     // interacciones
     $('q').addEventListener('input',()=>{shown=100;render();});
